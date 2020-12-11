@@ -1,28 +1,44 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div id="app">
+        <Login v-if="!this.$store.state.user"></Login>
+        <div v-if="this.$store.state.user" class="boards">
+            <!--<Board  v-for="board in boards" v-bind:key="board.id" msg="Test"></Board>-->
+            <Board msg="Test"></Board>
+        </div>
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+    import Login from "./components/Login";
+    import Board from "./components/Board";
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+    export default {
+        name: 'App',
+        components: {
+            Board,
+            Login
+        },
+        data() {
+            return {
+                user: null,
+                boards: [],
+            }
+        },
+        methods: {},
+        created() {
+            //Socket initialisieren + User setzen
+        },
+        updated() {
+            console.log("Hier ist der User aus dem Store, gesetzt durch die Login Komponente", this.$store.state.user)
+        }
+    }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scoped>
+    #app {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
 </style>
