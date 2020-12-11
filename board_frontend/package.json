@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "sockjs": "^0.3.21",
     "vue": "^2.6.11",
     "vuex": "^3.6.0"
   },
