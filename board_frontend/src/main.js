@@ -2,25 +2,13 @@ import Vue from 'vue'
 import App from './App.vue'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
+import {routes} from './routes'
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
+Vue.config.productionTip = false;
 
-const routes = [
-    {
-        path: '/',
-        name: 'dashboard',
-        component: () => import('./App.vue'),
-        meta: {
-            requiresAuth: true
-        }
-    },
-    {
-        path: '/login',
-        name: 'login',
-        component: () => import('./components/Login.vue')
-    },
-];
 
 const router = new VueRouter({
     mode: 'history',
@@ -40,9 +28,10 @@ router.beforeEach((to, from, next) => {
     }
 });
 
-Vue.config.productionTip = false;
-
 const store = new Vuex.Store({
+    plugins: [createPersistedState({
+        storage: window.sessionStorage,
+    })],
     state: {
         user: null
     },

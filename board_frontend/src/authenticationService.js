@@ -6,7 +6,7 @@ var baseUrl = getUrl.protocol + "//" + getUrl.host;
 const backendEndpoint = 'endpoint';
 
 export default {
-    login,
+    login, logout
 }
 
 export function login(user) {
@@ -19,4 +19,8 @@ export function login(user) {
             return response.data;
         }
     })
+}
+
+export function logout() {
+    sessionStorage.clear();
 }

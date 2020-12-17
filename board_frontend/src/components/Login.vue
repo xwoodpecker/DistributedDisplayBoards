@@ -15,6 +15,9 @@
                         <label for="password">Passwort</label>
                         <i class="fa" :class="[passwordIcon]" @click="hidePassword = !hidePassword"></i>
                         <input :type="passwordType" id="password" v-model="password" placeholder="**********">
+                        <ul v-if="errors.length">
+                            <li class="error" v-bind:key="error" v-for="error in errors">{{ error }}</li>
+                        </ul>
 
                         <button type="submit">Anmelden</button>
                     </form>
@@ -32,8 +35,9 @@
         props: {},
         data() {
             return {
-                email: '',
-                password: '',
+                errors: [],
+                email: null,
+                password: null,
                 hidePassword: true
             }
         },
@@ -47,7 +51,38 @@
         },
         methods: {
             doLogin() {
-                alert('Not implemented yet :O')
+                if (this.checkForm()) {
+                    //TODO hier User beim Service anfragen mit daten;
+                    const user = {
+                        'name': 'Tester',
+                        'boards' : {
+                            '1' : {
+
+                            },
+                            '2': {
+
+                            }
+                        }
+                    };
+                    this.$store.commit('login', user);
+                    this.$router.push({name: 'dashboard'});
+                }
+            },
+            checkForm() {
+                this.errors = [];
+                if (!this.email) {
+                    this.errors.push('Bitte geben Sie eine E-Mail Adresse ein.');
+                } else if (!this.validEmail(this.email)) {
+                    this.errors.push('Bitte geben Sie eine E-Mail Adresse mit gültigem Format ein.');
+                }
+
+                if (!this.password) this.errors.push('Bitte geben Sie ein Passwort ein.');
+
+                return !this.errors.length;
+            },
+            validEmail(email) {
+                var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(email);
             }
         },
         created() {
@@ -124,6 +159,13 @@
 
                 i {
                     margin-left: 5px;
+                }
+
+                ul {
+                    .error {
+                        font-size: 12px;
+                        color: indianred;
+                    }
                 }
             }
 

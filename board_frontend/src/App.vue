@@ -10,12 +10,10 @@
         name: 'App',
         components: {},
         data() {
-            return {
-            }
+            return {}
         },
         methods: {},
         created() {
-            //Socket initialisieren + User setzen
         },
         updated() {
         }
