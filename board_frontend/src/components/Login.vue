@@ -1,20 +1,20 @@
 <template>
     <div>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
         <div class="login_container">
             <div class="login">
                 <div class="description">
                     <h1>Login</h1>
-                    <p>Bitte loggen Sie sich mit ihrem Benutzername und Passwort ein, um auf die Boards zugreifen zu können.</p>
+                    <p>Bitte loggen Sie sich mit ihrem Benutzername und Passwort ein, um auf die Boards zugreifen zu
+                        können.</p>
                 </div>
                 <div class="form">
                     <form @submit.prevent="doLogin">
                         <label for="email">Email</label>
-                        <input type="text" id="email" v-model="email" placeholder="max@mustermann.de" autocomplete="off">
+                        <input type="text" id="email" v-model="email" placeholder="max@mustermann.de"
+                               autocomplete="off">
 
                         <label for="password">Passwort</label>&nbsp;
-                        <i class="fas" :class="[passwordIcon]" @click="hidePassword = !hidePassword"></i>
+                        <i class="fa" :class="[passwordIcon]" @click="hidePassword = !hidePassword"></i>
                         <input :type="passwordType" id="password" v-model="password" placeholder="**********">
 
                         <button type="submit">Anmelden</button>
