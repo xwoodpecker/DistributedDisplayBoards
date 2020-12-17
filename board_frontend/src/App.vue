@@ -34,11 +34,16 @@
     }
 </script>
 
-<style scoped>
-    #app {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
+<style>
+    * {
+        font-family: 'Nunito', sans-serif;
+    }
+
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
     }
 </style>
