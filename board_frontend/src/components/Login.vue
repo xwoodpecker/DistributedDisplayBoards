@@ -10,10 +10,9 @@
                 <div class="form">
                     <form @submit.prevent="doLogin">
                         <label for="email">Email</label>
-                        <input type="text" id="email" v-model="email" placeholder="max@mustermann.de"
-                               autocomplete="off">
+                        <input type="text" id="email" v-model="email" placeholder="max@mustermann.de">
 
-                        <label for="password">Passwort</label>&nbsp;
+                        <label for="password">Passwort</label>
                         <i class="fa" :class="[passwordIcon]" @click="hidePassword = !hidePassword"></i>
                         <input :type="passwordType" id="password" v-model="password" placeholder="**********">
 
@@ -26,6 +25,8 @@
 </template>
 
 <script>
+    //import socket from "sockjs";
+
     export default {
         name: 'Login',
         props: {},
@@ -48,6 +49,9 @@
             doLogin() {
                 alert('Not implemented yet :O')
             }
+        },
+        created() {
+            //socket.createServer();
         }
     }
 </script>
@@ -116,6 +120,10 @@
                     &:hover {
                         background-color: #eeeeee;
                     }
+                }
+
+                i {
+                    margin-left: 5px;
                 }
             }
 
