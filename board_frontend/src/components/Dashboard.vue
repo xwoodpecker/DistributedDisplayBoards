@@ -13,7 +13,7 @@
     import authenticationService from "../authenticationService";
 
     export default {
-        name: 'Dasboard',
+        name: 'Dashboard',
         props: {},
         components: {
             Board,
