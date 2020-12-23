@@ -1,5 +1,6 @@
 package htw.vs.security;
 
+import htw.vs.data.UserRepository;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

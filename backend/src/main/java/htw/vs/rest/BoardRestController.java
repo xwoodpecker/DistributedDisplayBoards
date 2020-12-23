@@ -1,5 +1,6 @@
 package htw.vs.rest;
 
+import htw.vs.data.BoardRepository;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
@@ -7,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 
 /**
  * The type Board rest controller.
