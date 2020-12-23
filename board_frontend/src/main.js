@@ -7,6 +7,7 @@ import createPersistedState from 'vuex-persistedstate'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
+import {ENV} from './environment'
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -21,7 +22,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (!store.getters.isLoggedIn) {
+        if (!store.getters.isLoggedIn && !ENV.developerMode) {
             next({name: 'login'})
         } else {
             next() // go to wherever I'm going
