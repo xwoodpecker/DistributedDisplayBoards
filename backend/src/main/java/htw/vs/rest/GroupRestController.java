@@ -1,5 +1,7 @@
 package htw.vs.rest;
 
+import htw.vs.data.Group;
+import htw.vs.data.GroupRepository;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
