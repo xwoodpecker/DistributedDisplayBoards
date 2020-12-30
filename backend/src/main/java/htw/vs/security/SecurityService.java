@@ -27,9 +27,6 @@ public class SecurityService {
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
         //TODO verify if coordinator...
 
-
-
-
         String currentUserName = authentication.getName();
         User user = userRepository.findUserByUserName(currentUserName);
 
