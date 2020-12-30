@@ -16,32 +16,30 @@ import java.util.stream.Collectors;
  */
 @Component
 public class MessageManager {
-    //TODO: Conurrency???
     private final MessageRepository messageRepository;
 
     private Map<Board, List<Message>> boardMessages;
 
     private MessageManager(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
-        generateBoardMessages(); //ConcurrentHashMap<>(); ???
+        generateBoardMessages();
     }
 
     private void generateBoardMessages(){
         List<Message> msgs = messageRepository.findMessagesToDisplay();
-        boardMessages = msgs.stream().collect(Collectors.groupingBy(m -> m.getBoard()));
-        ConcurrentHashMap<Board, CopyOnWriteArrayList<Message>> test
-                = msgs.parallelStream().collect(Collector.of(
-                        ConcurrentHashMap::new,
-                (map, m) -> map.computeIfAbsent(m.getBoard(), k -> {
-                    CopyOnWriteArrayList l = new CopyOnWriteArrayList<>();
-                    l.add(m);
-                    return l;
-                }),
-                (a, b) -> {
-                            b.forEach(( key, set ) -> a.computeIfAbsent(key, k -> new CopyOnWriteArrayList<>()).addAll(set));
-                    return a;
-                }
-                ));
+        boardMessages = msgs.parallelStream().collect(Collector.of(
+                    ConcurrentHashMap::new,
+                    (map, m) -> map.computeIfAbsent(m.getBoard(), k -> {
+                        CopyOnWriteArrayList l = new CopyOnWriteArrayList<>();
+                        l.add(m);
+                        return l;
+                    }),
+                    (a, b) -> {
+                        b.forEach(( key, set ) -> a.computeIfAbsent(key, k -> new CopyOnWriteArrayList<>()).addAll(set));
+                        return a;
+                    }
+        ));
+        //msgs.stream().collect(Collectors.groupingBy(m -> m.getBoard()));
     }
 
 
@@ -62,18 +60,4 @@ public class MessageManager {
     public List<Message> getAllByBoard(Board board) {
         return boardMessages.get(board);
     }
-
-    /**public List<Message> remove(Message msg) {
-        msg.setActive(false);
-        messageRepository.save(msg);
-        List<Message> msgs = boardMessages.get(msg.getBoard());
-        if(msgs == null) {
-            msgs = new ArrayList<>(); //CopyOnWriteArrayList<>(); ???
-            boardMessages.put(msg.getBoard(), msgs);
-        }
-        Message finalMsg = msg;
-        msgs.removeIf(m -> m.getId() == finalMsg.getId());
-        msgs.add(finalMsg);
-        return msgs;
-    }**/
 }

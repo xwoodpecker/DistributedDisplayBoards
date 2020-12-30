@@ -94,7 +94,7 @@ public class GroupRestController {
             response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("No group found");
         }
         return response;
-    } **/
+    }
 
     /**
      * Add user to group response entity.
