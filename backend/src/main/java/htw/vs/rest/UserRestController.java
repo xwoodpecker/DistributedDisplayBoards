@@ -1,6 +1,7 @@
 package htw.vs.rest;
 
 import htw.vs.data.Role;
+import htw.vs.data.RoleRepository;
 import htw.vs.data.User;
 import htw.vs.data.UserRepository;
 import io.swagger.annotations.Api;
@@ -21,10 +22,12 @@ import java.util.Optional;
 public class UserRestController {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private RoleRepository roleRepository;
 
-    public UserRestController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserRestController(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     @Operation(summary = "Get all users")
@@ -56,13 +59,13 @@ public class UserRestController {
         user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(true);
         user.setEmail(email);
-        Role userRole = new Role();
-        userRole.setName("USER");
+        Role userRole = roleRepository.findByName("USER");
         user.getRoles().add(userRole);
+        userRole.getUsers().add(user);
         if(isSupervisor){
-            Role superVisorRole = new Role();
-            superVisorRole.setName("SUPERVISOR");
-            user.getRoles().add(superVisorRole);;
+            Role superVisorRole = roleRepository.findByName("SUPERVISOR");
+            user.getRoles().add(superVisorRole);
+            superVisorRole.getUsers().add(user);
         }
         return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
     }

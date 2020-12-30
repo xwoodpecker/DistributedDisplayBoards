@@ -24,8 +24,6 @@ import java.util.Set;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 {
-    private final String INITIAL_ADMIN_PASSWORD = CONFIG.DEFAULT_ADMIN_PASSWORD;
-
     private final UserDetailsService userDetailsService;
 
     private final UserRepository userRepository;
@@ -52,27 +50,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
             throws Exception
     {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-        try {
-            userDetailsService.loadUserByUsername("supervisor");
-        } catch (UsernameNotFoundException e) {
-            User supervisor = new User();
-            supervisor.setUserName("supervisor");
-            supervisor.setPassword(passwordEncoder().encode(INITIAL_ADMIN_PASSWORD));
-            supervisor.setEnabled(true);
-            Role adminRole = new Role();
-            Role coordinatorRole = new Role();
-            Role userRole = new Role();
-            adminRole.getUsers().add(supervisor);
-            coordinatorRole.getUsers().add(supervisor);
-            userRole.getUsers().add(supervisor);
-            adminRole.setName("SUPERVISOR");
-            coordinatorRole.setName("COORDINATOR");
-            userRole.setName("USER");
-            supervisor.getRoles().add(adminRole);
-            supervisor.getRoles().add(coordinatorRole);
-            supervisor.getRoles().add(userRole);
-            userRepository.save(supervisor);
-        }
     }
 
     @Override

@@ -15,6 +15,9 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "groupname")
+    private String groupName;
+
     @JoinTable(name = "GROUP_USERS")
     @OneToMany(fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
@@ -22,7 +25,7 @@ public class Group {
     @OneToOne(fetch = FetchType.EAGER)
     private Board board;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     private User coordinator;
 
     /**
@@ -104,6 +107,24 @@ public class Group {
      */
     public void setCoordinator(User coordinator) {
         this.coordinator = coordinator;
+    }
+
+    /**
+     * Gets group name.
+     *
+     * @return the group name
+     */
+    public String getGroupName() {
+        return groupName;
+    }
+
+    /**
+     * Sets group name.
+     *
+     * @param groupName the group name
+     */
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     @Override

@@ -22,6 +22,12 @@ public class Role {
     @JoinTable(name = "USERS_ROLES")
     private Set<User> users = new HashSet<>();
 
+    public Role() {
+    }
+
+    public Role(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;

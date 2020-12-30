@@ -69,6 +69,7 @@ public class BoardRestController {
      * @return the response entity
      */
     @Operation(summary = "Add a new board")
+    @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
     public ResponseEntity addBoard(@RequestBody Board newBoard) {
         return new ResponseEntity<>(boardRepository.save(newBoard), HttpStatus.OK);
@@ -105,7 +106,7 @@ public class BoardRestController {
      * @return the response entity
      */
     @Operation(summary = "Delete a board")
-    //@Secured("USER_SUPERVISOR")
+    @Secured("USER_SUPERVISOR")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteBoard(@PathVariable Long id) {
         boardRepository.deleteById(id);
