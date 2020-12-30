@@ -1,10 +1,7 @@
 package htw.vs.data;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.*;
-import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +10,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "USERS")
-public class User {//implements Principal {
+public class User {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

@@ -17,7 +17,6 @@ public class Role {
     @Column(name = "name")
     private String name;
 
-
     @ManyToMany
     @JoinTable(name = "USERS_ROLES")
     private Set<User> users = new HashSet<>();
