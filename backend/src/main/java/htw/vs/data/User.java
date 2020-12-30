@@ -34,9 +34,8 @@ public class User {//implements Principal {
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "users", fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(fetch=FetchType.EAGER)
-    @JoinTable(name = "USERS_BOARDS")
-    private Set<Board> boards  = new HashSet<>();
+    @ManyToMany(fetch=FetchType.EAGER, mappedBy = "users")
+    private Set<Group> groups  = new HashSet<>();
 
     /**
      * Default constructor for JPA only.
@@ -135,48 +134,40 @@ public class User {//implements Principal {
         this.enabled = enabled;
     }
 
+    /**
+     * Gets roles.
+     *
+     * @return the roles
+     */
     public Set<Role> getRoles() {
         return roles;
     }
 
+    /**
+     * Sets roles.
+     *
+     * @param roles the roles
+     */
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
     /**
-     * Gets boards.
+     * Gets groups.
      *
-     * @return the boards
+     * @return the groups
      */
-    public Set<Board> getBoards() {
-        return boards;
+    public Set<Group> getGroups() {
+        return groups;
     }
 
     /**
-     * Sets boards.
+     * Sets groups.
      *
-     * @param boards the boards
+     * @param groups the groups
      */
-    public void setBoards(Set<Board> boards) {
-        this.boards = boards;
-    }
-
-    /**
-     * Add to boards.
-     *
-     * @param board the board
-     */
-    public void addToBoards(Board board) {
-        this.boards.add(board);
-    }
-
-    /**
-     * Remove from boards.
-     *
-     * @param board the board
-     */
-    public void removeFromBoards(Board board) {
-        this.boards.remove(board);
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
     }
 
     @Override

@@ -26,7 +26,8 @@ public class WebSocketMessageController {
 
     @MessageMapping("/topic/user/getActiveMessages")
     public boolean getActiveMessages(@Payload User user, @Payload Board board) {
-        if(!user.getBoards().contains(board))
+        if(!user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent())
+            //TODO
             return false;
 
         List<Message> messages = messageManager.getAllByBoard(board);
@@ -43,7 +44,7 @@ public class WebSocketMessageController {
     public boolean message(@Payload Message message) {
         Board board = message.getBoard();
         User user = message.getUser();
-        if(!user.getBoards().contains(board))
+        if(!user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent()) //TODO
             return false;
 
         List<Message> messages = messageManager.addOrReplace(message);

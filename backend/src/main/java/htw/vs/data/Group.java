@@ -1,5 +1,8 @@
 package htw.vs.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +12,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "BOARD_GROUPS")
+@JsonIgnoreProperties({"users"})
 public class Group {
 
     @Id
@@ -18,14 +22,14 @@ public class Group {
     @Column(name = "groupname")
     private String groupName;
 
-    @JoinTable(name = "GROUP_USERS")
-    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "GROUPS_USERS")
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
 
     @OneToOne(fetch = FetchType.EAGER)
     private Board board;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private User coordinator;
 
     /**
@@ -62,15 +66,6 @@ public class Group {
      */
     public void setUsers(Set<User> users) {
         this.users = users;
-    }
-
-    /**
-     * Add user.
-     *
-     * @param user the user
-     */
-    public void addUser(User user) {
-        this.users.add(user);
     }
 
     /**
