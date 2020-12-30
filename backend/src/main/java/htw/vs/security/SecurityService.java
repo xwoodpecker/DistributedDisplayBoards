@@ -1,28 +1,52 @@
 package htw.vs.security;
 
+import htw.vs.data.Group;
+import htw.vs.data.GroupRepository;
+import htw.vs.data.User;
+import htw.vs.data.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.security.Principal;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component("securityService")
 public class SecurityService {
-    public boolean hasPermission(String key) {
-        return true;
+
+    private GroupRepository groupRepository;
+    private UserRepository userRepository;
+
+    public SecurityService(GroupRepository groupRepository, UserRepository userRepository) {
+        this.groupRepository = groupRepository;
+        this.userRepository = userRepository;
     }
 
-    public boolean hasPermission(Authentication authentication, String foo) {
+    public boolean hasPermission(Authentication authentication, Long groupId) {
         Set<String> roles = authentication.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
+        //TODO verify if coordinator...
 
-        Principal principal = (Principal) authentication.getPrincipal();
-        String name = principal.getName();
 
-        if(roles.contains("ROLE_COORDINATOR"))
+
+
+        String currentUserName = authentication.getName();
+        User user = userRepository.findUserByUserName(currentUserName);
+
+        Optional<Group> opt = groupRepository.findById(groupId);
+        Group group;
+        if(opt.isPresent()) {
+            group = opt.get();
+            //TODO
+        }else {
+            return  false;
+            //TODO
+        }
+
+        if(group.getCoordinator().getId() == user.getId()) {
             return true;
-
-        return true;
+        }else{
+            return false;
+        }
     }
 }
