@@ -28,8 +28,8 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
         messages
                 .nullDestMatcher().authenticated()
                 .simpDestMatchers("/app/**").hasRole("USER")
-                .simpDestMatchers("app/coordinator/**").hasRole("COORDINATOR")
-                .simpDestMatchers("app/admin/**").hasRole("ADMIN")
+                .simpDestMatchers("/app/coordinator/**").hasRole("COORDINATOR")
+                .simpDestMatchers("/app/admin/**").hasRole("ADMIN")
                 .anyMessage().denyAll();
 
     }

@@ -35,6 +35,7 @@ public class WebSocketMessageController {
         simpMessagingTemplate.convertAndSend(
                 CONFIG.BASIC_TOPIC + board.getBoardName(),
                 messages);
+
         return true;
     }
 
@@ -51,22 +52,26 @@ public class WebSocketMessageController {
         simpMessagingTemplate.convertAndSend(
                 CONFIG.BASIC_TOPIC + message.getBoard().getBoardName(),
                 messages);
+
         return true;
     }
 
-    @Secured("hasRole('COORDINATOR')")
+    @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
     @MessageMapping("coordinator/pushMessage")
-    public void pushMessageToCentral(@Payload Message message) {
+    public boolean pushMessageToCentral(@Payload Message message) {
         Message centralMsg = new Message(message);
         centralMsg.setId(null);
         Board centralBoard = boardRepository.findBoardByBoardName(CONFIG.CENTRAL_BOARD_NAME);
 
-        //TODO check if board = central board
+        if(message.getBoard().getId() == centralBoard.getId())
+            return false;
 
         List<Message> messages = messageManager.addOrReplace(centralMsg);
 
         simpMessagingTemplate.convertAndSend(
                 CONFIG.BASIC_TOPIC + CONFIG.CENTRAL_BOARD_NAME,
                 messages);
+
+        return true;
     }
 }
