@@ -24,7 +24,7 @@ public class WebSocketMessageController {
     }
 
 
-    @MessageMapping("/topic/user/getActiveMessages")
+    @MessageMapping("/user/getActiveMessages")
     public boolean getActiveMessages(@Payload User user, @Payload Board board) {
         if(!user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent())
             //TODO
@@ -41,8 +41,8 @@ public class WebSocketMessageController {
     }
 
     //used for sending new message or editing a message
-    @MessageMapping("/topic/user/message")
-    public boolean message(@Payload Message message) {
+    @MessageMapping("/huso/message")
+    public boolean message(@Payload Message message) { //todo david
         Board board = message.getBoard();
         User user = message.getUser();
         if(!user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent()) //TODO
@@ -58,7 +58,7 @@ public class WebSocketMessageController {
     }
 
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
-    @MessageMapping("coordinator/pushMessage")
+    @MessageMapping("/coordinator/pushMessage")
     public boolean pushMessageToCentral(@Payload Message message) {
         Message centralMsg = new Message(message);
         centralMsg.setId(null);
