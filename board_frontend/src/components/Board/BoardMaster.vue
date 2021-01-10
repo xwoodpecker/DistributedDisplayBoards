@@ -26,8 +26,13 @@
 <script>
 export default {
   name: "BoardMaster",
-  props: ['title', 'location', 'activeMessages'],
-  data() {
+  props: {
+    title: String,
+    location: String,
+    activeMessages: Number,
+    status: String //todo: make enum
+  },
+    data() {
     return {
 
     };

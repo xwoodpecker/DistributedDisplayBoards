@@ -32,7 +32,7 @@ router.beforeEach((to, from, next) => {
     }
 });
 
-const store = new Vuex.Store({
+export const store = new Vuex.Store({
     plugins: [createPersistedState({
         storage: window.sessionStorage,
     })],
