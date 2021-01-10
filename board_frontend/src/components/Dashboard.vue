@@ -78,7 +78,9 @@ export default {
   },
   computed: {},
   created() {},
-  mounted() {},
+  mounted() {
+    boardService.connect();
+  },
 };
 </script>
 

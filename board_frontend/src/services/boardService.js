@@ -5,13 +5,14 @@ import Stomp from "webstomp-client";
 //var getUrl = window.location;
 //var baseUrl = getUrl.protocol + "//" + getUrl.host;
 
-const backendEndpoint = 'endpoint'; //set to rabbitmq url
+const backendEndpoint = 'http://localhost:8000/backend';
 
-const socket = new SockJS(backendEndpoint);
-const stompClient = Stomp.over(socket);
+
+let socket = new SockJS(backendEndpoint);
+let stompClient = Stomp.over(socket);
 
 let connected = false; //todo: put in store
-let boards = [{ id: "1234" }] //todo: read this from store
+let boards = [{ id: "TestBoard1" }] //todo: read this from store
 
 export default {
     connect, disconnect, send, connected
@@ -24,10 +25,12 @@ export function connect(){
           connected = true;
           console.log(frame);
             for(let board in boards){
-                this.stompClient.subscribe("/topic/" + board.id, tick => { //url not correct
+                console.log(board);
+                stompClient.subscribe("/boards/TestBoard1", tick => { //url not correct
                     console.log(tick);
                     console.log(JSON.parse(tick.body).content);
                   });
+                send();
             }
         },
         error => {
@@ -38,12 +41,16 @@ export function connect(){
 }
 
 export function send(){
-    //not implemented
-    console.log("Send message:" + this.send_message);
-    if (this.stompClient && this.stompClient.connected) {
-      const msg = { name: this.send_message };
-      console.log(JSON.stringify(msg));
-      this.stompClient.send("/app/hello", JSON.stringify(msg), {});
+    if (stompClient && stompClient.connected) {
+        const msg = {
+            content: "content",
+            user: 1,
+            board: 1,
+            ttl: 1234,
+            active: true
+        }
+        console.log(JSON.stringify(msg));
+        stompClient.send("/app/huso/message", JSON.stringify(msg));
     }
 }
 
