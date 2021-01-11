@@ -37,7 +37,6 @@
 
 <script>
 import authenticationService from "../services/authenticationService";
-import boardService from "../services/boardService";
 import Sidebar from "@/components/Layout/Sidebar";
 import BoardMaster from "@/components/Board/BoardMaster.vue";
 export default {
@@ -50,7 +49,6 @@ export default {
   data() {
     return {
       user: this.$store.state.user,
-      boardService: boardService,
       menuVisible: false,
       mockBoards: [
         { id: 1, title: "Board 1", location: "Mensa", activeMessages: 2 },
@@ -79,7 +77,7 @@ export default {
   computed: {},
   created() {},
   mounted() {
-    boardService.connect();
+    this.$boardService.connect();
   },
 };
 </script>
