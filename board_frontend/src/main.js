@@ -2,11 +2,13 @@ import Vue from 'vue'
 import App from './App.vue'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import {routes} from './routes'
+import { routes } from './routes'
 import createPersistedState from 'vuex-persistedstate'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
+import { ENV } from './environment'
+import BoardService from './services/boardService'
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -21,8 +23,8 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (!store.getters.isLoggedIn) {
-            next({name: 'login'})
+        if (!store.getters.isLoggedIn && !ENV.developerMode) {
+            next({ name: 'login' })
         } else {
             next() // go to wherever I'm going
         }
@@ -31,12 +33,13 @@ router.beforeEach((to, from, next) => {
     }
 });
 
-const store = new Vuex.Store({
+export const store = new Vuex.Store({
     plugins: [createPersistedState({
         storage: window.sessionStorage,
     })],
     state: {
-        user: null
+        user: null,
+        boards: {}
     },
     mutations: {
         login(state, user) {
@@ -45,13 +48,25 @@ const store = new Vuex.Store({
         logout(state) {
             state.user = null;
         },
+        addBoards(state, boards){
+            for(let board of boards)
+                state.boards[board.id] = board;
+        },
+        clearBoards(state) {
+            state.boards = {}
+        }
     },
     getters: {
         isLoggedIn: state => {
             return state.user != null;
+        },
+        boards: state => {
+            return state.boards;
         }
     }
 });
+
+Vue.prototype.$boardService = new BoardService();
 
 new Vue({
     render: h => h(App),
