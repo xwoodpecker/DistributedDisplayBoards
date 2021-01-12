@@ -14,20 +14,8 @@ public class MyConfiguration {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("**").allowedOrigins("http://localhost:8080").allowCredentials(true);
+                registry.addMapping("/**").allowedOrigins("http://localhost:8080").allowCredentials(true);
             }
         };
     }
-    /*
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins("http://domain2.com")
-                .allowedMethods("PUT", "DELETE")
-                .allowedHeaders("header1", "header2", "header3")
-                .exposedHeaders("header1", "header2")
-                .allowCredentials(false).maxAge(3600);
-    }
-
-     */
 }

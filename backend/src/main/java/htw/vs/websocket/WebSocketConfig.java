@@ -2,15 +2,11 @@ package htw.vs.websocket;
 
 import htw.vs.base.CONFIG;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-
-import javax.inject.Inject;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -35,10 +31,10 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
         messages
                 .nullDestMatcher().authenticated()
                 //todo maverick fixen
-                //.simpDestMatchers("/backend/**").hasRole("USER")
-                //.simpDestMatchers("/backend/coordinator/**").hasRole("COORDINATOR")
-                //.simpDestMatchers("/backend/admin/**").hasRole("ADMIN")
-                .anyMessage().hasRole("COORDINATOR");
+                .simpDestMatchers("/backend/**").hasRole("USER")
+                .simpDestMatchers("/backend/coordinator/**").hasRole("COORDINATOR")
+                .simpDestMatchers("/backend/supervisor/**").hasRole("SUPERVISOR")
+                .anyMessage().denyAll();
 
     }
 
