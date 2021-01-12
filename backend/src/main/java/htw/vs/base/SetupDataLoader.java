@@ -20,7 +20,6 @@ import java.util.Set;
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
     boolean alreadySetup = false;
-    private final String INITIAL_ADMIN_PASSWORD = CONFIG.DEFAULT_ADMIN_PASSWORD;
 
     @Autowired
     private UserRepository userRepository;
@@ -42,7 +41,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         createRoleIfNotFound("COORDINATOR");
         createRoleIfNotFound("USER");
         Role supervisorRole = roleRepository.findByName("SUPERVISOR");
-        createUserIfNotfound("supervisor", "", INITIAL_ADMIN_PASSWORD, new HashSet<>(Arrays.asList(supervisorRole)));
+        createUserIfNotfound("supervisor", "", CONFIG.DEFAULT_SUPERVISOR_PASSWORD, new HashSet<>(Arrays.asList(supervisorRole)));
         alreadySetup = true;
     }
 
