@@ -1,45 +1,113 @@
 <template>
-    <div class="boards">
-        Hier kommt die Übersicht aller Gruppen hin
-        <!--<Board  v-for="board in boards" v-bind:key="board.id" msg="Test"></Board>-->
-        <Board msg="Test"></Board>
+  <div class="page-container">
+    <md-app md-waterfall md-mode="overlap">
+      <md-app-toolbar class="md-primary md-large">
+        <div class="md-toolbar-row">
+          <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
+            <md-icon>menu</md-icon>
+          </md-button>
 
-        <button @click="logout">Ausloggen</button>
-    </div>
+          <span class="md-title">Dashboard</span>
+        </div>
+      </md-app-toolbar>
+
+      <md-app-drawer :md-active.sync="menuVisible">
+        <Sidebar></Sidebar>
+      </md-app-drawer>
+
+      <md-app-content>
+        <div class="md-layout md-gutter md-alignment-center">
+          <div
+            v-for="board in boards"
+            v-bind:key="board.id"
+            class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100"
+          >
+            <BoardMaster
+              v-bind:title="board.title"
+              v-bind:location="board.location"
+              v-bind:messages="board.messages"
+            >
+            </BoardMaster>
+          </div>
+        </div>
+      </md-app-content>
+    </md-app>
+  </div>
 </template>
 
 <script>
-    import Board from "./Board";
-    import authenticationService from "../authenticationService";
+import authenticationService from "../services/authenticationService";
+import Sidebar from "@/components/Layout/Sidebar";
+import BoardMaster from "@/components/Board/BoardMaster.vue";
+export default {
+  name: "Dashboard",
+  props: {},
+  components: {
+    BoardMaster,
+    Sidebar,
+  },
+  data() {
+    return {
+      user: this.$store.state.user,
+      boards: this.$store.state.boards,
+      menuVisible: false,
+    };
+  },
+  methods: {
+    logout() {
+      authenticationService.logout();
+      this.$router.push({ name: "login" });
+    },
+  },
+  computed: {},
+  created() {},
+  mounted() {
+    //todo dont do this here
+    this.$store.commit("addBoards", [
+      {
+        id: 1,
+        title: "Board 1",
+        location: "Mensa",
+        messages: [],
+      },
+      {
+        id: 2,
+        title: "Board 2",
+        location: "Meetingraum 1. Stock",
+        messages: [],
+      },
+      {
+        id: 3,
+        title: "Board 3",
+        location: "Foyer",
+        messages: [],
+      },
+      {
+        id: 4,
+        title: "Board 4",
+        location: "Meetingraum 2. Stock",
+        messages: [],
+      },
+    ]);
 
-    export default {
-        name: 'Dashboard',
-        props: {},
-        components: {
-            Board,
-        },
-        data() {
-            return {
-                user: this.$store.state.user,
-            }
-        },
-        methods: {
-            logout() {
-                authenticationService.logout();
-                this.$router.push({name: 'login'});
-            }
-        },
-        computed: {},
-        created() {
-
-        },
-        mounted() {
-
-        }
-    }
+    //this.$boardService.connect();
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
+.md-app {
+  height: 100vh;
+  width: 100%;
+  border: 1px solid rgba(#000, 0.12);
+  .md-app-toolbar {
+    background-color: #34495e;
+  }
+}
 
+.md-drawer {
+  width: 230px;
+  max-width: calc(100vw - 125px);
+}
 </style>

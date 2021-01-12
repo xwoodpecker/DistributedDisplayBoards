@@ -1,12 +1,12 @@
 <template>
-    <div class="hello">
-        {{user.name}}
+    <div class="footer">
+
     </div>
 </template>
 
 <script>
     export default {
-        name: 'Board',
+        name: 'Footer',
         props: {},
         data() {
             return {
