@@ -18,14 +18,14 @@
       <md-app-content>
         <div class="md-layout md-gutter md-alignment-center">
           <div
-            v-for="board in mockBoards"
+            v-for="board in boards"
             v-bind:key="board.id"
             class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100"
           >
             <BoardMaster
               v-bind:title="board.title"
               v-bind:location="board.location"
-              v-bind:activeMessages="board.activeMessages"
+              v-bind:messages="board.messages"
             >
             </BoardMaster>
           </div>
@@ -49,23 +49,8 @@ export default {
   data() {
     return {
       user: this.$store.state.user,
+      boards: this.$store.state.boards,
       menuVisible: false,
-      mockBoards: [
-        { id: 1, title: "Board 1", location: "Mensa", activeMessages: 2 },
-        {
-          id: 2,
-          title: "Board 2",
-          location: "Meetingraum 1. Stock",
-          activeMessages: 10,
-        },
-        { id: 3, title: "Board 3", location: "Foyer", activeMessages: 2 },
-        {
-          id: 4,
-          title: "Board 4",
-          location: "Meetingraum 2. Stock",
-          activeMessages: 4,
-        },
-      ],
     };
   },
   methods: {
@@ -77,7 +62,35 @@ export default {
   computed: {},
   created() {},
   mounted() {
-    this.$boardService.connect();
+    //todo dont do this here
+    this.$store.commit("addBoards", [
+      {
+        id: 1,
+        title: "Board 1",
+        location: "Mensa",
+        messages: [],
+      },
+      {
+        id: 2,
+        title: "Board 2",
+        location: "Meetingraum 1. Stock",
+        messages: [],
+      },
+      {
+        id: 3,
+        title: "Board 3",
+        location: "Foyer",
+        messages: [],
+      },
+      {
+        id: 4,
+        title: "Board 4",
+        location: "Meetingraum 2. Stock",
+        messages: [],
+      },
+    ]);
+
+    //this.$boardService.connect();
   },
 };
 </script>

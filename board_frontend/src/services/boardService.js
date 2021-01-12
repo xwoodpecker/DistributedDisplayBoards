@@ -1,5 +1,6 @@
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import {store} from '../main';
 
 const backendEndpoint = 'http://localhost:8000/backend';
 
@@ -13,21 +14,28 @@ export default class BoardService {
     this.socket = new SockJS(backendEndpoint);
     this.stompClient = Stomp.over(this.socket);
 
-    this.boards = [{ id: "TestBoard1" }] //todo: read this from store or something
+    store.subscribe((mutation, state) => {
+      if(mutation.type === "addBoards" || mutation.type === "clearBoards"){
+        this.boards = state.boards;
+        console.log(this.boards);
+        this.reconnect();
+      }
+    })
   }
 
 
   connect() {
     this.stompClient.connect(
-      {}, //if auth headers are injected here, does that work?
+      {}, //if auth headers are injected here, does that work? (after evaluation: not needed probably)
       frame => {
         this.connected = true;
         console.log(frame);
         for (let board in this.boards) {
           console.log(board);
-          this.stompClient.subscribe("/boards/TestBoard1", tick => { //url not correct
+          this.stompClient.subscribe("/boards/" + board.id, tick => { //url not correct
             console.log(tick);
             console.log(JSON.parse(tick.body).content);
+            //todo set this.boards[board.id].messages to current messages
           });
           this.send();
         }
@@ -58,5 +66,10 @@ export default class BoardService {
       this.stompClient.disconnect();
     }
     this.connected = false;
+  }
+
+  reconnect() {
+    //this.disconnect();
+    //this.connect();
   }
 }

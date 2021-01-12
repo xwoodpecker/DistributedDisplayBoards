@@ -14,7 +14,7 @@
       </md-card-media>
 
       <md-card-content>
-        Active messages: {{ activeMessages }}
+        Active messages: {{ messages.length }}
       </md-card-content>
 
       <md-card-actions>
@@ -29,7 +29,7 @@ export default {
   props: {
     title: String,
     location: String,
-    activeMessages: Number,
+    messages: Array,
     status: String //todo: make enum
   },
     data() {
