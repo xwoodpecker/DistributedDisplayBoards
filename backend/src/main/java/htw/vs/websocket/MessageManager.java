@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class MessageManager {
     private final MessageRepository messageRepository;
 
-    private Map<Board, List<Message>> boardMessages;
+    private Map<Long, List<Message>> boardMessages;
 
     private MessageManager(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
@@ -29,7 +29,7 @@ public class MessageManager {
         List<Message> msgs = messageRepository.findMessagesToDisplay();
         boardMessages = msgs.parallelStream().collect(Collector.of(
                     ConcurrentHashMap::new,
-                    (map, m) -> map.computeIfAbsent(m.getBoard(), k -> {
+                    (map, m) -> map.computeIfAbsent(m.getBoard().getId(), k -> {
                         CopyOnWriteArrayList l = new CopyOnWriteArrayList<>();
                         l.add(m);
                         return l;
@@ -39,7 +39,6 @@ public class MessageManager {
                         return a;
                     }
         ));
-        //msgs.stream().collect(Collectors.groupingBy(m -> m.getBoard()));
     }
 
 
@@ -47,8 +46,8 @@ public class MessageManager {
         msg = messageRepository.save(msg);
         List<Message> msgs = boardMessages.get(msg.getBoard());
         if(msgs == null) {
-            msgs = new ArrayList<>(); //CopyOnWriteArrayList<>(); ???
-            boardMessages.put(msg.getBoard(), msgs);
+            msgs = new CopyOnWriteArrayList<>();
+            boardMessages.put(msg.getBoard().getId(), msgs);
         }
         Message finalMsg = msg;
         msgs.removeIf(m -> m.getId() == finalMsg.getId());

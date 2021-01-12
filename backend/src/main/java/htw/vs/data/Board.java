@@ -27,6 +27,15 @@ public class Board {
     public Board() {
     }
 
+    public Board(Long id) {
+        this.id = id;
+    }
+
+    public Board(Long id, String boardName) {
+        this.id = id;
+        this.boardName = boardName;
+    }
+
     /**
      * Gets id.
      *

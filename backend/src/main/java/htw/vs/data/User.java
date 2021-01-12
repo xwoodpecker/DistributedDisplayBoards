@@ -41,6 +41,20 @@ public class User {
 
     }
 
+    public User(Long id) {
+        this.id = id;
+    }
+
+    public User(Long id, String userName, String password, boolean enabled, String email, Set<Role> roles, Set<Group> groups) {
+        this.id = id;
+        this.userName = userName;
+        this.password = password;
+        this.enabled = enabled;
+        this.email = email;
+        this.roles = roles;
+        this.groups = groups;
+    }
+
     /**
      * Gets id.
      *

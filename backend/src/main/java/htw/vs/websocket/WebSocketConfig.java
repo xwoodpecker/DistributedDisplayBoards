@@ -29,12 +29,13 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
     @Override
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         messages
-                .nullDestMatcher().authenticated()
-                //todo maverick fixen
-                .simpDestMatchers("/backend/**").hasRole("USER")
-                .simpDestMatchers("/backend/coordinator/**").hasRole("COORDINATOR")
-                .simpDestMatchers("/backend/supervisor/**").hasRole("SUPERVISOR")
-                .anyMessage().denyAll();
+                /**.nullDestMatcher().authenticated()
+                .simpSubscribeDestMatchers("/topic/**").authenticated()
+                .simpDestMatchers("/app/**").permitAll()
+                .simpDestMatchers("/app/coordinator/**").hasAnyRole("SUPERVISOR", "COORDINATOR")
+                .simpDestMatchers("/app/supervisor/**").hasRole("SUPERVISOR")
+                .anyMessage().denyAll();**/
+                .anyMessage().permitAll();
 
     }
 

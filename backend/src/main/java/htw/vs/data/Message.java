@@ -1,6 +1,9 @@
 package htw.vs.data;
 
+import com.fasterxml.jackson.annotation.*;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -8,7 +11,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "MESSAGES")
-public class Message {
+public class Message  { //implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,17 +21,23 @@ public class Message {
 
     @ManyToOne
     @JoinColumn(name = "sender")
+    @JsonIgnoreProperties({"userName", "password", "enabled", "email", "roles", "groups" })
     private User user;
+
 
     @ManyToOne
     @JoinColumn(name = "board")
+    @JsonIgnoreProperties({"boardName"})
     private Board board;
+
 
     @Column(name = "ttl")
     private Timestamp ttl;
 
     @Column(name = "active")
     private boolean active;
+
+
 
     public Message() {
 
