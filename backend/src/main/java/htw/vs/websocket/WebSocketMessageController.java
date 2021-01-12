@@ -24,7 +24,7 @@ public class WebSocketMessageController {
     }
 
 
-    @MessageMapping("/user/getActiveMessages")
+    @MessageMapping("/getActiveMessages")
     public boolean getActiveMessages(@Payload User user, @Payload Board board) {
         if(!user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent())
             //TODO
@@ -41,7 +41,7 @@ public class WebSocketMessageController {
     }
 
     //used for sending new message or editing a message
-    @MessageMapping("/huso/message")
+    @MessageMapping("/message")
     public boolean message(@Payload Message message) { //todo david
         Board board = message.getBoard();
         User user = message.getUser();
