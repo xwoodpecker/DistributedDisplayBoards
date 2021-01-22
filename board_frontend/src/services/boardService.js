@@ -18,7 +18,10 @@ export default class BoardService {
       if(mutation.type === "addBoards" || mutation.type === "clearBoards"){
         this.boards = state.boards;
         console.log(this.boards);
-        this.reconnect();
+        //todo dont do this when only messages have changed
+        //this.reconnect();
+        if(!this.connected)
+          this.connect();
       }
     })
   }
@@ -69,7 +72,7 @@ export default class BoardService {
   }
 
   reconnect() {
-    //this.disconnect();
-    //this.connect();
+    this.disconnect();
+    this.connect();
   }
 }
