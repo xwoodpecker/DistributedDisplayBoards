@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import authenticationService from "@/authenticationService";
+import authenticationService from "@/services/authenticationService";
 export default {
   name: 'Sidebar',
   props: {},
