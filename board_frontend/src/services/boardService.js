@@ -19,7 +19,9 @@ export default class BoardService {
         this.boards = state.boards;
         console.log(this.boards);
         //todo dont do this when only messages have changed
-        this.reconnect();
+        //this.reconnect();
+        if(!this.connected)
+          this.connect();
       }
     })
   }
@@ -70,7 +72,7 @@ export default class BoardService {
   }
 
   reconnect() {
-    //this.disconnect();
-    //this.connect();
+    this.disconnect();
+    this.connect();
   }
 }

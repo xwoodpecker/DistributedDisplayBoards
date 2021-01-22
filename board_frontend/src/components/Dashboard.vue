@@ -89,8 +89,6 @@ export default {
         messages: [],
       },
     ]);
-
-    this.$boardService.connect();
   },
 };
 </script>
