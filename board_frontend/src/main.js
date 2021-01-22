@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 import { routes } from './routes'
 import createPersistedState from 'vuex-persistedstate'
 import VueMaterial from 'vue-material'
+import VueAgile from 'vue-agile'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 import { ENV } from './environment'
@@ -14,6 +15,7 @@ Vue.use(VueRouter);
 Vue.use(Vuex);
 Vue.config.productionTip = false;
 Vue.use(VueMaterial)
+Vue.use(VueAgile)
 
 const router = new VueRouter({
     mode: 'history',
