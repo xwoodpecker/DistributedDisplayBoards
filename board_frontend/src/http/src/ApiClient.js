@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Api Documentation
  * Api Documentation
@@ -117,6 +118,7 @@ export default class ApiClient {
         var url = this.basePath + path;
         url = url.replace(/\{([\w-]+)\}/g, (fullMatch, key) => {
             var value;
+            // eslint-disable-next-line no-prototype-builtins
             if (pathParams.hasOwnProperty(key)) {
                 value = this.paramToString(pathParams[key]);
             } else {
@@ -170,6 +172,7 @@ export default class ApiClient {
             let fs;
             try {
                 fs = require('fs');
+                // eslint-disable-next-line no-empty
             } catch (err) {}
             if (fs && fs.ReadStream && param instanceof fs.ReadStream) {
                 return true;
@@ -207,6 +210,7 @@ export default class ApiClient {
     normalizeParams(params) {
         var newParams = {};
         for (var key in params) {
+            // eslint-disable-next-line no-prototype-builtins
             if (params.hasOwnProperty(key) && params[key] != undefined && params[key] != null) {
                 var value = params[key];
                 if (this.isFileParam(value) || Array.isArray(value)) {
@@ -383,97 +387,6 @@ export default class ApiClient {
         queryParams, headerParams, formParams, bodyParam, authNames, contentTypes, accepts,
         returnType, callback) {
 
-        var url = this.buildUrl(path, pathParams);
-        var request = superagent(httpMethod, url);
-
-        // apply authentications
-        this.applyAuthToRequest(request, authNames);
-
-        // set query parameters
-        if (httpMethod.toUpperCase() === 'GET' && this.cache === false) {
-            queryParams['_'] = new Date().getTime();
-        }
-
-        request.query(this.normalizeParams(queryParams));
-
-        // set header parameters
-        request.set(this.defaultHeaders).set(this.normalizeParams(headerParams));
-
-        // set requestAgent if it is set by user
-        if (this.requestAgent) {
-          request.agent(this.requestAgent);
-        }
-
-        // set request timeout
-        request.timeout(this.timeout);
-
-        var contentType = this.jsonPreferredMime(contentTypes);
-        if (contentType) {
-            // Issue with superagent and multipart/form-data (https://github.com/visionmedia/superagent/issues/746)
-            if(contentType != 'multipart/form-data') {
-                request.type(contentType);
-            }
-        } else if (!request.header['Content-Type']) {
-            request.type('application/json');
-        }
-
-        if (contentType === 'application/x-www-form-urlencoded') {
-            request.send(querystring.stringify(this.normalizeParams(formParams)));
-        } else if (contentType == 'multipart/form-data') {
-            var _formParams = this.normalizeParams(formParams);
-            for (var key in _formParams) {
-                if (_formParams.hasOwnProperty(key)) {
-                    if (this.isFileParam(_formParams[key])) {
-                        // file field
-                        request.attach(key, _formParams[key]);
-                    } else {
-                        request.field(key, _formParams[key]);
-                    }
-                }
-            }
-        } else if (bodyParam) {
-            request.send(bodyParam);
-        }
-
-        var accept = this.jsonPreferredMime(accepts);
-        if (accept) {
-            request.accept(accept);
-        }
-
-        if (returnType === 'Blob') {
-          request.responseType('blob');
-        } else if (returnType === 'String') {
-          request.responseType('string');
-        }
-
-        // Attach previously saved cookies, if enabled
-        if (this.enableCookies){
-            if (typeof window === 'undefined') {
-                this.agent.attachCookies(request);
-            }
-            else {
-                request.withCredentials();
-            }
-        }
-
-        
-        request.end((error, response) => {
-            if (callback) {
-                var data = null;
-                if (!error) {
-                    try {
-                        data = this.deserialize(response, returnType);
-                        if (this.enableCookies && typeof window === 'undefined'){
-                            this.agent.saveCookies(response);
-                        }
-                    } catch (err) {
-                        error = err;
-                    }
-                }
-
-                callback(error, data, response);
-            }
-        });
 
         return request;
     }
@@ -531,6 +444,7 @@ export default class ApiClient {
                     // for plain object type like: {'String': 'Integer'}
                     var keyType, valueType;
                     for (var k in type) {
+                        // eslint-disable-next-line no-prototype-builtins
                         if (type.hasOwnProperty(k)) {
                             keyType = k;
                             valueType = type[k];
@@ -540,6 +454,7 @@ export default class ApiClient {
 
                     var result = {};
                     for (var k in data) {
+                        // eslint-disable-next-line no-prototype-builtins
                         if (data.hasOwnProperty(k)) {
                             var key = ApiClient.convertToType(k, keyType);
                             var value = ApiClient.convertToType(data[k], valueType);
@@ -563,16 +478,18 @@ export default class ApiClient {
     static constructFromObject(data, obj, itemType) {
         if (Array.isArray(data)) {
             for (var i = 0; i < data.length; i++) {
+                // eslint-disable-next-line no-prototype-builtins
                 if (data.hasOwnProperty(i))
                     obj[i] = ApiClient.convertToType(data[i], itemType);
             }
         } else {
             for (var k in data) {
+                // eslint-disable-next-line no-prototype-builtins
                 if (data.hasOwnProperty(k))
                     obj[k] = ApiClient.convertToType(data[k], itemType);
             }
         }
-    };
+    }
 }
 
 /**
