@@ -90,7 +90,7 @@ export default {
       },
     ]);
 
-    //this.$boardService.connect();
+    this.$boardService.connect();
   },
 };
 </script>

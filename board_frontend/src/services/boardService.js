@@ -18,6 +18,7 @@ export default class BoardService {
       if(mutation.type === "addBoards" || mutation.type === "clearBoards"){
         this.boards = state.boards;
         console.log(this.boards);
+        //todo dont do this when only messages have changed
         this.reconnect();
       }
     })
