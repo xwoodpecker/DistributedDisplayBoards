@@ -17,11 +17,13 @@ import java.util.stream.Collector;
 @Component
 public class MessageManager {
     private final MessageRepository messageRepository;
+    private final WebSocketMessageController webSocketMessageController;
 
     private Map<Long, List<Message>> boardMessages;
 
-    private MessageManager(MessageRepository messageRepository) {
+    private MessageManager(MessageRepository messageRepository, WebSocketMessageController webSocketMessageController) {
         this.messageRepository = messageRepository;
+        this.webSocketMessageController = webSocketMessageController;
         generateBoardMessages();
         initialize();
     }
@@ -79,14 +81,12 @@ public class MessageManager {
             }
         }
 
+        //todo: test
         private void clean() {
-            boolean modified = false;
-            for(List<Message> lm : boardMessages.values()){
-                lm.removeIf(m -> m.getEndDate().before(new Timestamp(System.currentTimeMillis())));
-                modified = true;
-            }
-            if(modified){
-                //TODO : send message to boards with all current messages to display
+            for(Map.Entry entry : boardMessages.entrySet()){
+                List<Message> messages = (List<Message>) entry.getValue();
+                messages.removeIf(m -> m.getEndDate().before(new Timestamp(System.currentTimeMillis())));
+                webSocketMessageController.sendToBoard((Long) entry.getKey(), messages);
             }
 
         }

@@ -30,13 +30,6 @@ public class WebSocketMessageController {
         this.userRepository = userRepository;
     }
 
-    private void verifyUserBoard(Authentication authentication, User user, Board board) {
-
-        verifyUser(authentication, user);
-
-        if(!user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent())
-            throw new AccessDeniedException("User is not assigned to this board");
-    }
 
     private void verifyUser(Authentication authentication, User user) {
         //TODO:verify if user is coordinator/supervisor and allow him to do everything he wants bc he is the boss
@@ -52,10 +45,7 @@ public class WebSocketMessageController {
 
         List<Message> messages = messageManager.getAllByBoard(board);
 
-
-        simpMessagingTemplate.convertAndSend(
-                CONFIG.BASIC_TOPIC + board.getId(),
-                messages);
+        sendToBoard(board.getId(),messages);
 
         return true;
     }
@@ -74,8 +64,7 @@ public class WebSocketMessageController {
 
         List<Message> messages = messageManager.addOrReplace(message);
 
-        simpMessagingTemplate.convertAndSend(CONFIG.BASIC_TOPIC + board.getId(),
-                messages);
+        sendToBoard(board.getId(),messages);
 
         return true;
     }
@@ -94,11 +83,24 @@ public class WebSocketMessageController {
 
         List<Message> messages = messageManager.addOrReplace(centralMsg);
 
-
-        simpMessagingTemplate.convertAndSend(
-                CONFIG.BASIC_TOPIC + CONFIG.CENTRAL_BOARD_ID,
-                messages);
+        sendToBoard(centralBoard.getId(),messages);
 
         return true;
+    }
+
+
+    private void verifyUserBoard(Authentication authentication, User user, Board board) {
+
+        verifyUser(authentication, user);
+
+        if(!user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent())
+            throw new AccessDeniedException("User is not assigned to this board");
+    }
+
+
+    public void sendToBoard(Long boardId, List<Message> messages) {
+        simpMessagingTemplate.convertAndSend(
+                CONFIG.BASIC_TOPIC + boardId,
+                messages);
     }
 }
