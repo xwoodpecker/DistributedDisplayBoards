@@ -145,6 +145,40 @@ public class GroupRestController {
         return response;
     }
 
+    /**
+     * Remove user from group response entity.
+     *
+     * @param userId the user id
+     * @param id     the id
+     * @return the response entity
+     */
+    @Operation(summary = "Remove user from group")
+    @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
+    @PreAuthorize("@securityService.hasPermission(authentication, #id)")
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity deleteUserFromGroup(@RequestParam Long userId, @PathVariable Long id) {
+        ResponseEntity response;
+        Optional<Group> group = groupRepository.findById(id);
+        Group g;
+
+        if(group.isPresent()){
+            Group temp = group.get();
+
+            Optional<User> user = userRepository.findById(userId);
+            if(!user.isPresent()){
+                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+            else {
+                temp.getUsers().remove(user.get());
+                g = groupRepository.save(temp);
+                response = new ResponseEntity(g, HttpStatus.OK);
+            }
+        }else {
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("No group found");
+        }
+        return response;
+    }
+
     @Operation(summary = "Change Coordinator")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/coordinator/{id}")
