@@ -5,6 +5,7 @@ import htw.vs.data.Message;
 import htw.vs.data.MessageRepository;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -23,6 +24,11 @@ public class MessageManager {
     private MessageManager(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
         generateBoardMessages();
+        initialize();
+    }
+
+    void initialize() {
+        new CleanerThread().start();
     }
 
     private void generateBoardMessages(){
@@ -51,12 +57,33 @@ public class MessageManager {
         }
         Message finalMsg = msg;
         msgs.removeIf(m -> m.getId() == finalMsg.getId());
-        if(finalMsg.isActive())
+        if(finalMsg.isActive() && finalMsg.getTtl().after(new Timestamp(System.currentTimeMillis())))
             msgs.add(finalMsg);
         return msgs;
     }
 
     public List<Message> getAllByBoard(Board board) {
         return boardMessages.get(board);
+    }
+
+
+    class CleanerThread extends Thread {
+        @Override
+        public void run() {
+            while (true) {
+                clean();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        private void clean() {
+            for(List<Message> lm : boardMessages.values()){
+                lm.removeIf(m -> m.getTtl().before(new Timestamp(System.currentTimeMillis())));
+            }
+        }
     }
 }

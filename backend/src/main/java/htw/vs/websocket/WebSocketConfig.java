@@ -2,6 +2,7 @@ package htw.vs.websocket;
 
 import htw.vs.base.CONFIG;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
@@ -29,13 +30,9 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
     @Override
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         messages
-                /**.nullDestMatcher().authenticated()
-                .simpSubscribeDestMatchers("/topic/**").authenticated()
-                .simpDestMatchers("/app/**").permitAll()
-                .simpDestMatchers("/app/coordinator/**").hasAnyRole("SUPERVISOR", "COORDINATOR")
-                .simpDestMatchers("/app/supervisor/**").hasRole("SUPERVISOR")
-                .anyMessage().denyAll();**/
-                .anyMessage().permitAll();
+                .simpTypeMatchers(SimpMessageType.CONNECT,
+                        SimpMessageType.DISCONNECT, SimpMessageType.OTHER).permitAll()
+                .anyMessage().authenticated();
 
     }
 
