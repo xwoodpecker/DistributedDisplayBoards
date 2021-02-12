@@ -120,6 +120,7 @@ public class GroupRestController {
      */
     @Operation(summary = "Add user to group")
     @Secured({"USER_SUPERVISOR", "ROLE_COORDINATOR"})
+    @PreAuthorize("@securityService.hasPermission(authentication, #id)")
     @PostMapping("/user/{id}")
     public ResponseEntity addUserToGroup(@RequestParam Long userId, @PathVariable Long id) {
         ResponseEntity response;
