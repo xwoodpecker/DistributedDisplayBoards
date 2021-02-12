@@ -119,7 +119,7 @@ public class GroupRestController {
      * @return the response entity
      */
     @Operation(summary = "Add user to group")
-    @Secured({"USER_SUPERVISOR", "ROLE_COORDINATOR"})
+    @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
     @PreAuthorize("@securityService.hasPermission(authentication, #id)")
     @PostMapping("/user/{id}")
     public ResponseEntity addUserToGroup(@RequestParam Long userId, @PathVariable Long id) {
@@ -165,13 +165,18 @@ public class GroupRestController {
         else {
             Group temp = group.get();
             User oldCoordinator = temp.getCoordinator();
-            //TODO Coordinator in anderer Gruppe?
+            List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
+
             Role coordinatorRole = roleRepository.findByName("COORDINATOR");
 
-            oldCoordinator.getRoles().remove(coordinatorRole);
-            coordinatorRole.getUsers().remove(oldCoordinator);
+            //todo test
+            if(groups.size() < 2) {
+                oldCoordinator.getRoles().remove(coordinatorRole);
+                coordinatorRole.getUsers().remove(oldCoordinator);
+            }
 
             User newCoordinator = user.get();
+            //todo test duplicate ?
             newCoordinator.getRoles().add(coordinatorRole);
             coordinatorRole.getUsers().add(newCoordinator);
             temp.setCoordinator(newCoordinator);
