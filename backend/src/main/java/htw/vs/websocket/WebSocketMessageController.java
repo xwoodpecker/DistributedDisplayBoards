@@ -39,7 +39,7 @@ public class WebSocketMessageController {
     }
 
     private void verifyUser(Authentication authentication, User user) {
-        
+        //TODO:verify if user is coordinator/supervisor and allow him to do everything he wants bc he is the boss
         if (!user.getUserName().equals(authentication.getName()))
             throw new AccessDeniedException("UserName and authentication do not match");
     }

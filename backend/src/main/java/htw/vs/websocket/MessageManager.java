@@ -10,7 +10,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 /**
  * The type Message manager.
@@ -57,7 +56,7 @@ public class MessageManager {
         }
         Message finalMsg = msg;
         msgs.removeIf(m -> m.getId() == finalMsg.getId());
-        if(finalMsg.isActive() && finalMsg.getTtl().after(new Timestamp(System.currentTimeMillis())))
+        if(finalMsg.isActive() && finalMsg.getEndDate().after(new Timestamp(System.currentTimeMillis())))
             msgs.add(finalMsg);
         return msgs;
     }
@@ -81,9 +80,15 @@ public class MessageManager {
         }
 
         private void clean() {
+            boolean modified = false;
             for(List<Message> lm : boardMessages.values()){
-                lm.removeIf(m -> m.getTtl().before(new Timestamp(System.currentTimeMillis())));
+                lm.removeIf(m -> m.getEndDate().before(new Timestamp(System.currentTimeMillis())));
+                modified = true;
             }
+            if(modified){
+                //TODO : send message to boards with all current messages to display
+            }
+
         }
     }
 }
