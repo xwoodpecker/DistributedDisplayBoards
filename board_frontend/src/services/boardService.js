@@ -56,7 +56,7 @@ export default class BoardService {
         content: "content",
         user: 1,
         board: 1,
-        ttl: 1234,
+        endDate: 1234,
         active: true
       }
       console.log(JSON.stringify(msg));
