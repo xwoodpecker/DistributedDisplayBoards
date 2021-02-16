@@ -1,5 +1,4 @@
 <template>
-
   <div class="page-container">
     <md-app md-waterfall md-mode="overlap">
       <md-app-toolbar class="md-primary md-large">

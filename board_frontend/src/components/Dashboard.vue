@@ -41,7 +41,6 @@ import authenticationService from "../services/authenticationService";
 import Sidebar from "@/components/Layout/Sidebar";
 import BoardMaster from "@/components/Board/BoardMaster.vue";
 import boardsapi from "@/http/boardsapi";
-
 export default {
   name: "Dashboard",
   props: {},
