@@ -5,7 +5,7 @@
   </md-toolbar>
 
   <md-list>
-    <md-list-item>
+    <md-list-item @click='$router.push({ name: "dashboard" })'>
       <md-icon>move_to_inbox</md-icon>
       <span class="md-list-item-text">Dashboard</span>
     </md-list-item>
