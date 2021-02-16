@@ -1,4 +1,5 @@
 <template>
+  <div class="md-layout md-gutter md-alignment-center" @click="openBoard($props.id)">
    <md-card>
       <md-card-header>
         <md-avatar>
@@ -21,6 +22,7 @@
         <md-button>Manage</md-button>
       </md-card-actions>
     </md-card>
+  </div>
 </template>
 
 <script>
@@ -30,6 +32,7 @@ export default {
     title: String,
     location: String,
     messages: Array,
+    id: Number,
     status: String //todo: make enum
   },
     data() {
@@ -37,7 +40,12 @@ export default {
 
     };
   },
-  methods: {},
+  methods: {
+    openBoard(boardId){
+      console.log("bin i do jawoll")
+      this.$router.push({ name: 'board', params: { id: boardId }})
+    }
+  },
   computed: {},
   created() {},
   mounted() {},

@@ -21,6 +21,7 @@
     "vue-material": "^1.0.0-beta-15",
     "vue-router": "^3.4.9",
     "vuedraggable": "^2.24.3",
+    "vuelidate": "^0.7.6",
     "vuex": "^3.6.0",
     "vuex-persistedstate": "^4.0.0-beta.1",
     "webstomp-client": "^1.2.6"
