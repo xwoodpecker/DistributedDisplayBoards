@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Api Documentation
  * Api Documentation
@@ -117,6 +118,7 @@ export default class ApiClient {
         var url = this.basePath + path;
         url = url.replace(/\{([\w-]+)\}/g, (fullMatch, key) => {
             var value;
+            // eslint-disable-next-line no-prototype-builtins
             if (pathParams.hasOwnProperty(key)) {
                 value = this.paramToString(pathParams[key]);
             } else {
@@ -170,6 +172,7 @@ export default class ApiClient {
             let fs;
             try {
                 fs = require('fs');
+                // eslint-disable-next-line no-empty
             } catch (err) {}
             if (fs && fs.ReadStream && param instanceof fs.ReadStream) {
                 return true;
@@ -207,6 +210,7 @@ export default class ApiClient {
     normalizeParams(params) {
         var newParams = {};
         for (var key in params) {
+            // eslint-disable-next-line no-prototype-builtins
             if (params.hasOwnProperty(key) && params[key] != undefined && params[key] != null) {
                 var value = params[key];
                 if (this.isFileParam(value) || Array.isArray(value)) {
@@ -531,6 +535,7 @@ export default class ApiClient {
                     // for plain object type like: {'String': 'Integer'}
                     var keyType, valueType;
                     for (var k in type) {
+                        // eslint-disable-next-line no-prototype-builtins
                         if (type.hasOwnProperty(k)) {
                             keyType = k;
                             valueType = type[k];
@@ -540,6 +545,7 @@ export default class ApiClient {
 
                     var result = {};
                     for (var k in data) {
+                        // eslint-disable-next-line no-prototype-builtins
                         if (data.hasOwnProperty(k)) {
                             var key = ApiClient.convertToType(k, keyType);
                             var value = ApiClient.convertToType(data[k], valueType);
@@ -563,16 +569,18 @@ export default class ApiClient {
     static constructFromObject(data, obj, itemType) {
         if (Array.isArray(data)) {
             for (var i = 0; i < data.length; i++) {
+                // eslint-disable-next-line no-prototype-builtins
                 if (data.hasOwnProperty(i))
                     obj[i] = ApiClient.convertToType(data[i], itemType);
             }
         } else {
             for (var k in data) {
+                // eslint-disable-next-line no-prototype-builtins
                 if (data.hasOwnProperty(k))
                     obj[k] = ApiClient.convertToType(data[k], itemType);
             }
         }
-    };
+    }
 }
 
 /**

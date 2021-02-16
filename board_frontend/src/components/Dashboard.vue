@@ -16,16 +16,17 @@
       </md-app-drawer>
 
       <md-app-content>
-        <div class="md-layout md-gutter md-alignment-center">
+        <div class="md-layout md-gutter md-alignment-center board-overview">
           <div
             v-for="board in boards"
             v-bind:key="board.id"
             class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100"
           >
             <BoardMaster
-              v-bind:title="board.title"
-              v-bind:location="board.location"
-              v-bind:messages="board.messages"
+              :title="board.title"
+              :location="board.location"
+              :messages="board.messages"
+              :id="board.id"
             >
             </BoardMaster>
           </div>
@@ -39,6 +40,7 @@
 import authenticationService from "../services/authenticationService";
 import Sidebar from "@/components/Layout/Sidebar";
 import BoardMaster from "@/components/Board/BoardMaster.vue";
+import boardsapi from "@/http/boardsapi";
 export default {
   name: "Dashboard",
   props: {},
@@ -61,7 +63,13 @@ export default {
   },
   computed: {},
   created() {},
-  mounted() {
+  async mounted() {
+    //get boards for user
+    boardsapi.getUserBoards(this.$store.state.user.id).then( response => {
+       if (response){
+         this.$store.commit('addBoards', [response.data])
+       }
+    });
     //todo dont do this here
     this.$store.commit("addBoards", [
       {

@@ -20,7 +20,7 @@ export default {
     return {
       carouselOptions: {
         dots: false,
-        navButtons: false,
+        navButtons: true,
         speed: 300, //default
         timing: "ease", //default
       }
