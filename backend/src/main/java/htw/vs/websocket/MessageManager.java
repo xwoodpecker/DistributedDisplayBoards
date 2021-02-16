@@ -5,11 +5,11 @@ import htw.vs.data.Message;
 import htw.vs.data.MessageRepository;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * The type Message manager.
@@ -17,19 +17,12 @@ import java.util.stream.Collector;
 @Component
 public class MessageManager {
     private final MessageRepository messageRepository;
-    private final WebSocketMessageController webSocketMessageController;
 
     private Map<Long, List<Message>> boardMessages;
 
-    private MessageManager(MessageRepository messageRepository, WebSocketMessageController webSocketMessageController) {
+    private MessageManager(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
-        this.webSocketMessageController = webSocketMessageController;
         generateBoardMessages();
-        initialize();
-    }
-
-    void initialize() {
-        new CleanerThread().start();
     }
 
     private void generateBoardMessages(){
@@ -58,37 +51,12 @@ public class MessageManager {
         }
         Message finalMsg = msg;
         msgs.removeIf(m -> m.getId() == finalMsg.getId());
-        if(finalMsg.isActive() && finalMsg.getEndDate().after(new Timestamp(System.currentTimeMillis())))
+        if(finalMsg.isActive())
             msgs.add(finalMsg);
         return msgs;
     }
 
     public List<Message> getAllByBoard(Board board) {
         return boardMessages.get(board);
-    }
-
-
-    class CleanerThread extends Thread {
-        @Override
-        public void run() {
-            while (true) {
-                clean();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        //todo: test
-        private void clean() {
-            for(Map.Entry entry : boardMessages.entrySet()){
-                List<Message> messages = (List<Message>) entry.getValue();
-                messages.removeIf(m -> m.getEndDate().before(new Timestamp(System.currentTimeMillis())));
-                webSocketMessageController.sendToBoard((Long) entry.getKey(), messages);
-            }
-
-        }
     }
 }

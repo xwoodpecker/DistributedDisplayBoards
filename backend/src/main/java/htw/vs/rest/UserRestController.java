@@ -120,11 +120,4 @@ public class UserRestController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get Boards of a user")
-    @Secured("ROLE_USER")
-    @GetMapping("/{id}/boards")
-    public ResponseEntity getBoardsOfUser(@PathVariable Long id){
-        return new ResponseEntity<>(userRepository.findById(id).get().getGroups(), HttpStatus.OK);
-    }
-
 }

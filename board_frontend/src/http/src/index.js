@@ -1,5 +1,8 @@
+<<<<<<< HEAD
+=======
 /* eslint-disable */
 
+>>>>>>> feature/frontend
 /**
  * Api Documentation
  * Api Documentation

@@ -3,6 +3,7 @@ package htw.vs.data;
 import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -30,8 +31,8 @@ public class Message  { //implements Serializable {
     private Board board;
 
 
-    @Column(name = "end_date")
-    private Timestamp endDate;
+    @Column(name = "ttl")
+    private Timestamp ttl;
 
     @Column(name = "active")
     private boolean active;
@@ -47,7 +48,7 @@ public class Message  { //implements Serializable {
         this.content = other.content;
         this.user = other.user;
         this.board = other.board;
-        this.endDate = other.endDate;
+        this.ttl = other.ttl;
         this.active = other.active;
     }
 
@@ -124,21 +125,21 @@ public class Message  { //implements Serializable {
     }
 
     /**
-     * Gets endDate.
+     * Gets ttl.
      *
-     * @return the endDate
+     * @return the ttl
      */
-    public Timestamp getEndDate() {
-        return endDate;
+    public Timestamp getTtl() {
+        return ttl;
     }
 
     /**
-     * Sets endDate.
+     * Sets ttl.
      *
-     * @param endDate the endDate
+     * @param ttl the ttl
      */
-    public void setEndDate(Timestamp endDate) {
-        this.endDate = endDate;
+    public void setTtl(Timestamp ttl) {
+        this.ttl = ttl;
     }
 
     /**

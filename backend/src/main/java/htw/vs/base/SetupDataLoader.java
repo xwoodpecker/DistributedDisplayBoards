@@ -41,9 +41,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         createRoleIfNotFound("COORDINATOR");
         createRoleIfNotFound("USER");
         Role supervisorRole = roleRepository.findByName("SUPERVISOR");
-        Role coordinatorRole = roleRepository.findByName("COORDINATOR");
-        Role userRole = roleRepository.findByName("USER");
-        createUserIfNotfound("supervisor", "", CONFIG.DEFAULT_SUPERVISOR_PASSWORD, new HashSet<>(Arrays.asList(supervisorRole, coordinatorRole, userRole)));
+        createUserIfNotfound("supervisor", "", CONFIG.DEFAULT_SUPERVISOR_PASSWORD, new HashSet<>(Arrays.asList(supervisorRole)));
         alreadySetup = true;
     }
 

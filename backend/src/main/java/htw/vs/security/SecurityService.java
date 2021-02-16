@@ -25,21 +25,19 @@ public class SecurityService {
     public boolean hasPermission(Authentication authentication, Long groupId) {
         Set<String> roles = authentication.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
+        //TODO verify if coordinator...
 
         String currentUserName = authentication.getName();
         User user = userRepository.findUserByUserName(currentUserName);
 
         Optional<Group> opt = groupRepository.findById(groupId);
         Group group;
-
-        if(user.getRoles().contains("SUPERVISOR"))
-        {
-            return true;
-        }
-        else if(opt.isPresent()) {
+        if(opt.isPresent()) {
             group = opt.get();
+            //TODO
         }else {
             return  false;
+            //TODO
         }
 
         if(group.getCoordinator().getId() == user.getId()) {
