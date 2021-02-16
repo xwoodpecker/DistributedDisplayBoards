@@ -10,7 +10,7 @@ import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 import { ENV } from './environment'
 import BoardService from './services/boardService'
-import ApiClient from 'http/src/ApiClient'
+import ApiClient from './http/src/ApiClient'
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
