@@ -3,6 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/PIB-VS_WS2020_Gruppe1.iml" filepath="$PROJECT_DIR$/.idea/PIB-VS_WS2020_Gruppe1.iml" />
+<<<<<<< HEAD
+=======
+      <module fileurl="file://$PROJECT_DIR$/backend/backend.iml" filepath="$PROJECT_DIR$/backend/backend.iml" />
+>>>>>>> main
     </modules>
   </component>
 </project>
