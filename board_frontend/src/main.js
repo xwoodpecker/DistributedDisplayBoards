@@ -74,6 +74,7 @@ export const store = new Vuex.Store({
 Vue.prototype.$boardService = new BoardService();
 Vue.prototype.$apiClient = new ApiClient();
 
+
 new Vue({
     render: h => h(App),
     store,
