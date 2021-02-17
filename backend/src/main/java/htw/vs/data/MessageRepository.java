@@ -13,6 +13,6 @@ import java.util.List;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
-    @Query(value = "SELECT m from Message m WHERE m.active = true AND m.ttl < CURRENT_TIMESTAMP")
+    @Query(value = "SELECT m from Message m WHERE m.active = true AND m.endDate < CURRENT_TIMESTAMP")
     List<Message> findMessagesToDisplay();
 }

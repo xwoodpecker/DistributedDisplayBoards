@@ -30,6 +30,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-messaging:5.3.2.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.sonatype.sisu:sisu-inject-bean:2.3.0" level="project" />
+    <orderEntry type="library" name="Maven: org.sonatype.sisu:sisu-guice:no_aop:3.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.sonatype.sisu:sisu-guava:0.9.9" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-websocket:2.3.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-messaging:5.2.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-websocket:5.2.6.RELEASE" level="project" />
