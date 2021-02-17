@@ -43,10 +43,10 @@ public class BoardRestController {
     }
 
     /**
-     * Gets user.
+     * Gets board.
      *
      * @param id the id
-     * @return the user
+     * @return the board
      */
     @Operation(summary = "Get board by given id")
     @GetMapping("/{id}")

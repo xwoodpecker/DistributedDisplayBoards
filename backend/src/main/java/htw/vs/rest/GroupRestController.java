@@ -26,10 +26,11 @@ public class GroupRestController {
 
     /**
      * Instantiates a new Group rest controller.
-     *  @param groupRepository the group repository
+     *
+     * @param groupRepository the group repository
      * @param userRepository  the user repository
      * @param boardRepository the board repository
-     * @param roleRepository
+     * @param roleRepository  the role repository
      */
     public GroupRestController(GroupRepository groupRepository, UserRepository userRepository, BoardRepository boardRepository, RoleRepository roleRepository) {
         this.groupRepository = groupRepository;
@@ -146,7 +147,7 @@ public class GroupRestController {
     }
 
     /**
-     * Remove user from group response entity.
+     * Delete user from group response entity.
      *
      * @param userId the user id
      * @param id     the id
@@ -179,6 +180,13 @@ public class GroupRestController {
         return response;
     }
 
+    /**
+     * Change coordinator response entity.
+     *
+     * @param newCoordinatorId the new coordinator id
+     * @param id               the id
+     * @return the response entity
+     */
     @Operation(summary = "Change Coordinator")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/coordinator/{id}")

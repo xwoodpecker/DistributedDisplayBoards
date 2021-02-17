@@ -23,6 +23,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     private final UserRepository userRepository;
 
 
+    /**
+     * Instantiates a new Web security config.
+     *
+     * @param userDetailsService the user details service
+     * @param userRepository     the user repository
+     */
     public WebSecurityConfig(UserDetailsService userDetailsService, UserRepository userRepository) {
         this.userDetailsService = userDetailsService;
         this.userRepository = userRepository;

@@ -7,9 +7,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * The interface Group repository.
+ */
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
+    /**
+     * Gets coordinated groups.
+     *
+     * @param user the user
+     * @return the coordinated groups
+     */
     @Query(value = "SELECT g from Group g WHERE g.coordinator = :user")
     List<Group> getCoordinatedGroups(@Param("user")User user);
 }

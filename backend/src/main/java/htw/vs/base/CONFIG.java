@@ -1,12 +1,66 @@
 package htw.vs.base;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Properties;
+
+/**
+ * The type Config.
+ */
 public class CONFIG {
-    public static final String BASIC_TOPIC = "/topic/boards.";
-    public static final String DEFAULT_SUPERVISOR_PASSWORD = "supervisor";
-    public static final String CENTRAL_BOARD_NAME = "central";
-    public static final String BROKER_HOST = "v4.deuersprech.de";
-    public static final int BROKER_PORT = 61613;
-    public static final String BROKER_LOGIN = "guest";
-    public static final String BROKER_PASSCODE = "guest";
-    public static final Long CENTRAL_BOARD_ID = 42L;
+    /**
+     * The constant BASIC_TOPIC.
+     */
+    public static final String BASIC_TOPIC;
+    /**
+     * The constant DEFAULT_SUPERVISOR_PASSWORD.
+     */
+    public static final String DEFAULT_SUPERVISOR_PASSWORD;
+    /**
+     * The constant CENTRAL_BOARD_NAME.
+     */
+    public static final String CENTRAL_BOARD_NAME;
+    /**
+     * The constant BROKER_HOST.
+     */
+    public static final String BROKER_HOST;
+    /**
+     * The constant BROKER_PORT.
+     */
+    public static final int BROKER_PORT;
+    /**
+     * The constant BROKER_LOGIN.
+     */
+    public static final String BROKER_LOGIN;
+    /**
+     * The constant BROKER_PASSCODE.
+     */
+    public static final String BROKER_PASSCODE;
+
+    private CONFIG() { }
+
+    static {
+        URL root = CONFIG.class.getProtectionDomain().getCodeSource().getLocation();
+        URL propertiesFile = null;
+        try {
+            propertiesFile = new URL(root, "application.properties");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        Properties properties = new Properties();
+        try {
+            properties.load(propertiesFile.openStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        BASIC_TOPIC = properties.getProperty("BASIC_TOPIC");
+        DEFAULT_SUPERVISOR_PASSWORD = properties.getProperty("DEFAULT_SUPERVISOR_PASSWORD");
+        CENTRAL_BOARD_NAME = properties.getProperty("CENTRAL_BOARD_NAME");
+        BROKER_HOST = properties.getProperty("BROKER_HOST");
+        BROKER_PORT = Integer.parseInt(properties.getProperty("BROKER_PORT"));
+        BROKER_LOGIN = properties.getProperty("BROKER_LOGIN");
+        BROKER_PASSCODE = properties.getProperty("BROKER_PASSCODE");
+    }
 }
