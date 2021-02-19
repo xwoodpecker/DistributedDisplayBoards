@@ -60,7 +60,7 @@ export default class BoardService {
         active: true
       }
       console.log(JSON.stringify(msg));
-      this.stompClient.send("/app/huso/message", JSON.stringify(msg));
+      this.stompClient.send("/app/pushMessage", JSON.stringify(msg));
     }
   }
 
