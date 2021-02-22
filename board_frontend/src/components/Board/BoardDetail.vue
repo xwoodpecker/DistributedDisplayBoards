@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <md-app md-waterfall md-mode="overlap">
+    <md-app>
       <md-app-toolbar class="md-primary md-large">
         <div class="md-toolbar-row">
           <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
@@ -27,22 +27,41 @@
                    @click="setActiveTab('users')">
           <md-icon>person</md-icon>
         </md-button>
-        <div class="board-overview">
+        <md-button class="md-icon-button">
+          <md-icon>menu</md-icon>
+        </md-button>
+        <div class="board-">
           <div class="board-form" v-if="this.messageActive">
-            <vue-editor v-model="content"></vue-editor>
-            <h1>{{content}}</h1>
+            <vue-editor class="editor" v-model="content"></vue-editor>
+            <div class="controls">
+              <div class="colorpicker">
+                <span>Hintergrundfarbe</span>
+                <Chrome class="picker" v-model="colors"></Chrome>
+              </div>
+              <div class="settings">
+                <span>Anzeigen bis</span>
+                <Datepicker v-model="date" class="datepicker"></Datepicker>
+              </div>
+              <div>
+                <md-button  v-if="content" class="md-icon-button sendbutton blob" :class="{'md-raised' : this.messageActive}"
+                           @click="setActiveTab('message')">
+                  <md-icon>add</md-icon>
+                </md-button>
+              </div>
+            </div>
+
 
             <!--            <div v-html="content"></div>
             &lt;!&ndash;          <BoardDetailForm></BoardDetailForm>&ndash;&gt;-->
           </div>
-          <md-button class="md-icon-button sendbutton" :class="{'md-raised' : this.messageActive}"
-                     @click="setActiveTab('message')">
-            <md-icon>add</md-icon>
-          </md-button>
-          <div class="board-users" v-if="this.usersActive">
-            Penis
+          <UserManagement v-if="this.usersActive"></UserManagement>
+          <div class="board-preview" @click="showOverlay = !showOverlay">
+
           </div>
-          <div class="board-preview"></div>
+          <div id="overlay" @click="showOverlay = !showOverlay"
+               :class="{active : showOverlay, inactive : !showOverlay}">
+            <h1>iltis</h1>
+          </div>
         </div>
       </md-app-content>
     </md-app>
@@ -53,6 +72,9 @@
 //import BoardDetailForm from "@/components/Board/BoardDetailForm";
 import Sidebar from "@/components/Layout/Sidebar";
 import {VueEditor} from "vue2-editor";
+import Chrome from "vue-color/src/components/Chrome"
+import Datepicker from 'vuejs-datepicker';
+import UserManagement from "@/components/Board/UserManagement";
 
 export default {
   name: "BoardDetail",
@@ -60,6 +82,9 @@ export default {
     //BoardDetailForm,
     Sidebar,
     VueEditor,
+    Chrome,
+    Datepicker,
+    UserManagement
   },
   props: {},
   data() {
@@ -68,8 +93,12 @@ export default {
       board: null,
       menuVisible: false,
       usersActive: false,
+      showOverlay: false,
       messageActive: true,
-      content: ""
+      content: "",
+      colors: {
+      },
+      date: new Date()
     };
   },
   methods: {
@@ -99,18 +128,19 @@ export default {
 <style scoped lang="scss">
 .board {
   &-content {
-    position: relative;
-    overflow: hidden;
-    height: 100vh;
+    height: 100%;
+    border-right: none;
   }
 
   &-overview {
+    margin-top: 30px;
     height: 100vh;
   }
 
   &-preview {
-    width: 50vw;
-    height: 100vh;
+    cursor: pointer;
+    width: 50%;
+    height: 100%;
     position: absolute;
     top: 0;
     right: 0;
@@ -118,22 +148,89 @@ export default {
   }
 
   &-form {
-    z-index: 187;
-    position: absolute;
-    left: 2%;
-    top: 20%;
-    max-width: 50vw;
-    background-color: #fff;
-    box-shadow: 0 2.8px 2.2px rgb(0 0 0 / 3%), 0 6.7px 5.3px rgb(0 0 0 / 5%), 0 12.5px 10px rgb(0 0 0 / 6%), 0 22.3px 17.9px rgb(0 0 0 / 7%), 0 41.8px 33.4px rgb(0 0 0 / 9%), 0 100px 80px rgb(0 0 0 / 12%);
+    width: 50%;
+    margin-top: 15px;
+    position: relative;
+
+    .controls {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+
+      .colorpicker {
+        z-index: 187;
+        max-width: 50vw;
+
+        .picker {
+        }
+      }
+
+      .settings {
+        margin-left: 15px;
+        .datepicker {
+        }
+      }
+    }
+
+    .editor {
+      max-height: 300px;
+      overflow: scroll;
+      margin-right: 15px;
+    }
+
   }
 }
 
 .sendbutton {
+  background-color: #B4D7A8 !important;
+  margin: 15px 0 15px 15px;
   position: absolute;
-  top: 63%;
-  z-index: 1877;
-  left: 25.5%;
-  background-color:  #B4D7A8 !important;
+  right: 10px;
+}
+
+.blob {
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+  transform: scale(1);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+#overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 888;
+  cursor: pointer;
+}
+
+.active {
+  display: block;
+}
+
+.inactive {
+  display: none;
 }
 
 </style>
