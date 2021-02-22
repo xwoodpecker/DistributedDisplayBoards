@@ -27,34 +27,47 @@
                    @click="setActiveTab('users')">
           <md-icon>person</md-icon>
         </md-button>
-        <md-button class="md-icon-button">
+        <md-button class="md-icon-button" :class="{'md-raised md-primary' : this.messageManagementActive }"
+                   @click="setActiveTab('messageManagement')">
           <md-icon>menu</md-icon>
         </md-button>
         <div class="board-">
           <div class="board-form" v-if="this.messageActive">
-            <vue-editor class="editor" v-model="content"></vue-editor>
-            <div class="controls">
-              <div class="colorpicker">
-                <span>Hintergrundfarbe</span>
-                <Chrome class="picker" v-model="colors"></Chrome>
-              </div>
-              <div class="settings">
+            <md-steppers md-vertical>
+              <md-step id="first" md-label="Nachricht verfassen">
+                <vue-editor class="editor" v-model="content"></vue-editor>
+              </md-step>
+
+              <md-step id="second" md-label="Hintergrundfarbe wählen">
+                <div class="colorpicker">
+                  <span>Hintergrundfarbe</span>
+                  <Chrome class="picker" v-model="colors"></Chrome>
+                </div>
+              </md-step>
+
+              <md-step id="third" md-label="Ablaufdatum festlegen">
+                <div class="third">
                 <span>Anzeigen bis</span>
                 <Datepicker v-model="date" class="datepicker"></Datepicker>
-              </div>
-              <div>
-                <md-button  v-if="content" class="md-icon-button sendbutton blob" :class="{'md-raised' : this.messageActive}"
-                           @click="setActiveTab('message')">
-                  <md-icon>add</md-icon>
+                </div>
+              </md-step>
+              <md-step id="fourth" md-label="Absenden">
+                <md-button v-if="content && !sending" class="md-icon-button sendbutton blob"
+                           :class="{'md-raised' : this.messageActive}"
+                           @click="sendMessage">
+                  <md-icon>send</md-icon>
                 </md-button>
-              </div>
-            </div>
+                <md-progress-spinner v-if="sending" md-mode="indeterminate"></md-progress-spinner>
+              </md-step>
+            </md-steppers>
 
 
             <!--            <div v-html="content"></div>
             &lt;!&ndash;          <BoardDetailForm></BoardDetailForm>&ndash;&gt;-->
           </div>
           <UserManagement v-if="this.usersActive"></UserManagement>
+          <MessageManagement v-if="this.messageManagementActive"></MessageManagement>
+
           <div class="board-preview" @click="showOverlay = !showOverlay">
 
           </div>
@@ -75,6 +88,8 @@ import {VueEditor} from "vue2-editor";
 import Chrome from "vue-color/src/components/Chrome"
 import Datepicker from 'vuejs-datepicker';
 import UserManagement from "@/components/Board/UserManagement";
+import MessageManagement from "@/components/Board/MessageManagement";
+import boardservice from "@/services/boardService"
 
 export default {
   name: "BoardDetail",
@@ -84,7 +99,8 @@ export default {
     VueEditor,
     Chrome,
     Datepicker,
-    UserManagement
+    UserManagement,
+    MessageManagement
   },
   props: {},
   data() {
@@ -94,10 +110,11 @@ export default {
       menuVisible: false,
       usersActive: false,
       showOverlay: false,
+      sending: false,
       messageActive: true,
+      messageManagementActive: false,
       content: "",
-      colors: {
-      },
+      colors: {},
       date: new Date()
     };
   },
@@ -106,10 +123,27 @@ export default {
       if (tab === 'message') {
         this.messageActive = true;
         this.usersActive = false;
-      } else {
+        this.messageManagementActive = false;
+      } else if (tab === 'users') {
         this.messageActive = false;
         this.usersActive = true;
+        this.messageManagementActive = false;
+      } else {
+        this.messageManagementActive = true;
+        this.messageActive = false;
+        this.usersActive = false;
       }
+    },
+    sendMessage(){
+      const message = {
+        content: this.content,
+        bgColor: this.colors.hex,
+        showUntil: this.date
+      }
+      this.sending = true;
+      this.$boardService.send(message)
+
+      console.log(message);
     }
   },
   computed: {},
@@ -128,7 +162,7 @@ export default {
 <style scoped lang="scss">
 .board {
   &-content {
-    height: 100%;
+    height: 100vh;
     border-right: none;
   }
 
@@ -168,6 +202,7 @@ export default {
 
       .settings {
         margin-left: 15px;
+
         .datepicker {
         }
       }
@@ -183,10 +218,7 @@ export default {
 }
 
 .sendbutton {
-  background-color: #B4D7A8 !important;
-  margin: 15px 0 15px 15px;
-  position: absolute;
-  right: 10px;
+  margin-top: 15px;
 }
 
 .blob {
@@ -231,6 +263,21 @@ export default {
 
 .inactive {
   display: none;
+}
+
+.third {
+  min-height: 300px;
+}
+
+.pot{bottom:15%;
+  position:absolute;
+  -webkit-animation:linear infinite alternate;
+  -webkit-animation-name: run;
+  -webkit-animation-duration: 5s;
+}
+@-webkit-keyframes run {
+  0% { left: 0;}
+  100%{ left : 100%;}
 }
 
 </style>
