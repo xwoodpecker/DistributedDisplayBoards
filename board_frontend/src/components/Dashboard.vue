@@ -70,7 +70,7 @@ export default {
          this.$store.commit('addBoards', [response.data])
        }
     });
-    //todo dont do this here
+   /* //todo dont do this here
     this.$store.commit("addBoards", [
       {
         id: 1,
@@ -96,7 +96,7 @@ export default {
         location: "Meetingraum 2. Stock",
         messages: [],
       },
-    ]);
+    ]);*/
   },
 };
 </script>

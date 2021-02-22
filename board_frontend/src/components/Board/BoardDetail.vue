@@ -30,6 +30,8 @@
         <div class="board-overview">
           <div class="board-form" v-if="this.messageActive">
             <vue-editor v-model="content"></vue-editor>
+            <h1>{{content}}</h1>
+
             <!--            <div v-html="content"></div>
             &lt;!&ndash;          <BoardDetailForm></BoardDetailForm>&ndash;&gt;-->
           </div>
@@ -131,7 +133,7 @@ export default {
   top: 63%;
   z-index: 1877;
   left: 25.5%;
-  background-color: #B4D7A8 !important;
+  background-color:  #B4D7A8 !important;
 }
 
 </style>
