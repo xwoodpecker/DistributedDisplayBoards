@@ -1,6 +1,5 @@
 package htw.vs.websocket;
 
-import htw.vs.base.CONFIG;
 import htw.vs.base.CONST;
 import htw.vs.data.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,10 +16,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collector;
-
-
-//TODO: davide put exception texts in constants maybe make own exceptiones class
-// pls do this davide :(
 
 @Controller
 public class WebSocketMessageController {
@@ -93,7 +88,7 @@ public class WebSocketMessageController {
     public boolean pushMessageToCentral(Authentication authentication, @Payload Message message) {
         Message centralMsg = new Message(message);
         centralMsg.setId(null);
-        Board centralBoard = boardRepository.findBoardByBoardName(CONFIG.CENTRAL_BOARD_NAME);
+        Board centralBoard = boardRepository.findBoardByBoardName(CONST.CENTRAL_BOARD_NAME);
 
         if(message.getBoard().getId() == centralBoard.getId())
             throw new IllegalArgumentException(CONST.PUSH_MESSAGE_EXCEPTION);
@@ -119,7 +114,7 @@ public class WebSocketMessageController {
 
     public void sendToBoard(Long boardId, List<Message> messages) {
         simpMessagingTemplate.convertAndSend(
-                CONFIG.BASIC_TOPIC + boardId,
+                CONST.BASIC_TOPIC + boardId,
                 messages);
     }
 
