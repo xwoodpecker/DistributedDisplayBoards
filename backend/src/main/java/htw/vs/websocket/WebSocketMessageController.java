@@ -1,6 +1,6 @@
 package htw.vs.websocket;
 
-import htw.vs.base.CONST;
+import htw.vs.base.CONFIG;
 import htw.vs.data.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -16,6 +16,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collector;
+
+
+//TODO: davide put exception texts in constants maybe make own exceptiones class
+// pls do this davide :(
 
 @Controller
 public class WebSocketMessageController {
@@ -48,7 +52,7 @@ public class WebSocketMessageController {
     private void verifyUser(Authentication authentication, User user) {
         //TODO:verify if user is coordinator/supervisor and allow him to do everything he wants bc he is the boss
         if (!user.getUserName().equals(authentication.getName()))
-            throw new AccessDeniedException(CONST.VERIFY_USER_EXCEPTION);
+            throw new AccessDeniedException("UserName and authentication do not match");
     }
 
 
@@ -72,7 +76,7 @@ public class WebSocketMessageController {
         Board board = message.getBoard();
 
         User user = userRepository.findById(message.getUser().getId())
-                .orElseThrow(() -> new AccessDeniedException(CONST.USER_NOT_FOUND_EXCEPTION));
+                .orElseThrow(() -> new AccessDeniedException("User not found"));
 
         verifyUserBoard(authentication, user, board);
 
@@ -88,10 +92,10 @@ public class WebSocketMessageController {
     public boolean pushMessageToCentral(Authentication authentication, @Payload Message message) {
         Message centralMsg = new Message(message);
         centralMsg.setId(null);
-        Board centralBoard = boardRepository.findBoardByBoardName(CONST.CENTRAL_BOARD_NAME);
+        Board centralBoard = boardRepository.findBoardByBoardName(CONFIG.CENTRAL_BOARD_NAME);
 
         if(message.getBoard().getId() == centralBoard.getId())
-            throw new IllegalArgumentException(CONST.PUSH_MESSAGE_EXCEPTION);
+            throw new IllegalArgumentException("Referenced Board is not the central Board");
 
         verifyUser(authentication, message.getUser());
 
@@ -108,13 +112,13 @@ public class WebSocketMessageController {
         verifyUser(authentication, user);
 
         if(!user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent())
-            throw new AccessDeniedException(CONST.USER_BOARD_EXCEPTION);
+            throw new AccessDeniedException("User is not assigned to this board");
     }
 
 
     public void sendToBoard(Long boardId, List<Message> messages) {
         simpMessagingTemplate.convertAndSend(
-                CONST.BASIC_TOPIC + boardId,
+                CONFIG.BASIC_TOPIC + boardId,
                 messages);
     }
 
