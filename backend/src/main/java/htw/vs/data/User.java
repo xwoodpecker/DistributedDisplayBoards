@@ -35,16 +35,32 @@ public class User {
     private Set<Group> groups  = new HashSet<>();
 
     /**
-     * Default constructor for JPA only.
+     * Instantiates a new User.
      */
     public User() {
 
     }
 
+    /**
+     * Instantiates a new User.
+     *
+     * @param id the id
+     */
     public User(Long id) {
         this.id = id;
     }
 
+    /**
+     * Instantiates a new User.
+     *
+     * @param id       the id
+     * @param userName the user name
+     * @param password the password
+     * @param enabled  the enabled
+     * @param email    the email
+     * @param roles    the roles
+     * @param groups   the groups
+     */
     public User(Long id, String userName, String password, boolean enabled, String email, Set<Role> roles, Set<Group> groups) {
         this.id = id;
         this.userName = userName;
@@ -65,18 +81,18 @@ public class User {
     }
 
     /**
-     * Set JPA id - for testing and JPA only. Not intended for normal use.
+     * Sets id.
      *
-     * @param id The new id.
+     * @param id the id
      */
     public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * Gets userName.
+     * Gets user name.
      *
-     * @return the userName
+     * @return the user name
      */
     public String getUserName() {
         return userName;

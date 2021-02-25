@@ -11,17 +11,33 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * The type Security service.
+ */
 @Component("securityService")
 public class SecurityService {
 
     private GroupRepository groupRepository;
     private UserRepository userRepository;
 
+    /**
+     * Instantiates a new Security service.
+     *
+     * @param groupRepository the group repository
+     * @param userRepository  the user repository
+     */
     public SecurityService(GroupRepository groupRepository, UserRepository userRepository) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
     }
 
+    /**
+     * Has permission boolean.
+     *
+     * @param authentication the authentication
+     * @param groupId        the group id
+     * @return the boolean
+     */
     public boolean hasPermission(Authentication authentication, Long groupId) {
         Set<String> roles = authentication.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());

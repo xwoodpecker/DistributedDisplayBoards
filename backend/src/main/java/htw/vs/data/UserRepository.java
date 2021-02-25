@@ -12,7 +12,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
-     * Find first by user name user.
+     * Find user by user name user.
      *
      * @param userName the user name
      * @return the user

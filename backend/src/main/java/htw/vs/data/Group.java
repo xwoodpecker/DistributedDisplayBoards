@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * The type Groups.
+ * The type Group.
  */
 @Entity
 @Table(name = "BOARD_GROUPS")
