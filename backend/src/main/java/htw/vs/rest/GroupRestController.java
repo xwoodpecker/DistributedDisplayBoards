@@ -1,5 +1,6 @@
 package htw.vs.rest;
 
+import htw.vs.base.CONST;
 import htw.vs.data.*;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,7 +65,7 @@ public class GroupRestController {
         if(group.isPresent())
             response = new ResponseEntity(group.get(), HttpStatus.OK);
         else
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("No group found");
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.NO_GROUP_MSG);
 
         return response;
     }
@@ -88,11 +89,11 @@ public class GroupRestController {
         Optional<Board> board = boardRepository.findById(boardId);
         Optional<User> user = userRepository.findById(coordinatorId);
         if(!board.isPresent()){
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Board not found");
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.BOARD_NOT_FOUND_MSG);
         }
         else if(!user.isPresent())
         {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
         }
 
         else {
@@ -100,7 +101,7 @@ public class GroupRestController {
             group.setGroupName(groupName);
             group.setBoard(board.get());
             group.setCoordinator(user.get());
-            Role userRole = roleRepository.findByName("COORDINATOR");
+            Role userRole = roleRepository.findByName(CONST.COORDINATOR_ROLE);
             user.get().getRoles().add(userRole);
             userRole.getUsers().add(user.get());
             g = groupRepository.save(group);
@@ -132,7 +133,7 @@ public class GroupRestController {
 
             Optional<User> user = userRepository.findById(userId);
             if(!user.isPresent()){
-                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
             }
             else {
                 temp.getUsers().add(user.get());
@@ -140,7 +141,7 @@ public class GroupRestController {
                 response = new ResponseEntity(g, HttpStatus.OK);
             }
         }else {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("No group found");
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.NO_GROUP_MSG);
         }
         return response;
     }
@@ -166,7 +167,7 @@ public class GroupRestController {
 
             Optional<User> user = userRepository.findById(userId);
             if(!user.isPresent()){
-                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
             }
             else {
                 temp.getUsers().remove(user.get());
@@ -174,7 +175,7 @@ public class GroupRestController {
                 response = new ResponseEntity(g, HttpStatus.OK);
             }
         }else {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("No group found");
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.NO_GROUP_MSG);
         }
         return response;
     }
@@ -190,10 +191,10 @@ public class GroupRestController {
         Optional<User> user = userRepository.findById(newCoordinatorId);
 
         if(!group.isPresent()) {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("No group found");
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.NO_GROUP_MSG);
         }
         else if(!user.isPresent()) {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
         }
 
         else {
@@ -201,7 +202,7 @@ public class GroupRestController {
             User oldCoordinator = temp.getCoordinator();
             List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
 
-            Role coordinatorRole = roleRepository.findByName("COORDINATOR");
+            Role coordinatorRole = roleRepository.findByName(CONST.COORDINATOR_ROLE);
 
             //todo test
             if(groups.size() < 2) {

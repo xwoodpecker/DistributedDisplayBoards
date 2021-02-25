@@ -1,5 +1,6 @@
 package htw.vs.rest;
 
+import htw.vs.base.CONST;
 import htw.vs.data.Role;
 import htw.vs.data.RoleRepository;
 import htw.vs.data.User;
@@ -45,7 +46,7 @@ public class UserRestController {
         if(user.isPresent())
             response = new ResponseEntity<>(user.get(), HttpStatus.OK);
         else
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("No User found");
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
 
         return response;
     }
@@ -59,11 +60,11 @@ public class UserRestController {
         user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(true);
         user.setEmail(email);
-        Role userRole = roleRepository.findByName("USER");
+        Role userRole = roleRepository.findByName(CONST.USER_ROLE);
         user.getRoles().add(userRole);
         userRole.getUsers().add(user);
         if(isSupervisor){
-            Role superVisorRole = roleRepository.findByName("SUPERVISOR");
+            Role superVisorRole = roleRepository.findByName(CONST.SUPERVISOR_ROLE);
             user.getRoles().add(superVisorRole);
             superVisorRole.getUsers().add(user);
         }

@@ -1,6 +1,6 @@
 package htw.vs.websocket;
 
-import htw.vs.base.CONFIG;
+import htw.vs.base.CONST;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -22,8 +22,8 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app");
-        registry.enableStompBrokerRelay("/topic").setRelayHost(CONFIG.BROKER_HOST).setRelayPort(CONFIG.BROKER_PORT).setClientLogin(CONFIG.BROKER_LOGIN)
-                .setClientPasscode(CONFIG.BROKER_PASSCODE);
+        registry.enableStompBrokerRelay("/topic").setRelayHost(CONST.BROKER_HOST).setRelayPort(CONST.BROKER_PORT).setClientLogin(CONST.BROKER_LOGIN)
+                .setClientPasscode(CONST.BROKER_PASSCODE);
     }
 
 
