@@ -1,6 +1,6 @@
 package htw.vs.websocket;
 
-import htw.vs.base.CONFIG;
+import htw.vs.base.CONST;
 import htw.vs.data.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -18,12 +18,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collector;
 
 
-//TODO: davide put exception texts in constants maybe make own exceptiones class
-// pls do this davide :(
-
 /**
  * The type Web socket message controller.
  */
+
 @Controller
 public class WebSocketMessageController {
 
@@ -65,7 +63,6 @@ public class WebSocketMessageController {
         initialize();
     }
 
-
     /**
      * Gets active messages.
      *
@@ -101,7 +98,7 @@ public class WebSocketMessageController {
         Board board = message.getBoard();
 
         User user = userRepository.findById(message.getUser().getId())
-                .orElseThrow(() -> new AccessDeniedException("User not found"));
+                .orElseThrow(() -> new AccessDeniedException(CONST.USER_NOT_FOUND_EXCEPTION));
 
         verifyUserBoard(authentication, user, board);
 
@@ -124,10 +121,10 @@ public class WebSocketMessageController {
     public boolean pushMessageToCentral(Authentication authentication, @Payload Message message) {
         Message centralMsg = new Message(message);
         centralMsg.setId(null);
-        Board centralBoard = boardRepository.findBoardByBoardName(CONFIG.CENTRAL_BOARD_NAME);
+        Board centralBoard = boardRepository.findBoardByBoardName(CONST.CENTRAL_BOARD_NAME);
 
         if(message.getBoard().getId() == centralBoard.getId())
-            throw new IllegalArgumentException("Referenced Board is not the central Board");
+            throw new IllegalArgumentException(CONST.PUSH_MESSAGE_EXCEPTION);
 
         verifyCoordinator(authentication, message.getBoard().getGroup().getCoordinator());
         List<Message> messages = addOrReplace(centralMsg);
@@ -159,7 +156,7 @@ public class WebSocketMessageController {
                 throw new AccessDeniedException("UserName and authentication do not match");
 
         if(!user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent())
-            throw new AccessDeniedException("User is not assigned to this board");
+            throw new AccessDeniedException(CONST.USER_BOARD_EXCEPTION);
     }
 
 
@@ -171,7 +168,7 @@ public class WebSocketMessageController {
      */
     public void sendToBoard(Long boardId, List<Message> messages) {
         simpMessagingTemplate.convertAndSend(
-                CONFIG.BASIC_TOPIC + boardId,
+                CONST.BASIC_TOPIC + boardId,
                 messages);
     }
 
