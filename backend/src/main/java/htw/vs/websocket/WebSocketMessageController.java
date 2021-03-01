@@ -1,6 +1,7 @@
 package htw.vs.websocket;
 
 import htw.vs.base.CONFIG;
+import htw.vs.base.CONST;
 import htw.vs.data.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -18,12 +19,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collector;
 
 
-//TODO: davide put exception texts in constants maybe make own exceptiones class
-// pls do this davide :(
-
 /**
  * The type Web socket message controller.
  */
+
 @Controller
 public class WebSocketMessageController {
 
@@ -65,7 +64,6 @@ public class WebSocketMessageController {
         initialize();
     }
 
-
     /**
      * Gets active messages.
      *
@@ -101,7 +99,7 @@ public class WebSocketMessageController {
         Board board = message.getBoard();
 
         User user = userRepository.findById(message.getUser().getId())
-                .orElseThrow(() -> new AccessDeniedException("User not found"));
+                .orElseThrow(() -> new AccessDeniedException(CONST.USER_NOT_FOUND_EXCEPTION));
 
         verifyUserBoard(authentication, user, board);
 
@@ -127,7 +125,7 @@ public class WebSocketMessageController {
         Board centralBoard = boardRepository.findBoardByBoardName(CONFIG.CENTRAL_BOARD_NAME);
 
         if(message.getBoard().getId() == centralBoard.getId())
-            throw new IllegalArgumentException("Referenced Board is not the central Board");
+            throw new IllegalArgumentException(CONST.PUSH_MESSAGE_EXCEPTION);
 
         verifyCoordinator(authentication, message.getBoard().getGroup().getCoordinator());
         List<Message> messages = addOrReplace(centralMsg);
@@ -141,25 +139,25 @@ public class WebSocketMessageController {
 
     //todo : test
     private void verifyCoordinator(Authentication authentication, User coordinator) {
-        Role supervisor = roleRepository.findByName("SUPERVISOR");
+        Role supervisor = roleRepository.findByName(CONST.SUPERVISOR_ROLE);
         User authenticatedUser = userRepository.findUserByUserName(authentication.getName());
         if(authenticatedUser.getRoles().contains(supervisor))
             return;
 
         if (!coordinator.getUserName().equals(authentication.getName()))
-            throw new AccessDeniedException("UserName and authentication do not match");
+            throw new AccessDeniedException(CONST.VERIFY_USER_EXCEPTION);
     }
 
     //todo : test
     private void verifyUserBoard(Authentication authentication, User user, Board board) {
-        Role supervisor = roleRepository.findByName("SUPERVISOR");
+        Role supervisor = roleRepository.findByName(CONST.SUPERVISOR_ROLE);
         User authenticatedUser = userRepository.findUserByUserName(authentication.getName());
         if(!(authenticatedUser.getRoles().contains(supervisor)) && !(authenticatedUser.getId() == board.getGroup().getCoordinator().getId()))
             if(!user.getUserName().equals(authentication.getName()))
-                throw new AccessDeniedException("UserName and authentication do not match");
+                throw new AccessDeniedException(CONST.VERIFY_USER_EXCEPTION);
 
         if(!user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent())
-            throw new AccessDeniedException("User is not assigned to this board");
+            throw new AccessDeniedException(CONST.USER_BOARD_EXCEPTION);
     }
 
 

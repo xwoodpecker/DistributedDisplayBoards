@@ -50,14 +50,15 @@ export default class BoardService {
     );
   }
 
-  send() {
+  send(message) {
     if (this.stompClient && this.stompClient.connected) {
       const msg = {
-        content: "content",
+        content: message.content,
         user: 1,
         board: 1,
-        endDate: 1234,
-        active: true
+        endDate: message.showUntil,
+        active: true,
+        bgColor: message.bgColor
       }
       console.log(JSON.stringify(msg));
       this.stompClient.send("/app/pushMessage", JSON.stringify(msg));

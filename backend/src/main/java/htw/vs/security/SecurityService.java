@@ -1,5 +1,6 @@
 package htw.vs.security;
 
+import htw.vs.base.CONST;
 import htw.vs.data.Group;
 import htw.vs.data.GroupRepository;
 import htw.vs.data.User;
@@ -48,7 +49,7 @@ public class SecurityService {
         Optional<Group> opt = groupRepository.findById(groupId);
         Group group;
 
-        if(user.getRoles().contains("SUPERVISOR"))
+        if(user.getRoles().contains(CONST.SUPERVISOR_ROLE))
         {
             return true;
         }

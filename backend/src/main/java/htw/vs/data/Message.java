@@ -38,6 +38,9 @@ public class Message  {
     @Column(name = "active")
     private boolean active;
 
+    @Column(name = "bg_color")
+    private String bgColor;
+
     /**
      * Instantiates a new Message.
      */
@@ -57,6 +60,7 @@ public class Message  {
         this.board = other.board;
         this.endDate = other.endDate;
         this.active = other.active;
+        this.bgColor = other.bgColor;
     }
 
     /**
@@ -183,5 +187,13 @@ public class Message  {
      */
     public void setDisplayTime(Integer displayTime) {
         this.displayTime = displayTime;
+    }
+
+    public String getBgColor() {
+        return bgColor;
+    }
+
+    public void setBgColor(String bgColor) {
+        this.bgColor = bgColor;
     }
 }

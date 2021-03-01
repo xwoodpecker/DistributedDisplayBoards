@@ -26,6 +26,8 @@ public class Group {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
 
+    //this might change in the future
+    // at the moment we have a onetoone relation but it is planned to have dynamic group assignments
     @OneToOne(fetch = FetchType.EAGER)
     private Board board;
 

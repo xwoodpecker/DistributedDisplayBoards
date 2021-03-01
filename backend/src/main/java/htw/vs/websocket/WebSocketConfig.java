@@ -1,6 +1,7 @@
 package htw.vs.websocket;
 
 import htw.vs.base.CONFIG;
+import htw.vs.base.CONST;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
