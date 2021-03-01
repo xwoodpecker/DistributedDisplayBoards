@@ -9,6 +9,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,7 +95,7 @@ public class MessageRestController {
     @Operation(summary = "create a new Message")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
-    public ResponseEntity addMessage(@RequestParam Boolean active, @RequestParam Long boardId, @RequestParam Long userId, @RequestParam String content, @RequestParam Integer displayTime){
+    public ResponseEntity addMessage(@RequestParam Boolean active, @RequestParam Long boardId, @RequestParam Long userId, @RequestParam String content, @RequestParam Integer displayTime, @RequestParam Timestamp endDate){
         ResponseEntity response;
         Message m;
 
@@ -115,6 +116,7 @@ public class MessageRestController {
             message.setContent(content);
             message.setDisplayTime(displayTime);
             m = messageRepository.save(message);
+            message.setEndDate(endDate);
             response = new ResponseEntity(m, HttpStatus.OK);
         }
 
