@@ -38,7 +38,7 @@ public class Message  {
     @Column(name = "active")
     private boolean active;
 
-    @Column(name ="bgColor")
+    @Column(name = "bg_color")
     private String bgColor;
 
     /**
@@ -60,6 +60,7 @@ public class Message  {
         this.board = other.board;
         this.endDate = other.endDate;
         this.active = other.active;
+        this.bgColor = other.bgColor;
     }
 
     /**

@@ -1,8 +1,6 @@
-package htw.vs.base;
+package htw.vs.data;
 
 
-import htw.vs.data.Board;
-import htw.vs.data.BoardRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +22,13 @@ public class BoardRepositoryTest {
 
 
     @Test
-    public void testGetCoordinatedGroups() {
+    public void testFindBoardByBoardName() {
         Board board1  = boardRepository.findById(DbEntries.Board1_Id).get();
         Board b = boardRepository.findBoardByBoardName(DbEntries.Board1_BoardName);
         assertEquals(board1.getId(), b.getId());
+        Board board2  = boardRepository.findById(DbEntries.Board2_Id).get();
+        b = boardRepository.findBoardByBoardName(DbEntries.Board2_BoardName);
+        assertEquals(board2.getId(), b.getId());
     }
 
 

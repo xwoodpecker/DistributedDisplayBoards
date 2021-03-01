@@ -1,7 +1,6 @@
-package htw.vs.base;
+package htw.vs.data;
 
 
-import htw.vs.data.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class GroupRepositoryTest {
         List<Group> groupList1 = groupRepository.getCoordinatedGroups(coordinator1);
         List<Group> groupList2 = groupRepository.getCoordinatedGroups(coordinator2);
         assert groupList1.stream().anyMatch(g -> g.getId() == DbEntries.BoardGroup1_ID);
-        assert groupList2.stream().anyMatch(g -> g.getGroupName() == DbEntries.BoardGroup2_GroupName);
+        assert groupList2.stream().anyMatch(g -> g.getGroupName().equals(DbEntries.BoardGroup2_GroupName));
     }
 
 

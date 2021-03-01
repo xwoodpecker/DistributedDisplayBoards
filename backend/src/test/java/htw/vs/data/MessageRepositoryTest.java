@@ -1,9 +1,6 @@
-package htw.vs.base;
+package htw.vs.data;
 
 
-import htw.vs.data.Message;
-import htw.vs.data.MessageRepository;
-import htw.vs.data.RoleRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +15,18 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
-public class RoleRepositoryTest {
+public class MessageRepositoryTest {
 
     @Autowired
-    private RoleRepository roleRepository;
+    private MessageRepository messageRepository;
 
 
     @Test
-    public void testFindByName() {
-
+    public void testFindMessagesToDisplay() {
+        List<Message> messages = messageRepository.findMessagesToDisplay();
+        assert messages.size() == DbEntries.MessagesToDisplay;
     }
 
+    //todo julian add your other tests pls
 
 }
