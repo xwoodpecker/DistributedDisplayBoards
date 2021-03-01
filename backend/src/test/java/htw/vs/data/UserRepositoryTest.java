@@ -1,6 +1,7 @@
 package htw.vs.data;
 
 
+import htw.vs.base.Const;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class UserRepositoryTest {
         User coordinator1  = userRepository.findById(DbEntries.Coordinator1_Id).get();
         u = userRepository.findUserByUserName(DbEntries.Coordinator1_Username);
         assertEquals(coordinator1.getId(), u.getId());
-        Role coordinatorRole = roleRepository.findByName(DbEntries.COORDINATOR_ROLE);
+        Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
         assert u.getRoles().contains(coordinatorRole);
         User coordinator2  = userRepository.findById(DbEntries.Coordinator2_Id).get();
         u = userRepository.findUserByUserName(DbEntries.Coordinator2_Username);
@@ -51,7 +52,7 @@ public class UserRepositoryTest {
         User supervisor  = userRepository.findById(DbEntries.Supervisor_Id).get();
         u = userRepository.findUserByUserName(DbEntries.Supervisor_Username);
         assertEquals(supervisor.getId(), u.getId());
-        Role supervisorRole = roleRepository.findByName(DbEntries.SUPERVISOR_ROLE);
+        Role supervisorRole = roleRepository.findByName(Const.SUPERVISOR_ROLE);
         assert u.getRoles().contains(supervisorRole);
     }
 

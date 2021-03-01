@@ -1,6 +1,6 @@
 package htw.vs.base;
 
-public class CONST {
+public class Const {
 
     //Exceptions
     public static final String VERIFY_USER_EXCEPTION = "UserName and authentication do not match";

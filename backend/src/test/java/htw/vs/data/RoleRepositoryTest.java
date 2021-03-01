@@ -1,6 +1,7 @@
 package htw.vs.data;
 
 
+import htw.vs.base.Const;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,20 +27,20 @@ public class RoleRepositoryTest {
     @Test
     public void testFindByName() {
         User supervisor = userRepository.findById(DbEntries.Supervisor_Id).get();
-        Role supervisorRole = roleRepository.findByName(DbEntries.SUPERVISOR_ROLE);
+        Role supervisorRole = roleRepository.findByName(Const.SUPERVISOR_ROLE);
         assert supervisorRole.getUsers().stream().anyMatch(u -> u.getId() == supervisor.getId());
         assert supervisorRole.getUsers().size() == 1;
 
 
         User coordinator1 = userRepository.findById(DbEntries.Coordinator1_Id).get();
         User coordinator2 = userRepository.findById(DbEntries.Coordinator2_Id).get();
-        Role coordinatorRole = roleRepository.findByName(DbEntries.COORDINATOR_ROLE);
+        Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
         assert coordinatorRole.getUsers().stream().anyMatch(u -> u.getId() == coordinator1.getId());
         assert coordinatorRole.getUsers().stream().anyMatch(u -> u.getId() == coordinator2.getId());
         assert coordinatorRole.getUsers().size() == 2;
 
 
-        Role userRole = roleRepository.findByName(DbEntries.USER_ROLE);
+        Role userRole = roleRepository.findByName(Const.USER_ROLE);
         assert userRole.getUsers().size() == 3;
 
 

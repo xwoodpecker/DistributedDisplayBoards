@@ -35,10 +35,4 @@ public class DbEntries {
     //messages
     public static final Integer MessagesToDisplay = 2;
 
-    //Roles
-    //TODO: david pls fix your CONST.java and refactor this
-    public static final String SUPERVISOR_ROLE = "SUPERVISOR";
-    public static final String COORDINATOR_ROLE = "COORDINATOR";
-    public static final String USER_ROLE = "USER";
-
 }
