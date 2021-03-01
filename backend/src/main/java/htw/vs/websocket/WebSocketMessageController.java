@@ -1,5 +1,6 @@
 package htw.vs.websocket;
 
+import htw.vs.base.CONFIG;
 import htw.vs.base.CONST;
 import htw.vs.data.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -121,7 +122,7 @@ public class WebSocketMessageController {
     public boolean pushMessageToCentral(Authentication authentication, @Payload Message message) {
         Message centralMsg = new Message(message);
         centralMsg.setId(null);
-        Board centralBoard = boardRepository.findBoardByBoardName(CONST.CENTRAL_BOARD_NAME);
+        Board centralBoard = boardRepository.findBoardByBoardName(CONFIG.CENTRAL_BOARD_NAME);
 
         if(message.getBoard().getId() == centralBoard.getId())
             throw new IllegalArgumentException(CONST.PUSH_MESSAGE_EXCEPTION);
@@ -138,22 +139,22 @@ public class WebSocketMessageController {
 
     //todo : test
     private void verifyCoordinator(Authentication authentication, User coordinator) {
-        Role supervisor = roleRepository.findByName("SUPERVISOR");
+        Role supervisor = roleRepository.findByName(CONST.SUPERVISOR_ROLE);
         User authenticatedUser = userRepository.findUserByUserName(authentication.getName());
         if(authenticatedUser.getRoles().contains(supervisor))
             return;
 
         if (!coordinator.getUserName().equals(authentication.getName()))
-            throw new AccessDeniedException("UserName and authentication do not match");
+            throw new AccessDeniedException(CONST.VERIFY_USER_EXCEPTION);
     }
 
     //todo : test
     private void verifyUserBoard(Authentication authentication, User user, Board board) {
-        Role supervisor = roleRepository.findByName("SUPERVISOR");
+        Role supervisor = roleRepository.findByName(CONST.SUPERVISOR_ROLE);
         User authenticatedUser = userRepository.findUserByUserName(authentication.getName());
         if(!(authenticatedUser.getRoles().contains(supervisor)) && !(authenticatedUser.getId() == board.getGroup().getCoordinator().getId()))
             if(!user.getUserName().equals(authentication.getName()))
-                throw new AccessDeniedException("UserName and authentication do not match");
+                throw new AccessDeniedException(CONST.VERIFY_USER_EXCEPTION);
 
         if(!user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent())
             throw new AccessDeniedException(CONST.USER_BOARD_EXCEPTION);
@@ -168,7 +169,7 @@ public class WebSocketMessageController {
      */
     public void sendToBoard(Long boardId, List<Message> messages) {
         simpMessagingTemplate.convertAndSend(
-                CONST.BASIC_TOPIC + boardId,
+                CONFIG.BASIC_TOPIC + boardId,
                 messages);
     }
 
