@@ -89,14 +89,12 @@ import MessageManagement from "@/components/Board/MessageManagement";
 import boardservice from "@/services/boardService";
 import BoardDisplay from "@/components/Board/BoardDisplay";
 
-console.log(Quill.imports);
 
 let SizeStyle = Quill.import('attributors/style/size');
 Quill.register(SizeStyle, true);
 let AlignStyle = Quill.import('attributors/style/align');
 Quill.register(AlignStyle, true);
 
-console.log(Quill.imports);
 export default {
   name: "BoardDetail",
   components: {
