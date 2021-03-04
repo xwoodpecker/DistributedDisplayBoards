@@ -16,11 +16,11 @@
       </md-app-drawer>
 
       <md-app-content>
-        <div class="md-layout md-gutter md-alignment-center board-overview">
+        <div class="md-layout md-gutter board-overview">
           <div
             v-for="board in boards"
             v-bind:key="board.id"
-            class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100"
+            class="md-layout-item md-size-25 md-medium-size-33 md-small-size-50 md-xsmall-size-100"
           >
             <BoardMaster
               :title="board.title"
@@ -65,11 +65,11 @@ export default {
   created() {},
   async mounted() {
     //get boards for user
-    boardsapi.getUserBoards(this.$store.state.user.id).then( response => {
+    /*boardsapi.getUserBoards(this.$store.state.user.id).then( response => {
        if (response){
          this.$store.commit('addBoards', [response.data])
        }
-    });
+    });*/
     //todo dont do this here
     this.$store.commit("addBoards", [
       {

@@ -21,25 +21,53 @@ public class Role {
     @JoinTable(name = "USERS_ROLES")
     private Set<User> users = new HashSet<>();
 
+    /**
+     * Instantiates a new Role.
+     */
     public Role() {
     }
 
+    /**
+     * Instantiates a new Role.
+     *
+     * @param name the name
+     */
     public Role(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets users.
+     *
+     * @return the users
+     */
     public Set<User> getUsers() {
         return users;
     }
 
+    /**
+     * Sets users.
+     *
+     * @param users the users
+     */
     public void setUsers(Set<User> users) {
         this.users = users;
     }

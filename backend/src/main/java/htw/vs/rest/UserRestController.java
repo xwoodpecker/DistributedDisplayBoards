@@ -1,5 +1,6 @@
 package htw.vs.rest;
 
+import htw.vs.base.CONST;
 import htw.vs.data.Role;
 import htw.vs.data.RoleRepository;
 import htw.vs.data.User;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+/**
+ * The type User rest controller.
+ */
 @Api(tags = {SpringFoxConfig.USER})
 @RestController
 @RequestMapping(path = "/users")
@@ -24,18 +28,36 @@ public class UserRestController {
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
 
+    /**
+     * Instantiates a new User rest controller.
+     *
+     * @param userRepository  the user repository
+     * @param passwordEncoder the password encoder
+     * @param roleRepository  the role repository
+     */
     public UserRestController(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
     }
 
+    /**
+     * Get users response entity.
+     *
+     * @return the response entity
+     */
     @Operation(summary = "Get all users")
     @GetMapping("/")
     public ResponseEntity getUsers(){
         return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
 
+    /**
+     * Gets user.
+     *
+     * @param id the id
+     * @return the user
+     */
     @Operation(summary = "Get user with given id")
     @GetMapping("/{id}")
     public ResponseEntity getUser(@PathVariable Long id) {
@@ -45,11 +67,20 @@ public class UserRestController {
         if(user.isPresent())
             response = new ResponseEntity<>(user.get(), HttpStatus.OK);
         else
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("No User found");
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
 
         return response;
     }
 
+    /**
+     * Add user response entity.
+     *
+     * @param userName     the user name
+     * @param password     the password
+     * @param email        the email
+     * @param isSupervisor the is supervisor
+     * @return the response entity
+     */
     @Operation(summary = "Add a new user")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
@@ -59,17 +90,24 @@ public class UserRestController {
         user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(true);
         user.setEmail(email);
-        Role userRole = roleRepository.findByName("USER");
+        Role userRole = roleRepository.findByName(CONST.USER_ROLE);
         user.getRoles().add(userRole);
         userRole.getUsers().add(user);
         if(isSupervisor){
-            Role superVisorRole = roleRepository.findByName("SUPERVISOR");
+            Role superVisorRole = roleRepository.findByName(CONST.SUPERVISOR_ROLE);
             user.getRoles().add(superVisorRole);
             superVisorRole.getUsers().add(user);
         }
         return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
     }
 
+    /**
+     * Change own password response entity.
+     *
+     * @param principal   the principal
+     * @param newPassword the new password
+     * @return the response entity
+     */
     @Operation(summary = "Change the password of a user")
     @PostMapping("/password/own")
     public ResponseEntity changeOwnPassword(UsernamePasswordAuthenticationToken principal, @RequestParam String newPassword){
@@ -80,6 +118,13 @@ public class UserRestController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+    /**
+     * Change someones password response entity.
+     *
+     * @param username    the username
+     * @param newPassword the new password
+     * @return the response entity
+     */
     @Operation(summary = "Change password of a specified user. Supervisor only")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/password/other")
@@ -90,6 +135,13 @@ public class UserRestController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+    /**
+     * Replace user response entity.
+     *
+     * @param newUser the new user
+     * @param id      the id
+     * @return the response entity
+     */
     @Operation(summary = "Replace a user with a new user")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/{id}")
@@ -112,6 +164,12 @@ public class UserRestController {
     }
 
 
+    /**
+     * Delete user response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @Operation(summary = "Delete a user")
     @Secured("ROLE_SUPERVISOR")
     @DeleteMapping("/{id}")
@@ -120,6 +178,12 @@ public class UserRestController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+    /**
+     * Get boards of user response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @Operation(summary = "Get Boards of a user")
     @Secured("ROLE_USER")
     @GetMapping("/{id}/boards")
