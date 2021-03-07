@@ -59,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
                 .and().authorizeRequests().antMatchers("/swagger**").permitAll()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/backend").permitAll()
-                .and().authorizeRequests().anyRequest().authenticated()
+                .and().authorizeRequests().anyRequest().permitAll()
                 .and().csrf().disable()
                 .headers()
                 .frameOptions().sameOrigin();
