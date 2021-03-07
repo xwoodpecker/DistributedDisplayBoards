@@ -73,6 +73,27 @@ public class UserRestController {
     }
 
     /**
+     * Gets authenticated user (HTTP authentication)
+     *
+     * @return the user
+     */
+    @Operation(summary = "Get user that is authenticated")
+    @GetMapping("/login")
+    public ResponseEntity getUserByLoginCredentials(UsernamePasswordAuthenticationToken principal){
+        ResponseEntity response;
+
+        UserDetails userDetails = (UserDetails) principal.getPrincipal();
+        User user = userRepository.findUserByUserName(userDetails.getUsername());
+
+        if(user != null)
+            response = new ResponseEntity<>(user, HttpStatus.OK);
+        else
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
+
+        return response;
+    }
+
+    /**
      * Add user response entity.
      *
      * @param userName     the user name
@@ -118,6 +139,8 @@ public class UserRestController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+
+    //todo: test
     /**
      * Change someones password response entity.
      *

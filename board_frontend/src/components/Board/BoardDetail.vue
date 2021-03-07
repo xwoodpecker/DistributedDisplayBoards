@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <md-app>
+    <md-app class="page-container">
       <md-app-toolbar class="md-primary md-large">
         <div class="md-toolbar-row">
           <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
@@ -15,23 +15,23 @@
         <Sidebar></Sidebar>
       </md-app-drawer>
 
-      <md-app-content class="board-content">
-        <md-button @click='$router.push({ name: "dashboard" })' class="md-icon-button">
-          <md-icon>home</md-icon>
-        </md-button>
-        <md-button class="md-icon-button" :class="{'md-raised md-primary' : this.messageActive}"
-                   @click="setActiveTab('message')">
-          <md-icon>edit</md-icon>
-        </md-button>
-        <md-button class="md-icon-button" :class="{'md-raised md-primary' : this.usersActive }"
-                   @click="setActiveTab('users')">
-          <md-icon>person</md-icon>
-        </md-button>
-        <md-button class="md-icon-button" :class="{'md-raised md-primary' : this.messageManagementActive }"
-                   @click="setActiveTab('messageManagement')">
-          <md-icon>menu</md-icon>
-        </md-button>
-        <div class="board-">
+      <md-app-content class="board-content md-layout">
+        <div class="board-details md-layout-item">
+          <md-button @click='$router.push({ name: "dashboard" })' class="md-icon-button">
+            <md-icon>home</md-icon>
+          </md-button>
+          <md-button class="md-icon-button" :class="{'md-raised md-primary' : this.messageActive}"
+                    @click="setActiveTab('message')">
+            <md-icon>edit</md-icon>
+          </md-button>
+          <md-button class="md-icon-button" :class="{'md-raised md-primary' : this.usersActive }"
+                    @click="setActiveTab('users')">
+            <md-icon>person</md-icon>
+          </md-button>
+          <md-button class="md-icon-button" :class="{'md-raised md-primary' : this.messageManagementActive }"
+                    @click="setActiveTab('messageManagement')">
+            <md-icon>menu</md-icon>
+          </md-button>
           <div class="board-form" v-if="this.messageActive">
             <md-steppers md-vertical>
               <md-step id="first" md-label="Nachricht verfassen">
@@ -51,29 +51,40 @@
                 <Datepicker v-model="date" class="datepicker"></Datepicker>
                 </div>
               </md-step>
-              <md-step id="fourth" md-label="Absenden">
+              <md-step id="fourth" md-label="Aktivität">
+                <div class="fourth">
+                  <input type="checkbox" v-model="active">
+                  <span v-if="active">Aktiv</span>
+                  <span v-if="!active">Inaktiv</span>
+                </div>
+              </md-step>
+              <md-step id="fifth" md-label="Anzeigedauer">
+                <div class="fifth">
+                  <input type="number" v-model="displayTime">
+                  <span> Sekunden</span>
+                </div>
+              </md-step>
+              <md-step id="sixth" md-label="Absenden">
+                <span v-if="!content">Vor dem Versenden müssen Sie erst eine Nachricht verfassen!</span>
                 <md-button v-if="content && !sending" class="md-icon-button sendbutton blob"
-                           :class="{'md-raised' : this.messageActive}"
-                           @click="sendMessage">
+                          :class="{'md-raised' : this.messageActive}"
+                          @click="sendMessage">
                   <md-icon>send</md-icon>
                 </md-button>
                 <md-progress-spinner v-if="sending" md-mode="indeterminate"></md-progress-spinner>
               </md-step>
             </md-steppers>
-
-
-            <!--            <div v-html="content"></div>
-            &lt;!&ndash;          <BoardDetailForm></BoardDetailForm>&ndash;&gt;-->
           </div>
           <UserManagement v-if="this.usersActive"></UserManagement>
           <MessageManagement v-if="this.messageManagementActive"></MessageManagement>
-
-          <div class="board-preview" @click="showOverlay = !showOverlay">
-
-          </div>
-          <div id="overlay" @click="showOverlay = !showOverlay"
-               :class="{active : showOverlay, inactive : !showOverlay}">
-            <h1>iltis</h1>
+        </div>
+        <div class="board-preview md-layout-item" @click="showOverlay = !showOverlay">
+          <BoardDisplay></BoardDisplay>
+        </div>
+        <div id="overlay" @click="showOverlay = !showOverlay"
+              :class="{active : showOverlay, inactive : !showOverlay}">
+          <div id="overlay-inner">
+            <BoardDisplay v-if="showOverlay"></BoardDisplay>
           </div>
         </div>
       </md-app-content>
@@ -84,12 +95,19 @@
 <script>
 //import BoardDetailForm from "@/components/Board/BoardDetailForm";
 import Sidebar from "@/components/Layout/Sidebar";
-import {VueEditor} from "vue2-editor";
+import {VueEditor, Quill} from "vue2-editor";
 import Chrome from "vue-color/src/components/Chrome"
 import Datepicker from 'vuejs-datepicker';
 import UserManagement from "@/components/Board/UserManagement";
 import MessageManagement from "@/components/Board/MessageManagement";
-import boardservice from "@/services/boardService"
+import boardservice from "@/services/boardService";
+import BoardDisplay from "@/components/Board/BoardDisplay";
+
+
+let SizeStyle = Quill.import('attributors/style/size');
+Quill.register(SizeStyle, true);
+let AlignStyle = Quill.import('attributors/style/align');
+Quill.register(AlignStyle, true);
 
 export default {
   name: "BoardDetail",
@@ -100,7 +118,8 @@ export default {
     Chrome,
     Datepicker,
     UserManagement,
-    MessageManagement
+    MessageManagement,
+    BoardDisplay,
   },
   props: {},
   data() {
@@ -115,7 +134,9 @@ export default {
       messageManagementActive: false,
       content: "",
       colors: {},
-      date: new Date()
+      date: new Date(),
+      active: true,
+      displayTime: 10,
     };
   },
   methods: {
@@ -138,7 +159,9 @@ export default {
       const message = {
         content: this.content,
         bgColor: this.colors.hex,
-        showUntil: this.date
+        endDate: this.date,
+        active: this.active,
+        displayTime: this.displayTime
       }
       this.sending = true;
       this.$boardService.send(message)
@@ -160,32 +183,31 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.page-container {
+  height: 100vh;
+}
+
 .board {
   &-content {
-    height: 100vh;
-    border-right: none;
+    height: 100%;
   }
 
-  &-overview {
-    margin-top: 30px;
-    height: 100vh;
+  &-details {
+    width: 50%;
+    padding-right: 16px;
   }
 
   &-preview {
-    cursor: pointer;
     width: 50%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #ebebeb;
+    margin-top: -16px;
+    margin-right: -16px;
+    margin-bottom: -16px;
+    cursor: pointer;
   }
 
   &-form {
-    width: 50%;
     margin-top: 15px;
-    position: relative;
-
+    
     .controls {
       margin-top: 15px;
       display: flex;
@@ -210,11 +232,11 @@ export default {
 
     .editor {
       max-height: 300px;
-      overflow: scroll;
+      overflow-y: scroll;
       margin-right: 15px;
     }
-
   }
+  
 }
 
 .sendbutton {
@@ -245,9 +267,9 @@ export default {
 }
 
 #overlay {
-  position: fixed;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
   top: 0;
   left: 0;
   right: 0;
@@ -255,6 +277,11 @@ export default {
   background-color: rgba(0, 0, 0, 0.8);
   z-index: 888;
   cursor: pointer;
+
+  &-inner {
+    width: 100vw;
+    height: 100%;
+  }
 }
 
 .active {
