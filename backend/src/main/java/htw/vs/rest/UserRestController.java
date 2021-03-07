@@ -88,7 +88,7 @@ public class UserRestController {
         if(user != null)
             response = new ResponseEntity<>(user, HttpStatus.OK);
         else
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
 
         return response;
     }
