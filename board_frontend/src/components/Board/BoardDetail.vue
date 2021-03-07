@@ -51,7 +51,21 @@
                 <Datepicker v-model="date" class="datepicker"></Datepicker>
                 </div>
               </md-step>
-              <md-step id="fourth" md-label="Absenden">
+              <md-step id="fourth" md-label="Aktivität">
+                <div class="fourth">
+                  <input type="checkbox" v-model="active">
+                  <span v-if="active">Aktiv</span>
+                  <span v-if="!active">Inaktiv</span>
+                </div>
+              </md-step>
+              <md-step id="fifth" md-label="Anzeigedauer">
+                <div class="fifth">
+                  <input type="number" v-model="displayTime">
+                  <span> Sekunden</span>
+                </div>
+              </md-step>
+              <md-step id="sixth" md-label="Absenden">
+                <span v-if="!content">Vor dem Versenden müssen Sie erst eine Nachricht verfassen!</span>
                 <md-button v-if="content && !sending" class="md-icon-button sendbutton blob"
                           :class="{'md-raised' : this.messageActive}"
                           @click="sendMessage">
@@ -120,7 +134,9 @@ export default {
       messageManagementActive: false,
       content: "",
       colors: {},
-      date: new Date()
+      date: new Date(),
+      active: true,
+      displayTime: 10,
     };
   },
   methods: {
@@ -143,7 +159,9 @@ export default {
       const message = {
         content: this.content,
         bgColor: this.colors.hex,
-        showUntil: this.date
+        endDate: this.date,
+        active: this.active,
+        displayTime: this.displayTime
       }
       this.sending = true;
       this.$boardService.send(message)
