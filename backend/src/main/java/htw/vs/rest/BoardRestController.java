@@ -107,7 +107,7 @@ public class BoardRestController {
      * @return the response entity
      */
     @Operation(summary = "Delete a board")
-    @Secured("USER_SUPERVISOR")
+    @Secured("ROLE_SUPERVISOR")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteBoard(@PathVariable Long id) {
         boardRepository.deleteById(id);
