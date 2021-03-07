@@ -1,5 +1,6 @@
 package htw.vs.security;
 
+import htw.vs.base.CONST;
 import htw.vs.data.User;
 import htw.vs.data.UserRepository;
 import org.springframework.security.core.userdetails.User.UserBuilder;
@@ -35,7 +36,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             String[] roles = user.getRoles().stream().map(a -> a.getName()).toArray(String[]::new);
             builder.roles(roles);
         } else {
-            throw new UsernameNotFoundException("User not found.");
+            throw new UsernameNotFoundException(CONST.USER_NOT_FOUND_MSG);
         }
         return builder.build();
     }

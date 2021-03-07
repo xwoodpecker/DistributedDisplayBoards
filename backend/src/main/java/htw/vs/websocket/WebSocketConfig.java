@@ -1,6 +1,7 @@
 package htw.vs.websocket;
 
 import htw.vs.base.CONFIG;
+import htw.vs.base.CONST;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -9,6 +10,9 @@ import org.springframework.security.config.annotation.web.socket.AbstractSecurit
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
+/**
+ * The type Web socket config.
+ */
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {

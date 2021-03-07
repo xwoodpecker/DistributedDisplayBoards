@@ -1,5 +1,6 @@
 package htw.vs.rest;
 
+import htw.vs.base.CONST;
 import htw.vs.data.Board;
 import htw.vs.data.BoardRepository;
 import io.swagger.annotations.Api;
@@ -43,10 +44,10 @@ public class BoardRestController {
     }
 
     /**
-     * Gets user.
+     * Gets board.
      *
      * @param id the id
-     * @return the user
+     * @return the board
      */
     @Operation(summary = "Get board by given id")
     @GetMapping("/{id}")
@@ -57,7 +58,7 @@ public class BoardRestController {
         if(board.isPresent())
             response = new ResponseEntity(board.get(), HttpStatus.OK);
         else
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("No board found");
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.NO_BOARD_MSG);
 
         return response;
     }

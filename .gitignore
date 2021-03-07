@@ -2,6 +2,8 @@
 
 .DS_Store
 node_modules
-/.idea/
-/backend/.idea/
-/backend/backend.iml
+.idea/
+backend/.idea/
+backend/backend.iml
+backend/target
+backend/src/main/resources/public

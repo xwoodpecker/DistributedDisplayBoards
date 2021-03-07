@@ -23,6 +23,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     private final UserRepository userRepository;
 
 
+    /**
+     * Instantiates a new Web security config.
+     *
+     * @param userDetailsService the user details service
+     * @param userRepository     the user repository
+     */
     public WebSecurityConfig(UserDetailsService userDetailsService, UserRepository userRepository) {
         this.userDetailsService = userDetailsService;
         this.userRepository = userRepository;
@@ -53,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
                 .and().authorizeRequests().antMatchers("/swagger**").permitAll()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/backend").permitAll()
-                .and().authorizeRequests().anyRequest().authenticated()
+                .and().authorizeRequests().anyRequest().permitAll()
                 .and().csrf().disable()
                 .headers()
                 .frameOptions().sameOrigin();

@@ -1,9 +1,6 @@
 package htw.vs.base;
 
-import htw.vs.data.Role;
-import htw.vs.data.RoleRepository;
-import htw.vs.data.User;
-import htw.vs.data.UserRepository;
+import htw.vs.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -16,16 +13,35 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The type Setup data loader.
+ */
 @Component
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
+    /**
+     * The Already setup.
+     */
     boolean alreadySetup = false;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
+
+    private final BoardRepository boardRepository;
+
+    /**
+     * Instantiates a new Setup data loader.
+     *
+     * @param roleRepository  the role repository
+     * @param userRepository  the user repository
+     * @param boardRepository the board repository
+     */
+    public SetupDataLoader(RoleRepository roleRepository, UserRepository userRepository, BoardRepository boardRepository) {
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.boardRepository = boardRepository;
+    }
 
     @Autowired
     private PasswordEncoder passwordEncoder() {
@@ -37,16 +53,23 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if(alreadySetup)
             return;
-        createRoleIfNotFound("SUPERVISOR");
-        createRoleIfNotFound("COORDINATOR");
-        createRoleIfNotFound("USER");
-        Role supervisorRole = roleRepository.findByName("SUPERVISOR");
-        Role coordinatorRole = roleRepository.findByName("COORDINATOR");
-        Role userRole = roleRepository.findByName("USER");
-        createUserIfNotfound("supervisor", "", CONFIG.DEFAULT_SUPERVISOR_PASSWORD, new HashSet<>(Arrays.asList(supervisorRole, coordinatorRole, userRole)));
+        createRoleIfNotFound(CONST.SUPERVISOR_ROLE);
+        createRoleIfNotFound(CONST.COORDINATOR_ROLE);
+        createRoleIfNotFound(CONST.USER_ROLE);
+        Role supervisorRole = roleRepository.findByName(CONST.SUPERVISOR_ROLE);
+        Role coordinatorRole = roleRepository.findByName(CONST.COORDINATOR_ROLE);
+        Role userRole = roleRepository.findByName(CONST.USER_ROLE);
+        createUserIfNotFound("supervisor", "", CONFIG.DEFAULT_SUPERVISOR_PASSWORD, new HashSet<>(Arrays.asList(supervisorRole, coordinatorRole, userRole)));
+        createBoardIfNotFound(CONFIG.CENTRAL_BOARD_NAME);
         alreadySetup = true;
     }
 
+    /**
+     * Create role if not found role.
+     *
+     * @param name the name
+     * @return the role
+     */
     @Transactional
     Role createRoleIfNotFound(final String name){
 
@@ -58,8 +81,17 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         return role;
     }
 
+    /**
+     * Create user if not found user.
+     *
+     * @param username the username
+     * @param email    the email
+     * @param password the password
+     * @param roles    the roles
+     * @return the user
+     */
     @Transactional
-    User createUserIfNotfound(String username, String email, String password, Set<Role> roles){
+    User createUserIfNotFound(String username, String email, String password, Set<Role> roles){
         User user = userRepository.findUserByUserName(username);
         if(user == null){
             user = new User();
@@ -73,5 +105,22 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         User finalUser = user;
         user.getRoles().forEach(role -> role.getUsers().add(finalUser));
         return user;
+    }
+
+    /**
+     * Create board if not found board.
+     *
+     * @param boardName the board name
+     * @return the board
+     */
+    @Transactional
+    Board createBoardIfNotFound(String boardName){
+        Board board = boardRepository.findBoardByBoardName(boardName);
+        if(board == null){
+            board = new Board();
+            board.setBoardName(boardName);
+        }
+        board = boardRepository.save(board);
+        return board;
     }
 }

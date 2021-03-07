@@ -1,6 +1,8 @@
 package htw.vs.data;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -21,16 +23,31 @@ public class Board {
     @Column(name = "boardname")
     private String boardName;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Group group;
+
     /**
      * Instantiates a new Board.
      */
     public Board() {
     }
 
+    /**
+     * Instantiates a new Board.
+     *
+     * @param id the id
+     */
     public Board(Long id) {
         this.id = id;
     }
 
+    /**
+     * Instantiates a new Board.
+     *
+     * @param id        the id
+     * @param boardName the board name
+     */
     public Board(Long id, String boardName) {
         this.id = id;
         this.boardName = boardName;
@@ -72,6 +89,25 @@ public class Board {
         this.boardName = boardName;
     }
 
+
+    /**
+     * Gets group.
+     *
+     * @return the group
+     */
+    public Group getGroup() {
+        return group;
+    }
+
+    /**
+     * Sets group.
+     *
+     * @param group the group
+     */
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
     @Override
     public String toString() {
         return "Board{" +
@@ -79,4 +115,5 @@ public class Board {
                 ", boardName='" + boardName + '\'' +
                 '}';
     }
+
 }

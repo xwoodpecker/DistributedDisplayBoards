@@ -6,16 +6,16 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
- * The type Web socket message.
+ * The type Message.
  */
 @Entity
 @Table(name = "MESSAGES")
-public class Message  { //implements Serializable {
+public class Message  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition="TEXT")
     private String content;
 
     @ManyToOne
@@ -29,6 +29,8 @@ public class Message  { //implements Serializable {
     @JsonIgnoreProperties({"boardName"})
     private Board board;
 
+    @Column(name = "display_time")
+    private Integer displayTime;
 
     @Column(name = "end_date")
     private Timestamp endDate;
@@ -36,12 +38,21 @@ public class Message  { //implements Serializable {
     @Column(name = "active")
     private boolean active;
 
+    @Column(name ="bgColor")
+    private String bgColor;
 
-
+    /**
+     * Instantiates a new Message.
+     */
     public Message() {
 
     }
 
+    /**
+     * Instantiates a new Message.
+     *
+     * @param other the other
+     */
     public Message(Message other) {
         this.id = other.id;
         this.content = other.content;
@@ -124,18 +135,18 @@ public class Message  { //implements Serializable {
     }
 
     /**
-     * Gets endDate.
+     * Gets end date.
      *
-     * @return the endDate
+     * @return the end date
      */
     public Timestamp getEndDate() {
         return endDate;
     }
 
     /**
-     * Sets endDate.
+     * Sets end date.
      *
-     * @param endDate the endDate
+     * @param endDate the end date
      */
     public void setEndDate(Timestamp endDate) {
         this.endDate = endDate;
@@ -157,5 +168,31 @@ public class Message  { //implements Serializable {
      */
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    /**
+     * Gets display time.
+     *
+     * @return the display time
+     */
+    public Integer getDisplayTime() {
+        return displayTime;
+    }
+
+    /**
+     * Sets display time.
+     *
+     * @param displayTime the display time
+     */
+    public void setDisplayTime(Integer displayTime) {
+        this.displayTime = displayTime;
+    }
+
+    public String getBgColor() {
+        return bgColor;
+    }
+
+    public void setBgColor(String bgColor) {
+        this.bgColor = bgColor;
     }
 }
