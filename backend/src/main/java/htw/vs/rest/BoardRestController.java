@@ -90,18 +90,32 @@ public class BoardRestController {
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/{id}")
     public ResponseEntity replaceBoard(@RequestParam String boardName, @PathVariable Long id) {
+        ResponseEntity response;
         Optional<Board> board = boardRepository.findById(id);
+        Optional<Board> board1 = Optional.ofNullable(boardRepository.findBoardByBoardName(boardName));
         Board b;
-        if(board.isPresent()){
-            Board temp = board.get();
-            temp.setBoardName(boardName);
-            b = boardRepository.save(temp);
-        }else {
-            Board newBoard = new Board();
-            newBoard.setId(id);
-            b = boardRepository.save(newBoard);
+        try {
+            if(board.isPresent()){
+                Board temp = board.get();
+                temp.setBoardName(boardName);
+                b = boardRepository.save(temp);
+                response = new ResponseEntity(b, HttpStatus.OK);
+            }else if(board1.isPresent()){
+                response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Const.NAME_NOT_UNIQUE);
+            }
+            else {
+                Board newBoard = new Board();
+                newBoard.setId(id);
+                newBoard.setBoardName(boardName);
+                b = boardRepository.save(newBoard);
+                response = new ResponseEntity(b, HttpStatus.OK);
+            }
         }
-        return new ResponseEntity(b, HttpStatus.OK);
+        catch (Exception e){
+            response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Const.IN_SERVER_ERR);
+        }
+
+        return response;
     }
 
     /**

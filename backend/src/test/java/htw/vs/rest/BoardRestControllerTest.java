@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.TestMethodOrder;
@@ -18,7 +19,7 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.annotation.Order;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -64,19 +65,25 @@ public class BoardRestControllerTest {
     @Order(4)
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceBoard() throws Exception {
-        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName")).andDo(print()).andExpect(status().isOk());
+        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName1")).andDo(print()).andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceBoardIdNotFound() throws Exception {
-        this.mockMvc.perform(post("/boards/5").param("boardName", "replacedBoardName")).andDo(print()).andExpect(status().isOk());
+        this.mockMvc.perform(post("/boards/5").param("boardName", "replacedBoardName2")).andDo(print()).andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(roles="USER")
     public void testReplaceBoardWithoutPermission() throws Exception {
-        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName")).andDo(print()).andExpect(status().isForbidden());
+        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName3")).andDo(print()).andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testReplaceBoardExistingName() throws Exception {
+        this.mockMvc.perform(post("/boards/1").param("boardName", "testboard2")).andDo(print()).andExpect(status().isInternalServerError());
     }
 
     @Test
