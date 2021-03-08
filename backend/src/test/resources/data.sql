@@ -23,6 +23,8 @@ INSERT INTO groups_users(groups_id, users_id) VALUES (1, 2);
 INSERT INTO groups_users(groups_id, users_id) VALUES (1, 4);
 INSERT INTO groups_users(groups_id, users_id) VALUES (2, 3);
 INSERT INTO groups_users(groups_id, users_id) VALUES (2, 5);
+INSERT INTO groups_users(groups_id, users_id) VALUES (3, 3);
+INSERT INTO groups_users(groups_id, users_id) VALUES (3, 5);
 
 -- messages
 INSERT INTO messages(id, active, content, end_date, board, sender, display_time, bg_color) VALUES (1, 1, 'content of message 1', '2024-03-01 17:03:17.000000', 1, 1, 120, 'white');
