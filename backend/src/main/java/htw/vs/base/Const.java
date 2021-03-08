@@ -18,5 +18,7 @@ public class Const {
     public static final String NO_BOARD_MSG = "No boards found";
     public static final String BOARD_NOT_FOUND_MSG = "Board not found";
     public static final String USER_NOT_FOUND_MSG = "User not found";
+    public static final String NAME_NOT_UNIQUE = "Specified name already exists";
+    public static final String IN_SERVER_ERR = "Internal Server Error";
 
 }
