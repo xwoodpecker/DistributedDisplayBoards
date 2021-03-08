@@ -15,7 +15,7 @@ INSERT INTO users(id, email, enabled, password, username) VALUES (7, 'User4@mail
 -- board_groups
 INSERT INTO board_groups(id, groupname, board_id, coordinator_id) VALUES (1, 'testgroup1', 1, 4);
 INSERT INTO board_groups(id, groupname, board_id, coordinator_id) VALUES (2, 'testgroup2', 2, 5);
-INSERT INTO board_groups(id, groupname, board_id, coordinator_id) VALUES (3, 'testgroup3', 2, 5);
+INSERT INTO board_groups(id, groupname, board_id, coordinator_id) VALUES (3, 'testgroup3', 2, 7);
 
 -- groups_users
 INSERT INTO groups_users(groups_id, users_id) VALUES (1, 1);

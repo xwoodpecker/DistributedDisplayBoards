@@ -48,19 +48,17 @@ public class GroupRestControllerTest {
     }
 
     @Test
-    @Order(3)
     public void testAddGroup() throws Exception {
         //?
     }
 
     @Test
-    @Order(4)
     public void testReplaceGroup() throws Exception {
         //?
     }
 
     @Test
-    @Order(5)
+    @Order(3)
     @WithMockUser(roles="SUPERVISOR")
     public void testDeleteGroup() throws Exception {
         this.mockMvc.perform(delete("/groups/3").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isOk());
