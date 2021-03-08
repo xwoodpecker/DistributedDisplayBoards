@@ -23,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -49,7 +50,6 @@ public class BoardRestControllerTest {
     }
 
     @Test
-    @Order(3)
     @WithMockUser(roles="SUPERVISOR" )
     public void testAddBoard() throws Exception {
         this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest")).andDo(print()).andExpect(status().isOk())
@@ -68,7 +68,6 @@ public class BoardRestControllerTest {
     }
 
     @Test
-    @Order(4)
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceBoard() throws Exception {
         this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName1")).andDo(print()).andExpect(status().isOk())
@@ -100,9 +99,21 @@ public class BoardRestControllerTest {
     }
 
     @Test
-    @Order(5)
+    @Order(3)
     @WithMockUser(roles="SUPERVISOR")
     public void testDeleteBoard() throws Exception {
         this.mockMvc.perform(delete("/boards/3").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isOk());
+        MvcResult result = this.mockMvc.perform(get("/boards/")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        assert(!stringResult.contains("{\"id\":3,\"boardName\":\"testboard3\"}"));
+
+    }
+
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testDeleteBoardWithGroup() throws Exception {
+        this.mockMvc.perform(delete("/boards/2").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isInternalServerError());
+
     }
 }

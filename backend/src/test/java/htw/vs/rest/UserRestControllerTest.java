@@ -23,6 +23,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -57,22 +58,23 @@ public class UserRestControllerTest {
     }
 
     @Test
-    @Order(3)
     public void testAddUser() throws Exception {
         //?
     }
 
     @Test
-    @Order(4)
     public void testReplaceUser() throws Exception {
         //?
     }
 
     @Test
-    @Order(5)
+    @Order(3)
     @WithMockUser(roles="SUPERVISOR")
     public void testDeleteUser() throws Exception {
         this.mockMvc.perform(delete("/users/7").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isOk());
+        MvcResult result = this.mockMvc.perform(get("/users/")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        assert(!stringResult.contains("\"id\":7,\"userName\":\"User4\",\"password\":\"123456\",\"enabled\":true,\"email\":\"User4@mail\""));
     }
 
     //todo

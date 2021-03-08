@@ -13,9 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.stringContainsInOrder;
+import static org.hamcrest.Matchers.*;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -47,7 +48,6 @@ public class GroupRestControllerTest {
     }
 
     @Test
-    @Order(3)
     @WithMockUser(roles="SUPERVISOR")
     public void testAddGroup() throws Exception {
         this.mockMvc.perform(post("/groups/").param("boardId","4").param("coordinatorId","1").param("groupName","testgroup4"))
@@ -82,17 +82,20 @@ public class GroupRestControllerTest {
     }
 
     @Test
-    @Order(4)
     public void testReplaceGroup() throws Exception {
         //?
     }
 
     @Test
-    @Order(5)
+    @Order(3)
     @WithMockUser(roles="SUPERVISOR")
     public void testDeleteGroup() throws Exception {
         this.mockMvc.perform(delete("/groups/3").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isOk());
+        MvcResult result = this.mockMvc.perform(get("/groups/")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        assert(!stringResult.contains("\"id\":3,\"groupName\":\"testgroup3\""));
     }
+
     //todo
 
     @Test

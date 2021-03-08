@@ -33,10 +33,10 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @ManyToMany(mappedBy = "users", fetch=FetchType.EAGER)
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
     private Set<Group> groups  = new HashSet<>();

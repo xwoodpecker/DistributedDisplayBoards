@@ -16,7 +16,7 @@ INSERT INTO users(id, email, enabled, password, username) VALUES (7, 'User4@mail
 -- board_groups
 INSERT INTO board_groups(id, groupname, board_id, coordinator_id) VALUES (1, 'testgroup1', 1, 4);
 INSERT INTO board_groups(id, groupname, board_id, coordinator_id) VALUES (2, 'testgroup2', 2, 5);
-INSERT INTO board_groups(id, groupname, board_id, coordinator_id) VALUES (3, 'testgroup3', 2, 5);
+INSERT INTO board_groups(id, groupname, board_id, coordinator_id) VALUES (3, 'testgroup3', 2, 7);
 
 -- groups_users
 INSERT INTO groups_users(groups_id, users_id) VALUES (1, 1);
@@ -24,6 +24,8 @@ INSERT INTO groups_users(groups_id, users_id) VALUES (1, 2);
 INSERT INTO groups_users(groups_id, users_id) VALUES (1, 4);
 INSERT INTO groups_users(groups_id, users_id) VALUES (2, 3);
 INSERT INTO groups_users(groups_id, users_id) VALUES (2, 5);
+INSERT INTO groups_users(groups_id, users_id) VALUES (3, 3);
+INSERT INTO groups_users(groups_id, users_id) VALUES (3, 5);
 
 -- messages
 INSERT INTO messages(id, active, content, end_date, board, sender, display_time, bg_color) VALUES (1, 1, 'content of message 1', '2024-03-01 17:03:17.000000', 1, 1, 120, 'white');
