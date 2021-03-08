@@ -10,10 +10,12 @@ INSERT INTO users(id, email, enabled, password, username) VALUES (3, 'User3@mail
 INSERT INTO users(id, email, enabled, password, username) VALUES (4, 'Coordinator1@mail', 1, '123456', 'Coordinator1');
 INSERT INTO users(id, email, enabled, password, username) VALUES (5, 'Coordinator2@mail', 1, '123456', 'Coordinator2');
 INSERT INTO users(id, email, enabled, password, username) VALUES (6, 'Admin@mail', 1, '123456', 'Admin');
+INSERT INTO users(id, email, enabled, password, username) VALUES (7, 'User4@mail', 1, '123456', 'User4');
 
 -- board_groups
 INSERT INTO board_groups(id, groupname, board_id, coordinator_id) VALUES (1, 'testgroup1', 1, 4);
 INSERT INTO board_groups(id, groupname, board_id, coordinator_id) VALUES (2, 'testgroup2', 2, 5);
+INSERT INTO board_groups(id, groupname, board_id, coordinator_id) VALUES (3, 'testgroup3', 2, 5);
 
 -- groups_users
 INSERT INTO groups_users(groups_id, users_id) VALUES (1, 1);
