@@ -32,7 +32,7 @@ public class BoardRestControllerTest {
     @Test
     public void testGetBoards() throws Exception {
         this.mockMvc.perform(get("/boards/")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"testboard1\"},{\"id\":2,\"boardName\":\"testboard2\"},{\"id\":3,\"boardName\":\"central\"}")));
+                .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"testboard1\"},{\"id\":2,\"boardName\":\"testboard2\"},{\"id\":3,\"boardName\":\"testboard3\"}")));
     }
 
     @Test
@@ -43,7 +43,7 @@ public class BoardRestControllerTest {
 
     @Test
     public void testAddBoard() throws Exception {
-        //?
+        this.mockMvc.perform(get("/groups/")).andDo(print());
     }
 
     @Test
@@ -57,5 +57,6 @@ public class BoardRestControllerTest {
         this.mockMvc.perform(delete("/boards/1").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isOk());
         this.mockMvc.perform(get("/boards/")).andDo(print());
         this.mockMvc.perform(get("/users/")).andDo(print());
+        this.mockMvc.perform(get("/groups/")).andDo(print());
     }
 }
