@@ -42,13 +42,33 @@ public class BoardRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles="SUPERVISOR" )
     public void testAddBoard() throws Exception {
-        this.mockMvc.perform(get("/groups/")).andDo(print());
+        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest")).andDo(print()).andExpect(status().isOk());
     }
 
     @Test
+    @WithMockUser(roles="USER")
+    public void testAddBoardWithoutPermission() throws Exception {
+        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest")).andDo(print()).andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
     public void testReplaceBoard() throws Exception {
-        //?
+        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName")).andDo(print()).andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testReplaceBoardIdNotFound() throws Exception {
+        this.mockMvc.perform(post("/boards/5").param("boardName", "replacedBoardName")).andDo(print()).andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles="USER")
+    public void testReplaceBoardWithoutPermission() throws Exception {
+        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName")).andDo(print()).andExpect(status().isForbidden());
     }
 
     @Test
