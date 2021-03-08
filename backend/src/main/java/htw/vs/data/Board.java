@@ -1,7 +1,7 @@
 package htw.vs.data;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 
@@ -20,11 +20,11 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @Column(name = "boardname")
+    @Column(name = "boardname",  unique = true, nullable = false)
     private String boardName;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
+
+    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private Group group;
 

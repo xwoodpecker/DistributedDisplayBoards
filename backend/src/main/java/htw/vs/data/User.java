@@ -1,7 +1,10 @@
 package htw.vs.data;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,7 +15,6 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "USERS")
-@JsonIgnoreProperties({"groups"})
 public class User {
 
     @Id
@@ -31,10 +33,12 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "users")
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, mappedBy = "users")
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     private Set<Group> groups  = new HashSet<>();
 
     /**

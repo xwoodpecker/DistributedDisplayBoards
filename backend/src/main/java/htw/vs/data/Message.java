@@ -20,13 +20,14 @@ public class Message  {
 
     @ManyToOne
     @JoinColumn(name = "sender")
-    @JsonIgnoreProperties({"userName", "password", "enabled", "email", "roles", "groups" })
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     private User user;
-
 
     @ManyToOne
     @JoinColumn(name = "board")
-    @JsonIgnoreProperties({"boardName"})
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     private Board board;
 
     @Column(name = "display_time")

@@ -43,7 +43,7 @@ public class BoardRestControllerTest {
 
     @Test
     public void testAddBoard() throws Exception {
-        this.mockMvc.perform(get("/groups/")).andDo(print());
+        //?
     }
 
     @Test
@@ -54,9 +54,6 @@ public class BoardRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testDeleteBoard() throws Exception {
-        this.mockMvc.perform(delete("/boards/1").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isOk());
-        this.mockMvc.perform(get("/boards/")).andDo(print());
-        this.mockMvc.perform(get("/users/")).andDo(print());
-        this.mockMvc.perform(get("/groups/")).andDo(print());
+        this.mockMvc.perform(delete("/boards/3").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isOk());
     }
 }
