@@ -66,34 +66,38 @@ public class BoardRestController {
     /**
      * Add board response entity.
      *
-     * @param newBoard the new board
+     * @param boardName the name of the new board
      * @return the response entity
      */
     @Operation(summary = "Add a new board")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
-    public ResponseEntity addBoard(@RequestBody Board newBoard) {
+    public ResponseEntity addBoard(@RequestParam String boardName) {
+        Board newBoard = new Board();
+        newBoard.setBoardName(boardName);
         return new ResponseEntity<>(boardRepository.save(newBoard), HttpStatus.OK);
     }
+
 
     /**
      * Replace board response entity.
      *
-     * @param newBoard the new board
-     * @param id       the id
+     * @param boardName the board name
+     * @param id        the id
      * @return the response entity
      */
     @Operation(summary = "Change board name")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/{id}")
-    public ResponseEntity replaceBoard(@RequestBody Board newBoard, @PathVariable Long id) {
+    public ResponseEntity replaceBoard(@RequestParam String boardName, @PathVariable Long id) {
         Optional<Board> board = boardRepository.findById(id);
         Board b;
         if(board.isPresent()){
             Board temp = board.get();
-            temp.setBoardName(newBoard.getBoardName());
+            temp.setBoardName(boardName);
             b = boardRepository.save(temp);
         }else {
+            Board newBoard = new Board();
             newBoard.setId(id);
             b = boardRepository.save(newBoard);
         }
