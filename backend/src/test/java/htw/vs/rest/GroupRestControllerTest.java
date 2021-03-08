@@ -9,14 +9,14 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.stringContainsInOrder;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,8 +48,37 @@ public class GroupRestControllerTest {
 
     @Test
     @Order(3)
+    @WithMockUser(roles="SUPERVISOR")
     public void testAddGroup() throws Exception {
-        //?
+        this.mockMvc.perform(post("/groups/").param("boardId","4").param("coordinatorId","1").param("groupName","testgroup4"))
+                .andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("{\"id\":4,\"groupName\":\"testgroup4\",\"users\":[],\"board\":4,\"coordinator\":1}")));
+    }
+
+    @Test
+    public void testAddGroupWithoutRole() throws Exception {
+        this.mockMvc.perform(post("/groups/").param("boardId","4").param("coordinatorId","1").param("groupName","testgroup4"))
+                .andDo(print()).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(roles="USER")
+    public void testAddGroupWithoutPermission() throws Exception {
+        this.mockMvc.perform(post("/groups/").param("boardId","4").param("coordinatorId","1").param("groupName","testgroup4"))
+                .andDo(print()).andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testAddGroupBoardNotFound() throws Exception {
+        this.mockMvc.perform(post("/groups/").param("boardId","90").param("coordinatorId","1").param("groupName","testgroup4"))
+                .andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testAddGroupUserNotFound() throws Exception {
+        this.mockMvc.perform(post("/groups/").param("boardId","4").param("coordinatorId","90").param("groupName","testgroup4"))
+                .andDo(print()).andExpect(status().isNotFound());
     }
 
     @Test
@@ -64,6 +93,37 @@ public class GroupRestControllerTest {
     public void testDeleteGroup() throws Exception {
         this.mockMvc.perform(delete("/groups/3").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isOk());
     }
-
     //todo
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR",username="Admin")
+    public void testAddUserToGroup() throws Exception {
+        this.mockMvc.perform(post("/groups/user/1").principal(SecurityContextHolder.getContext().getAuthentication()).param("userId","3")
+        ).andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("{\"id\":1,\"groupName\":\"testgroup1\"")));
+    }
+
+    @Test
+    public void testAddUserToGroupWithoutRole() throws Exception {
+
+    }
+
+    @Test
+    public void testAddUserToGroupWithoutPermission() throws Exception {
+
+    }
+
+    @Test
+    public void testAddUserToGroupDiffernetCoordinator() throws Exception {
+
+    }
+
+    @Test
+    public void testAddUserToGroupUserNotFound() throws Exception {
+
+    }
+
+    @Test
+    public void testAddUserToGroupGroupNotFound() throws Exception {
+
+    }
 }
