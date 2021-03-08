@@ -28,7 +28,7 @@ public class Group {
 
     //this might change in the future
     // at the moment we have a onetoone relation but it is planned to have dynamic group assignments
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "group")
     private Board board;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

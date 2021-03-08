@@ -23,7 +23,8 @@ public class Board {
     @Column(name = "boardname")
     private String boardName;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     @JsonIgnore
     private Group group;
 

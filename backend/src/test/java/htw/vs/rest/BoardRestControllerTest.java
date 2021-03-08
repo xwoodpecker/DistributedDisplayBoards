@@ -55,5 +55,7 @@ public class BoardRestControllerTest {
     @WithMockUser(roles="SUPERVISOR")
     public void testDeleteBoard() throws Exception {
         this.mockMvc.perform(delete("/boards/1").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isOk());
+        this.mockMvc.perform(get("/boards/")).andDo(print());
+        this.mockMvc.perform(get("/users/")).andDo(print());
     }
 }
