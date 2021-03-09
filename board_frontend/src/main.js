@@ -2,13 +2,13 @@ import Vue from 'vue'
 import App from './App.vue'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import { routes } from './routes'
+import {routes} from './routes'
 import createPersistedState from 'vuex-persistedstate'
 import VueMaterial from 'vue-material'
 import VueAgile from 'vue-agile'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
-import { ENV } from './environment'
+import {ENV} from './environment'
 import BoardService from './services/boardService'
 import ApiClient from './http/src/ApiClient'
 
@@ -25,11 +25,10 @@ const router = new VueRouter({
 });
 
 
-
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (!store.getters.isLoggedIn && !ENV.developerMode) {
-            next({ name: 'login' })
+            next({name: 'login'})
         } else {
             next() // go to wherever I'm going
         }
@@ -44,21 +43,27 @@ export const store = new Vuex.Store({
     })],
     state: {
         user: null,
-        boards: {}
+        authHeader: null,
+        boards: [],
     },
     mutations: {
         login(state, user) {
             state.user = user;
+            console.log("user", state.user)
         },
         logout(state) {
             state.user = null;
+            state.authHeader = null;
         },
-        addBoards(state, boards){
-            for(let board of boards)
-                state.boards[board.id] = board;
+        addBoards(state, boards) {
+            state.boards = boards;
         },
         clearBoards(state) {
             state.boards = {}
+        },
+        setAuthHeader(state, auth) {
+            state.authHeader = {'Authorization': 'Basic ' + window.btoa(auth.username + ':' + auth.password)};
+            console.log("authHeader", state.authHeader)
         }
     },
     getters: {
@@ -67,6 +72,13 @@ export const store = new Vuex.Store({
         },
         boards: state => {
             return state.boards;
+        },
+        authHeader: state => {
+            const header = {
+                headers:
+                state.authHeader
+            }
+            return header;
         }
     }
 });

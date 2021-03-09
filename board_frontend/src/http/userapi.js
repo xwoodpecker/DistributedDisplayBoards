@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl="localhost:80";
+const baseUrl="http://localhost:8000";
 
 export default {
     getUsers,

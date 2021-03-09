@@ -14,7 +14,7 @@
         <BoardDisplay></BoardDisplay>
       </md-card-media>
 
-      <md-card-content>
+      <md-card-content v-if="messages">
         Active messages: {{ messages.length }}
       </md-card-content>
 
