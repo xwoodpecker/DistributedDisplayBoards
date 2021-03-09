@@ -9,8 +9,8 @@
                 </div>
                 <div class="form">
                     <form @submit.prevent="doLogin">
-                        <label for="email">Email</label>
-                        <input type="text" id="email" v-model="email" placeholder="max@mustermann.de">
+                        <label for="username">Benutzername</label>
+                        <input type="text" id="username" v-model="username" placeholder="MaxMustermann">
 
                         <label for="password">Passwort</label>
                         <i class="fa" :class="[passwordIcon]" @click="hidePassword = !hidePassword"></i>
@@ -29,14 +29,14 @@
 
 <script>
     //import socket from "sockjs";
-
+    import userapi from "@/http/userapi";
     export default {
         name: 'Login',
         props: {},
         data() {
             return {
                 errors: [],
-                email: null,
+                username: null,
                 password: null,
                 hidePassword: true
             }
@@ -52,38 +52,24 @@
         methods: {
             doLogin() {
                 if (this.checkForm()) {
-                    //TODO hier User beim Service anfragen mit daten;
                     const user = {
-                        'name': 'Tester',
-                        'boards' : {
-                            '1' : {
-
-                            },
-                            '2': {
-
-                            }
+                        'auth': {
+                          'password': this.password,
+                          'username': this.username,
                         }
                     };
                     this.$store.commit('login', user);
-                    this.$router.push({name: 'dashboard'});
+                    //this.$router.push({name: 'dashboard'});
                 }
             },
             checkForm() {
                 this.errors = [];
-                if (!this.email) {
-                    this.errors.push('Bitte geben Sie eine E-Mail Adresse ein.');
-                } else if (!this.validEmail(this.email)) {
-                    this.errors.push('Bitte geben Sie eine E-Mail Adresse mit gültigem Format ein.');
+                if (!this.username) {
+                    this.errors.push('Bitte geben Sie einen Benutzername ein.');
                 }
-
                 if (!this.password) this.errors.push('Bitte geben Sie ein Passwort ein.');
-
                 return !this.errors.length;
             },
-            validEmail(email) {
-                var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                return re.test(email);
-            }
         },
         created() {
             //socket.createServer();

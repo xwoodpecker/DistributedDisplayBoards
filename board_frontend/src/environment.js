@@ -1,4 +1,4 @@
 export const ENV = {
-    developerMode: true,
+    developerMode: false,
     environment: "development"
 }
