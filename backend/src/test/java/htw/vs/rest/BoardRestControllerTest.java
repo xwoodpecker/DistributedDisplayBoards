@@ -52,7 +52,13 @@ public class BoardRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR" )
     public void testAddBoard() throws Exception {
-        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest")).andDo(print()).andExpect(status().isOk());
+        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest")).andDo(print()).andExpect(status().isOk())
+        .andExpect(content().string(containsString("{\"id\":6,\"boardName\":\"addedBoardTest\"}")));
+    }
+
+    @Test
+    public void testAddBoardWithoutRole() throws Exception {
+        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest")).andDo(print()).andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -64,13 +70,20 @@ public class BoardRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceBoard() throws Exception {
-        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName1")).andDo(print()).andExpect(status().isOk());
+        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName1")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"replacedBoardName1\"}")));
     }
 
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceBoardIdNotFound() throws Exception {
-        this.mockMvc.perform(post("/boards/5").param("boardName", "replacedBoardName2")).andDo(print()).andExpect(status().isOk());
+        this.mockMvc.perform(post("/boards/5").param("boardName", "replacedBoardName2")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("{\"id\":5,\"boardName\":\"replacedBoardName2\"}")));
+    }
+
+    @Test
+    public void testReplaceBoardWithoutRole() throws Exception {
+        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName3")).andDo(print()).andExpect(status().isUnauthorized());
     }
 
     @Test
