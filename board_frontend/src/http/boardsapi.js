@@ -1,6 +1,8 @@
 import axios from "axios";
+import { ENV } from '@/environment';
+import { sprintf }   from 'sprintf-js';
+import {store} from '@/main';
 
-const baseUrl="localhost:80";
 
 export default {
     getBoards,
@@ -11,7 +13,7 @@ export default {
 }
 
 export async function getBoards(){
-    return axios.get(baseUrl+"/boards").then( response => {
+    return axios.get(ENV.baseUrl + ENV.endpoints.boards ).then( response => {
         if (response) {
             return response.data
         }
@@ -27,7 +29,8 @@ export async function getBoard(boardId){
 }
 
 export async function getUserBoards(userId){
-    return axios.get(baseUrl+"/users/"+userId+"/boards").then( response => {
+    console.log(JSON.parse(JSON.stringify(store.getters.authHeader)));
+    return axios.get(ENV.baseUrl + sprintf(ENV.endpoints.userboards, userId), JSON.parse(JSON.stringify(store.getters.authHeader))).then( response => {
         if (response) {
             return response.data
         }

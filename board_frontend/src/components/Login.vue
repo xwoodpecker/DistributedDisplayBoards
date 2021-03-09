@@ -30,14 +30,15 @@
 <script>
     //import socket from "sockjs";
     import userapi from "@/http/userapi";
+    import authenticationService from "@/authenticationService";
     export default {
         name: 'Login',
         props: {},
         data() {
             return {
                 errors: [],
-                username: null,
-                password: null,
+                username: "",
+                password: "",
                 hidePassword: true
             }
         },
@@ -50,15 +51,19 @@
             }
         },
         methods: {
-            doLogin() {
+            async doLogin() {
                 if (this.checkForm()) {
-                    const user = {
-                        'auth': {
+                    const credentials = {
                           'password': this.password,
                           'username': this.username,
-                        }
                     };
-                    this.$store.commit('login', user);
+                    await authenticationService.login(credentials).then( (res) => {
+                      if (res) {
+                        this.$store.commit('login', res);
+                        this.$store.commit('setAuthHeader', credentials);
+                        this.$router.push({name: 'dashboard'});
+                      }
+                    });
                     //this.$router.push({name: 'dashboard'});
                 }
             },

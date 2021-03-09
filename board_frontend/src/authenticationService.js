@@ -1,19 +1,20 @@
 import axios from 'axios'
+import { ENV } from './environment'
 
-var getUrl = window.location;
-var baseUrl = getUrl.protocol + "//" + getUrl.host;
 
-const backendEndpoint = 'endpoint';
+//var baseUrl = getUrl.protocol + "//" + getUrl.host;
+
+const url = "http://localhost:8000/users/login"
 
 export default {
     login, logout
 }
 
-export function login(user) {
-    return axios.get(baseUrl + backendEndpoint, {
-        params: {
-            user: user
-        }
+export async function login(credentials) {
+    return axios.get(ENV.baseUrl + ENV.endpoints.login, {
+        headers: {
+            'Authorization': 'Basic ' + window.btoa(credentials.username + ':' + credentials.password)
+        },
     }).then((response) => {
         if (response.data && response.status === 200) {
             return response.data;
