@@ -24,18 +24,20 @@ public class UserRestController {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
+    private MessageRepository messageRepository;
 
     /**
      * Instantiates a new User rest controller.
-     *
-     * @param userRepository  the user repository
+     *  @param userRepository  the user repository
      * @param passwordEncoder the password encoder
      * @param roleRepository  the role repository
+     * @param messageRepository
      */
-    public UserRestController(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public UserRestController(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, MessageRepository messageRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.messageRepository = messageRepository;
     }
 
     /**
