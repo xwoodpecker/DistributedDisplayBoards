@@ -231,6 +231,61 @@ public class GroupRestController {
         return response;
     }
 
+    @Operation
+    @Secured("ROLE_SUPERVISOR")
+    @PostMapping("/{id}")
+    public ResponseEntity replaceGroup(@PathVariable Long id, @RequestBody Group newGroup){
+        ResponseEntity response;
+        Group g;
+
+        Optional<Group> group = groupRepository.findById(id);
+        Optional<Board> board = boardRepository.findById(newGroup.getBoard().getId());
+        Optional<User>  coordidnator = userRepository.findById(newGroup.getCoordinator().getId());
+        if(group.isPresent()) {
+            Group temp = group.get();
+            temp.setGroupName(newGroup.getGroupName());
+
+            if(!board.isPresent()){
+                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_BOARD_MSG);
+            }
+            else {
+                temp.setBoard(newGroup.getBoard());
+
+                if(!coordidnator.isPresent()){
+                    response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
+                }
+                else {
+                    User oldCoordinator = temp.getCoordinator();
+                    List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
+                    Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
+
+                    //todo test
+                    if(groups.size() < 2) {
+                        oldCoordinator.getRoles().remove(coordinatorRole);
+                        coordinatorRole.getUsers().remove(oldCoordinator);
+                    }
+                    User newCoordinator = coordidnator.get();
+                    //todo test duplicate ?
+                    newCoordinator.getRoles().add(coordinatorRole);
+                    coordinatorRole.getUsers().add(newCoordinator);
+                    temp.setCoordinator(newCoordinator);
+
+                    g = groupRepository.save(temp);
+
+                    response = new ResponseEntity(g, HttpStatus.OK);
+                }
+            }
+
+
+        }else {
+            newGroup.setId(id);
+            g = groupRepository.save(newGroup);
+            response = new ResponseEntity(g, HttpStatus.OK);
+        }
+
+        return response;
+    }
+
     /**
      * Delete group response entity.
      *
