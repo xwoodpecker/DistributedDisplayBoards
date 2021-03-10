@@ -72,14 +72,14 @@ public class BoardRestController {
     @Operation(summary = "Add a new board")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
-    public ResponseEntity addBoard(@RequestParam String boardName) {
+    public ResponseEntity addBoard(@RequestParam String boardName, @RequestParam String location) {
         Board newBoard = new Board();
         newBoard.setBoardName(boardName);
+        newBoard.setLocation(location);
         return new ResponseEntity<>(boardRepository.save(newBoard), HttpStatus.OK);
     }
 
 
-    //todo: what is dis?
     /**
      * Replace board response entity.
      *
@@ -90,27 +90,22 @@ public class BoardRestController {
     @Operation(summary = "Change board name")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/{id}")
-    public ResponseEntity replaceBoard(@RequestParam String boardName, @PathVariable Long id) {
+    public ResponseEntity replaceBoard(@RequestParam String boardName, @RequestParam String location, @PathVariable Long id) {
         ResponseEntity response;
         Optional<Board> board = boardRepository.findById(id);
         Board b;
-        try {
-            if(board.isPresent()) {
-                Board temp = board.get();
-                temp.setBoardName(boardName);
-                b = boardRepository.save(temp);
-                response = new ResponseEntity(b, HttpStatus.OK);
-            } else {
-                Board newBoard = new Board();
-                newBoard.setId(id);
-                b = boardRepository.save(newBoard);
-                response = new ResponseEntity(b, HttpStatus.OK);
-            }
+        if(board.isPresent()) {
+            Board temp = board.get();
+            temp.setBoardName(boardName);
+            temp.setLocation(location);
+            b = boardRepository.save(temp);
+            response = new ResponseEntity(b, HttpStatus.OK);
+        } else {
+            Board newBoard = new Board();
+            newBoard.setId(id);
+            b = boardRepository.save(newBoard);
+            response = new ResponseEntity(b, HttpStatus.OK);
         }
-        catch (Exception e){
-            response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Const.IN_SERVER_ERR);
-        }
-
         return response;
     }
 
