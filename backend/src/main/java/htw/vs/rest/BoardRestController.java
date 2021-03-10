@@ -102,23 +102,10 @@ public class BoardRestController {
             b = boardRepository.save(temp);
         } else {
             newBoard.setId(id);
+            //todo
             b = boardRepository.save(newBoard);
         }
         return new ResponseEntity(b, HttpStatus.OK);
-    }
-
-    /**
-     * Delete board response entity.
-     *
-     * @param id the id
-     * @return the response entity
-     */
-    @Operation(summary = "Delete a board")
-    @Secured("ROLE_SUPERVISOR")
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteBoard(@PathVariable Long id) {
-        boardRepository.deleteById(id);
-        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
 }

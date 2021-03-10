@@ -298,8 +298,10 @@ public class GroupRestController {
     public ResponseEntity deleteGroup(@PathVariable Long id) {
         Optional<Group> group = groupRepository.findById(id);
 
+        //todo: remove coordinator rights in case of only coordinated group
         group.get().setCoordinator(null);
         group.get().setUsers(null);
+        group.get().setBoard(null);
 
         groupRepository.deleteById(id);
         return new ResponseEntity<>(null, HttpStatus.OK);

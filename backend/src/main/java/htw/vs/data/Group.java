@@ -28,14 +28,34 @@ public class Group {
 
     //this might change in the future
     // at the moment we have a onetoone relation but it is planned to have dynamic group assignments
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Board board;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
     private User coordinator;
+
+
+
+    public Group(Long id, String groupName, Set<User> users, Board board, User coordinator) {
+        this.id = id;
+        this.groupName = groupName;
+        this.users = users;
+        this.board = board;
+        this.coordinator = coordinator;
+    }
+
+    public Group(Long id, String groupName, Board board, User coordinator) {
+        this.id = id;
+        this.groupName = groupName;
+        this.board = board;
+        this.coordinator = coordinator;
+    }
+
+    public Group() {
+
+    }
 
     /**
      * Gets id.

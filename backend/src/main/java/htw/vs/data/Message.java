@@ -18,14 +18,12 @@ public class Message  {
     @Column(name = "content", columnDefinition="TEXT")
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "sender")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "board")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
     private Board board;

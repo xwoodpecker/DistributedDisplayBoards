@@ -4,6 +4,8 @@ package htw.vs.data;
 import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The type Board.
@@ -27,9 +29,14 @@ public class Board {
     private String location;
 
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "board", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "board", fetch = FetchType.EAGER)
     @JsonIgnore
     private Group group;
+
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "board", fetch = FetchType.EAGER, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Message> messages = new HashSet<>();
 
     /**
      * Instantiates a new Board.
@@ -55,6 +62,20 @@ public class Board {
     public Board(Long id, String boardName) {
         this.id = id;
         this.boardName = boardName;
+    }
+
+
+    /**
+     * Instantiates a new Board.
+     *
+     * @param id        the id
+     * @param boardName the board name
+     */
+    public Board(Long id, String boardName, Group group, Set<Message> messages) {
+        this.id = id;
+        this.boardName = boardName;
+        this.group = group;
+        this.messages = messages;
     }
 
     /**

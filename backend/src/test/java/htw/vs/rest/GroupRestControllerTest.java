@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -184,9 +185,7 @@ public class GroupRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles="SUPERVISOR",username="Admin")
     public void testAddUserToGroupGroupNotFound() throws Exception {
-        this.mockMvc.perform(post("/groups/user/90").principal(SecurityContextHolder.getContext().getAuthentication()).param("userId","3")
-        ).andDo(print()).andExpect(status().isNotFound());
+
     }
 }

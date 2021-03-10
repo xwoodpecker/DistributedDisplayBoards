@@ -27,6 +27,8 @@ public class SpringFoxConfig {
      */
     public static final String GROUP = "Groups";
 
+    public static final String MESSAGES = "Messages";
+
     /**
      * Api docket.
      *
