@@ -201,15 +201,15 @@ public class UserRestController {
     }
 
     /**
-     * Get boards of user response entity.
+     * Get groups of user response entity.
      *
      * @param id the id
      * @return the response entity
      */
-    @Operation(summary = "Get Boards of a user")
+    @Operation(summary = "Get Groups of a user")
     @Secured("ROLE_USER")
-    @GetMapping("/{id}/boards")
-    public ResponseEntity getBoardsOfUser(@PathVariable Long id){
+    @GetMapping("/{id}/groups")
+    public ResponseEntity getGroupsOfUser(@PathVariable Long id){
         return new ResponseEntity<>(userRepository.findById(id).get().getGroups(), HttpStatus.OK);
     }
 
