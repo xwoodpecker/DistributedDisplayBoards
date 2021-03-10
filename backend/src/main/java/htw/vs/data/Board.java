@@ -27,7 +27,7 @@ public class Board {
     private String location;
 
 
-    @OneToOne(mappedBy = "board", fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "board", fetch = FetchType.EAGER)
     @JsonIgnore
     private Group group;
 

@@ -20,8 +20,7 @@ public class Role {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "USERS_ROLES")
+    @ManyToMany(mappedBy = "roles")
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
     private Set<User> users = new HashSet<>();

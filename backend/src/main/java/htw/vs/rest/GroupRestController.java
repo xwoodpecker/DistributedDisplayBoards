@@ -298,7 +298,6 @@ public class GroupRestController {
     public ResponseEntity deleteGroup(@PathVariable Long id) {
         Optional<Group> group = groupRepository.findById(id);
 
-        group.get().setBoard(null);
         group.get().setCoordinator(null);
         group.get().setUsers(null);
 

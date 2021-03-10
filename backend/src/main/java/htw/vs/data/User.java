@@ -30,10 +30,11 @@ public class User {
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    @ManyToMany(fetch=FetchType.EAGER)
+    @JoinTable(name = "USERS_ROLES")
     private Set<Role> roles = new HashSet<>();
 
     @ManyToMany(mappedBy = "users", fetch=FetchType.EAGER)
