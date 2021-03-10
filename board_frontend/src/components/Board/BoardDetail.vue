@@ -172,9 +172,8 @@ export default {
   computed: {},
   created() {
     this.boardId = this.$route.params.id;
-
     //hier das passende Board anhand ID aus dem store holen und socket aufbauen für master
-    console.log("Board Id is" + this.boardId)
+
   },
   mounted() {
   },

@@ -1,6 +1,6 @@
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
-import {store} from '../main';
+import {store} from '@/main';
 
 const backendEndpoint = 'http://localhost:8000/backend';
 

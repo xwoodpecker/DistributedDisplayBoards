@@ -29,6 +29,7 @@ public class Group {
     @OneToOne(fetch = FetchType.EAGER)
     private Board board;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private User coordinator;
 
