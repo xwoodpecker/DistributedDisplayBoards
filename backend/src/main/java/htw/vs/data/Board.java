@@ -23,6 +23,9 @@ public class Board {
     @Column(name = "boardname",  unique = true, nullable = false)
     private String boardName;
 
+    @Column(name = "location")
+    private String location;
+
 
     @OneToOne(mappedBy = "board", fetch = FetchType.EAGER)
     @JsonIgnore
@@ -117,4 +120,11 @@ public class Board {
                 '}';
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }

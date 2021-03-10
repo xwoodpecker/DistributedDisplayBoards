@@ -30,8 +30,6 @@ public class Group {
     // at the moment we have a onetoone relation but it is planned to have dynamic group assignments
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
     private Board board;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
