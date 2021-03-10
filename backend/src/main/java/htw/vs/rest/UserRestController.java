@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The type User rest controller.
@@ -197,6 +198,7 @@ public class UserRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteUser(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
+        user.get().getGroups().forEach(g -> g.setUsers(g.getUsers().stream().filter(u -> u.getId() != id).collect(Collectors.toSet())));
         user.get().setGroups(null);
         user.get().setRoles(null);
         userRepository.deleteById(id);
