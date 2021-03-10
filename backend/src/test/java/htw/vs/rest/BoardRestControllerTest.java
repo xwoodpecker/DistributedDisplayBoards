@@ -39,63 +39,65 @@ public class BoardRestControllerTest {
     @Order(1)
     public void testGetBoards() throws Exception {
         this.mockMvc.perform(get("/boards/")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"testboard1\"},{\"id\":2,\"boardName\":\"testboard2\"},{\"id\":3,\"boardName\":\"testboard3\"}")));
+                .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"testboard1\",\"location\":\"location1\"},{\"id\":2,\"boardName\":\"testboard2\",\"location\":\"location2\"},{\"id\":3,\"boardName\":\"testboard3\",\"location\":\"location3\"},{\"id\":4,\"boardName\":\"testboard4\",\"location\":\"location4\"},{\"id\":5,\"boardName\":\"central\",\"location\":null}")));
+
+
     }
 
     @Test
     @Order(2)
     public void testGetBoard() throws Exception {
         this.mockMvc.perform(get("/boards/1")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"testboard1\"}")));
+                .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"testboard1\",\"location\":\"location1\"}")));
     }
 
     @Test
     @WithMockUser(roles="SUPERVISOR" )
     public void testAddBoard() throws Exception {
-        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest")).andDo(print()).andExpect(status().isOk())
-        .andExpect(content().string(containsString("{\"id\":6,\"boardName\":\"addedBoardTest\"}")));
+        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest").param("location", "newlocation")).andDo(print()).andExpect(status().isOk())
+        .andExpect(content().string(containsString("{\"id\":6,\"boardName\":\"addedBoardTest\",\"location\":\"newlocation\"}")));
     }
 
     @Test
     public void testAddBoardWithoutRole() throws Exception {
-        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest")).andDo(print()).andExpect(status().isUnauthorized());
+        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest").param("location", "newlocation")).andDo(print()).andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser(roles="USER")
     public void testAddBoardWithoutPermission() throws Exception {
-        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest")).andDo(print()).andExpect(status().isForbidden());
+        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest").param("location", "newlocation")).andDo(print()).andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceBoard() throws Exception {
-        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName1")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"replacedBoardName1\"}")));
+        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName1").param("location", "newlocation")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"replacedBoardName1\",\"location\":\"newlocation\"}")));
     }
 
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceBoardIdNotFound() throws Exception {
-        this.mockMvc.perform(post("/boards/5").param("boardName", "replacedBoardName2")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("{\"id\":5,\"boardName\":\"replacedBoardName2\"}")));
+        this.mockMvc.perform(post("/boards/5").param("boardName", "replacedBoardName2").param("location", "newlocation")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("{\"id\":5,\"boardName\":\"replacedBoardName2\",\"location\":\"newlocation\"}")));
     }
 
     @Test
     public void testReplaceBoardWithoutRole() throws Exception {
-        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName3")).andDo(print()).andExpect(status().isUnauthorized());
+        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName3").param("location", "newlocation")).andDo(print()).andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser(roles="USER")
     public void testReplaceBoardWithoutPermission() throws Exception {
-        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName3")).andDo(print()).andExpect(status().isForbidden());
+        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName3").param("location", "newlocation")).andDo(print()).andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceBoardExistingName() throws Exception {
-        this.mockMvc.perform(post("/boards/1").param("boardName", "testboard2")).andDo(print()).andExpect(status().isInternalServerError());
+        this.mockMvc.perform(post("/boards/1").param("boardName", "testboard2").param("location", "newlocation")).andDo(print()).andExpect(status().isInternalServerError());
     }
 
     @Test

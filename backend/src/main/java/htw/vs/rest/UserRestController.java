@@ -148,7 +148,7 @@ public class UserRestController {
     @Operation(summary = "Change password of a specified user. Supervisor only")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/password/other")
-    public ResponseEntity changeSomeonesPassword(String username, String newPassword){
+    public ResponseEntity changeSomeonesPassword(@RequestParam String username, @RequestParam String newPassword){
         User user = userRepository.findUserByUserName(username);
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
