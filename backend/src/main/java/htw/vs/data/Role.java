@@ -40,6 +40,11 @@ public class Role {
         this.name = name;
     }
 
+    public Role(String name, Set<User> users) {
+        this.name = name;
+        this.users = users;
+    }
+
     /**
      * Gets name.
      *

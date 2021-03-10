@@ -52,7 +52,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if(alreadySetup)
-            return;
+        return;
         createRoleIfNotFound(Const.SUPERVISOR_ROLE);
         createRoleIfNotFound(Const.COORDINATOR_ROLE);
         createRoleIfNotFound(Const.USER_ROLE);

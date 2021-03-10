@@ -116,7 +116,7 @@ public class GroupRestControllerTest {
     }
 
     @Test
-    public void testAddUserToGroupDiffernetCoordinator() throws Exception {
+    public void testAddUserToGroupDifferentCoordinator() throws Exception {
 
     }
 

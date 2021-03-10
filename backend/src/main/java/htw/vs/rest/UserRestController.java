@@ -195,6 +195,7 @@ public class UserRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteUser(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
+        user.get().setGroups(null);
         user.get().setRoles(null);
         userRepository.deleteById(id);
         return new ResponseEntity<>(null, HttpStatus.OK);

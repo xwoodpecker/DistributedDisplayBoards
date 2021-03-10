@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
-@Api
+@Api(tags = {SpringFoxConfig.MESSAGES})
 @RestController
 @RequestMapping(path = "/messages")
 public class MessageRestController {
@@ -129,7 +129,7 @@ public class MessageRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteMessage(@PathVariable Long id) {
 
-        groupRepository.deleteById(id);
+        messageRepository.deleteById(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 

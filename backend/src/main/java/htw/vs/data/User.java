@@ -1,10 +1,7 @@
 package htw.vs.data;
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -37,10 +34,14 @@ public class User {
     @JoinTable(name = "USERS_ROLES")
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany(mappedBy = "users", fetch=FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "users", fetch=FetchType.EAGER)
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
     private Set<Group> groups  = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Message> messages = new HashSet<>();
 
     /**
      * Instantiates a new User.
@@ -69,7 +70,7 @@ public class User {
      * @param roles    the roles
      * @param groups   the groups
      */
-    public User(Long id, String userName, String password, boolean enabled, String email, Set<Role> roles, Set<Group> groups) {
+    public User(Long id, String userName, String password, boolean enabled, String email, Set<Role> roles, Set<Group> groups, Set<Message> messages) {
         this.id = id;
         this.userName = userName;
         this.password = password;
@@ -77,6 +78,7 @@ public class User {
         this.email = email;
         this.roles = roles;
         this.groups = groups;
+        this.messages = messages;
     }
 
     /**
@@ -208,6 +210,14 @@ public class User {
     @Override
     public String toString() {
         return userName;
+    }
+
+    public Set<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Set<Message> messages) {
+        this.messages = messages;
     }
 
 
