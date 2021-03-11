@@ -97,15 +97,16 @@ public class WebSocketMessageController {
     public boolean message(Authentication authentication,  @Payload Message message) {
 
         Board board = message.getBoard();
+        Board realBord  = this.boardRepository.findBoardByIdEagerGroup(board.getId());
 
         User user = userRepository.findById(message.getUser().getId())
                 .orElseThrow(() -> new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION));
 
-        verifyUserBoard(authentication, user, board);
+        verifyUserBoard(authentication, user, realBord);
 
         List<Message> messages = addOrReplace(message);
 
-        sendToBoard(board.getId(),messages);
+        sendToBoard(realBord.getId(),messages);
 
         return true;
     }
