@@ -1,5 +1,5 @@
 export const ENV = {
-    developerMode: true,
+    developerMode: false,
     environment: "development",
     baseUrl: "http://localhost:8000/",
     endpoints: {
