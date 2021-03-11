@@ -10,9 +10,14 @@
       <span class="md-list-item-text">Dashboard</span>
     </md-list-item>
 
-    <md-list-item>
-      <md-icon>send</md-icon>
-      <span class="md-list-item-text">Sent Mail</span>
+    <md-list-item @click='$router.push({ name: "usermanagement" })'>
+      <md-icon>person</md-icon>
+      <span class="md-list-item-text">Benutzerverwaltung</span>
+    </md-list-item>
+
+    <md-list-item @click='$router.push({ name: "boardmanagement" })'>
+      <md-icon>menu</md-icon>
+      <span class="md-list-item-text">Boardverwaltung</span>
     </md-list-item>
 
   </md-list>

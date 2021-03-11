@@ -1,6 +1,6 @@
 import axios from "axios";
-
-const baseUrl="http://localhost:8000";
+import {ENV} from "@/environment"
+import {store} from '@/main';
 
 export default {
     getUsers,
@@ -10,8 +10,8 @@ export default {
     updateUser
 }
 
-export async function getUsers(){
-    return axios.get(baseUrl+"/users").then( response => {
+export function getUsers(){
+    return axios.get(ENV.baseUrl + ENV.endpoints.users).then( response => {
         if (response) {
             return response.data
         }
@@ -19,7 +19,7 @@ export async function getUsers(){
 }
 
 export async function getUser(userId){
-    return axios.get(baseUrl+"/users/"+userId).then( response => {
+    return axios.get(ENV.baseUrl+"users/"+userId).then( response => {
         if (response) {
             return response.data
         }
@@ -28,7 +28,15 @@ export async function getUser(userId){
 
 
 export async function addUser(user){
-    return (await axios.post("/users"),user).then(response => {
+    return await axios.post(ENV.baseUrl + "users/", null, {
+        headers : store.getters.authHeader.headers,
+        params: {
+            'userName' : user.userName,
+            'password' : user.password,
+            'isSupervisor' : user.isSupervisor,
+            'email' : user.email,
+        }
+    }).then(response => {
         if (response) {
             return response.data
         }
@@ -36,7 +44,7 @@ export async function addUser(user){
 }
 
 export async function deleteUser(userId){
-    return (await axios.delete("/users/"+userId)).then(response => {
+    return await axios.delete(ENV.baseUrl + "users/"+userId, store.getters.authHeader).then(response => {
         if (response) {
             return response.data
         }

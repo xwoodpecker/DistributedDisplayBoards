@@ -22,4 +22,12 @@ export const routes = [
             requiresAuth: true
         }
     },
+    {
+        path: '/users',
+        name: 'usermanagement',
+        component: () => import('./components/Admin/Users.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
 ];
