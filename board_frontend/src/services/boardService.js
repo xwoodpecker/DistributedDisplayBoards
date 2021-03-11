@@ -42,7 +42,7 @@ export default class BoardService {
         this.connected = true;
         for (let board of this.boards) {
           console.log("X: " + board + "| " + board.id);
-          this.stompClient.subscribe("/topic/boards." + board.id, tick => { //url not correct
+          this.stompClient.subscribe("/topic/boards." + board.id, tick => {
             console.log(tick);
             console.log(JSON.parse(tick.body).content);
             //todo set this.boards[board.id].messages to current messages
@@ -62,7 +62,7 @@ export default class BoardService {
         content: message.content,
         user: {id:4},
         board: {id:3},
-        endDate: message.showUntil,
+        endDate: message.endDate,
         active: true,
         bgColor: message.bgColor
       }

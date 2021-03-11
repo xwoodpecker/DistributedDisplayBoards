@@ -115,8 +115,8 @@ public class MessageRestController {
             message.setUser(user.get());
             message.setContent(content);
             message.setDisplayTime(displayTime);
-            m = messageRepository.save(message);
             message.setEndDate(endDate);
+            m = messageRepository.save(message);
             response = new ResponseEntity(m, HttpStatus.OK);
         }
 

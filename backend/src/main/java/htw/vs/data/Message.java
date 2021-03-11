@@ -34,6 +34,7 @@ public class Message  {
     private Integer displayTime;
 
     @Column(name = "end_date")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Timestamp endDate;
 
     @Column(name = "active")

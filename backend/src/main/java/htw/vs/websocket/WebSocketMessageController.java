@@ -96,17 +96,18 @@ public class WebSocketMessageController {
     @MessageMapping("/message")
     public boolean message(Authentication authentication,  @Payload Message message) {
 
-        Board board = message.getBoard();
-        Board realBord  = this.boardRepository.findBoardByIdEagerGroup(board.getId());
+        message.setBoard(this.boardRepository.findBoardByIdEagerGroup(message.getBoard().getId()));
 
         User user = userRepository.findById(message.getUser().getId())
                 .orElseThrow(() -> new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION));
 
-        verifyUserBoard(authentication, user, realBord);
+        message.setUser(user);
+
+        verifyUserBoard(authentication, user, message.getBoard());
 
         List<Message> messages = addOrReplace(message);
 
-        sendToBoard(realBord.getId(),messages);
+        sendToBoard(message.getBoard().getId(),messages);
 
         return true;
     }
@@ -193,6 +194,7 @@ public class WebSocketMessageController {
 
 
     /**
+     * todo: test
      * Add or replace list.
      *
      * @param msg the msg
@@ -200,7 +202,7 @@ public class WebSocketMessageController {
      */
     public List<Message> addOrReplace(Message msg) {
         msg = messageRepository.save(msg);
-        List<Message> msgs = boardMessages.get(msg.getBoard());
+        List<Message> msgs = boardMessages.get(msg.getBoard().getId());
         if(msgs == null) {
             msgs = new CopyOnWriteArrayList<>();
             boardMessages.put(msg.getBoard().getId(), msgs);
