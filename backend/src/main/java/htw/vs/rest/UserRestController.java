@@ -1,10 +1,7 @@
 package htw.vs.rest;
 
-import htw.vs.base.CONST;
-import htw.vs.data.Role;
-import htw.vs.data.RoleRepository;
-import htw.vs.data.User;
-import htw.vs.data.UserRepository;
+import htw.vs.base.Const;
+import htw.vs.data.*;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
@@ -16,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The type User rest controller.
@@ -27,18 +25,20 @@ public class UserRestController {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
+    private MessageRepository messageRepository;
 
     /**
      * Instantiates a new User rest controller.
-     *
-     * @param userRepository  the user repository
+     *  @param userRepository  the user repository
      * @param passwordEncoder the password encoder
      * @param roleRepository  the role repository
+     * @param messageRepository
      */
-    public UserRestController(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public UserRestController(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, MessageRepository messageRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.messageRepository = messageRepository;
     }
 
     /**
@@ -67,7 +67,7 @@ public class UserRestController {
         if(user.isPresent())
             response = new ResponseEntity<>(user.get(), HttpStatus.OK);
         else
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
 
         return response;
     }
@@ -88,7 +88,8 @@ public class UserRestController {
         if(user != null)
             response = new ResponseEntity<>(user, HttpStatus.OK);
         else
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
+
         return response;
     }
 
@@ -110,11 +111,11 @@ public class UserRestController {
         user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(true);
         user.setEmail(email);
-        Role userRole = roleRepository.findByName(CONST.USER_ROLE);
+        Role userRole = roleRepository.findByName(Const.USER_ROLE);
         user.getRoles().add(userRole);
         userRole.getUsers().add(user);
         if(isSupervisor){
-            Role superVisorRole = roleRepository.findByName(CONST.SUPERVISOR_ROLE);
+            Role superVisorRole = roleRepository.findByName(Const.SUPERVISOR_ROLE);
             user.getRoles().add(superVisorRole);
             superVisorRole.getUsers().add(user);
         }
@@ -196,20 +197,24 @@ public class UserRestController {
     @Secured("ROLE_SUPERVISOR")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteUser(@PathVariable Long id) {
+        Optional<User> user = userRepository.findById(id);
+        user.get().getGroups().forEach(g -> g.setUsers(g.getUsers().stream().filter(u -> u.getId() != id).collect(Collectors.toSet())));
+        user.get().setGroups(null);
+        user.get().setRoles(null);
         userRepository.deleteById(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     /**
-     * Get boards of user response entity.
+     * Get groups of user response entity.
      *
      * @param id the id
      * @return the response entity
      */
-    @Operation(summary = "Get Boards of a user")
+    @Operation(summary = "Get Groups of a user")
     @Secured("ROLE_USER")
-    @GetMapping("/{id}/boards")
-    public ResponseEntity getBoardsOfUser(@PathVariable Long id){
+    @GetMapping("/{id}/groups")
+    public ResponseEntity getGroupsOfUser(@PathVariable Long id){
         return new ResponseEntity<>(userRepository.findById(id).get().getGroups(), HttpStatus.OK);
     }
 

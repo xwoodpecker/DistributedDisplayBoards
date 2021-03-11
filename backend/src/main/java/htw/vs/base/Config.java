@@ -8,7 +8,7 @@ import java.util.Properties;
 /**
  * The type Config.
  */
-public class CONFIG {
+public class Config {
     /**
      * The constant BASIC_TOPIC.
      */
@@ -38,10 +38,10 @@ public class CONFIG {
      */
     public static final String BROKER_PASSCODE;
 
-    private CONFIG() { }
+    private Config() { }
 
     static {
-        URL root = CONFIG.class.getProtectionDomain().getCodeSource().getLocation();
+        URL root = Config.class.getProtectionDomain().getCodeSource().getLocation();
         URL propertiesFile = null;
         try {
             propertiesFile = new URL(root, "application.properties");

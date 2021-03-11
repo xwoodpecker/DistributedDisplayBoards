@@ -52,15 +52,15 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if(alreadySetup)
-            return;
-        createRoleIfNotFound(CONST.SUPERVISOR_ROLE);
-        createRoleIfNotFound(CONST.COORDINATOR_ROLE);
-        createRoleIfNotFound(CONST.USER_ROLE);
-        Role supervisorRole = roleRepository.findByName(CONST.SUPERVISOR_ROLE);
-        Role coordinatorRole = roleRepository.findByName(CONST.COORDINATOR_ROLE);
-        Role userRole = roleRepository.findByName(CONST.USER_ROLE);
-        createUserIfNotFound("supervisor", "", CONFIG.DEFAULT_SUPERVISOR_PASSWORD, new HashSet<>(Arrays.asList(supervisorRole, coordinatorRole, userRole)));
-        createBoardIfNotFound(CONFIG.CENTRAL_BOARD_NAME);
+        return;
+        createRoleIfNotFound(Const.SUPERVISOR_ROLE);
+        createRoleIfNotFound(Const.COORDINATOR_ROLE);
+        createRoleIfNotFound(Const.USER_ROLE);
+        Role supervisorRole = roleRepository.findByName(Const.SUPERVISOR_ROLE);
+        Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
+        Role userRole = roleRepository.findByName(Const.USER_ROLE);
+        createUserIfNotFound("supervisor", "", Config.DEFAULT_SUPERVISOR_PASSWORD, new HashSet<>(Arrays.asList(supervisorRole, coordinatorRole, userRole)));
+        createBoardIfNotFound(Config.CENTRAL_BOARD_NAME);
         alreadySetup = true;
     }
 
