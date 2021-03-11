@@ -5,6 +5,6 @@ export const ENV = {
     endpoints: {
         'login' : 'users/login',
         'boards': 'boards',
-        'userboards' : 'users/%s/boards',
+        'usergroups' : 'users/%s/groups',
     }
 }
