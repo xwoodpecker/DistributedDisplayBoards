@@ -71,7 +71,6 @@ export default {
         let boards = [];
         for (let group of groups) {
           if (group.board) {
-            console.log("board is", group.board);
             boards.push(group.board);
           }
         }

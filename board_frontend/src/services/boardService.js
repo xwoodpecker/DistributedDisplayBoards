@@ -14,10 +14,18 @@ export default class BoardService {
     this.socket = new SockJS(backendEndpoint);
     this.stompClient = Stomp.over(this.socket);
 
+    this.boards = store.getters.boards;
+    this.connect();
     store.subscribe((mutation, state) => {
+      console.log("ding");
       if(mutation.type === "addBoards" || mutation.type === "clearBoards"){
-        this.boards = state.boards;
-        console.log(this.boards);
+        console.log(state.boards);
+        if(state.boards){
+          this.boards = state.boards;
+        } else {
+          this.boards = [];
+        }
+        
         //todo dont do this when only messages have changed
         //this.reconnect();
         if(!this.connected)
@@ -29,18 +37,16 @@ export default class BoardService {
 
   connect() {
     this.stompClient.connect(
-      {}, //if auth headers are injected here, does that work? (after evaluation: not needed probably)
+      JSON.parse(JSON.stringify(store.getters.authHeader)), //if auth headers are injected here, does that work? (after evaluation: not needed probably)
       frame => {
         this.connected = true;
-        console.log(frame);
-        for (let board in this.boards) {
-          console.log(board);
-          this.stompClient.subscribe("/boards/" + board.id, tick => { //url not correct
+        for (let board of this.boards) {
+          console.log("X: " + board + "| " + board.id);
+          this.stompClient.subscribe("topic/boards." + board.id, tick => { //url not correct
             console.log(tick);
             console.log(JSON.parse(tick.body).content);
             //todo set this.boards[board.id].messages to current messages
           });
-          this.send();
         }
       },
       error => {

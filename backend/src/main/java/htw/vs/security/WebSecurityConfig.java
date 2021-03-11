@@ -3,6 +3,8 @@ package htw.vs.security;
 import htw.vs.data.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 /**
  * The type Web security config.
  */
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 {
     private final UserDetailsService userDetailsService;
@@ -63,5 +65,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
                 .and().csrf().disable()
                 .headers()
                 .frameOptions().sameOrigin();
+    }
+
+    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }

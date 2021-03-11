@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -214,7 +215,7 @@ public class UserRestController {
     @Operation(summary = "Get Groups of a user")
     @Secured("ROLE_USER")
     @GetMapping("/{id}/groups")
-    public ResponseEntity getGroupsOfUser(@PathVariable Long id){
+    public ResponseEntity getGroupsOfUser(@PathVariable Long id, Authentication authentication){
         return new ResponseEntity<>(userRepository.findById(id).get().getGroups(), HttpStatus.OK);
     }
 

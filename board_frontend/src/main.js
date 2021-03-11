@@ -74,11 +74,7 @@ export const store = new Vuex.Store({
             return state.boards;
         },
         authHeader: state => {
-            const header = {
-                headers:
-                state.authHeader
-            }
-            return header;
+            return state.authHeader
         }
     }
 });

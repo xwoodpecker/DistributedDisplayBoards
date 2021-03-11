@@ -29,8 +29,7 @@ export async function getBoard(boardId){
 }
 
 export async function getUserGroups(userId){
-    console.log(ENV.baseUrl + sprintf(ENV.endpoints.usergroups, userId))
-    return axios.get(ENV.baseUrl + sprintf(ENV.endpoints.usergroups, userId), JSON.parse(JSON.stringify(store.getters.authHeader))).then( response => {
+    return axios.get(ENV.baseUrl + sprintf(ENV.endpoints.usergroups, userId), {headers: store.getters.authHeader}).then( response => {
         if (response) {
             return response.data
         }
