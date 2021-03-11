@@ -6,5 +6,6 @@ export const ENV = {
         'login' : 'users/login',
         'boards': 'boards',
         'userboards' : 'users/%s/boards',
+        'users' : 'users/'
     }
 }
