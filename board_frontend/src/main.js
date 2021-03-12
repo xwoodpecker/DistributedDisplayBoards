@@ -82,6 +82,9 @@ export const store = new Vuex.Store({
         },
         authHeader: state => {
             return state.authHeader
+        },
+        getUser: state => {
+            return state.user
         }
     }
 });

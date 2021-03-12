@@ -1,6 +1,7 @@
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import {store} from '@/main';
+import moment from 'moment';
 
 const backendEndpoint = 'http://localhost:8000/backend';
 
@@ -15,37 +16,39 @@ export default class BoardService {
     this.stompClient = Stomp.over(this.socket);
 
     this.boards = store.getters.boards;
-    this.connect();
+    this._connect();
+
     store.subscribe((mutation, state) => {
-      console.log("ding");
       if(mutation.type === "addBoards" || mutation.type === "clearBoards"){
-        console.log(state.boards);
         if(state.boards){
           this.boards = state.boards;
+
+          if(_hasBoardStateChanged(state.boards)){
+            this._reconnect();
+          }
         } else {
           this.boards = [];
         }
-        
-        //todo dont do this when only messages have changed
-        //this.reconnect();
+
         if(!this.connected)
-          this.connect();
+          this._connect();
       }
     })
   }
 
 
-  connect() {
+
+
+  _connect() {
     this.stompClient.connect(
-      JSON.parse(JSON.stringify(store.getters.authHeader)), //if auth headers are injected here, does that work? (after evaluation: not needed probably)
+      JSON.parse(JSON.stringify(store.getters.authHeader)),
       frame => {
         this.connected = true;
+        
         for (let board of this.boards) {
-          console.log("X: " + board + "| " + board.id);
-          this.stompClient.subscribe("/topic/boards." + board.id, tick => {
-            console.log(tick);
-            console.log(JSON.parse(tick.body).content);
-            //todo set this.boards[board.id].messages to current messages
+          //todo get all board messages here  todo todo maybe send automatically??
+          this.stompClient.subscribe("/topic/boards." + board.id, message => {
+            this._handleIncomingMessages(JSON.parse(message.body))
           });
         }
       },
@@ -56,30 +59,57 @@ export default class BoardService {
     );
   }
 
-  send(message) {
+  addMessage(content, boardId, displayTime, endDate, bgColor, active){
+    let userId = store.getters.getUser.id;
+    endDate = this._formatDate(endDate);
+    //very javascript, much cool
+    const msg = {content, userId, boardId, displayTime, endDate, bgColor, active}
+    this._send("message", msg);
+  }
+
+  updateMessage(messageId, content, boardId, displayTime, endDate, bgColor, active){
+    let userId = store.getters.getUser.id;
+    endDate = this._formatDate(endDate);
+
+    const msg = {messageId, content, userId, boardId, displayTime, endDate, active, bgColor}
+    this._send("message", msg);
+  }
+
+  _send(endpoint, msg) {
+    console.log("sending msg " + msg);
     if (this.stompClient && this.stompClient.connected) {
-      const msg = {
-        content: message.content,
-        user: {id:4},
-        board: {id:3},
-        endDate: message.endDate,
-        active: true,
-        bgColor: message.bgColor
-      }
-      console.log(JSON.stringify(msg));
-      this.stompClient.send("/app/message", JSON.stringify(msg));
+      this.stompClient.send(`/app/${endpoint}`, JSON.stringify(msg));
+    } else {
+      console.log('tried to send a message, but stomp wasnt connected. trying again in 2 seconds.')
+      this._connect();
+      setTimeout(_send(endpoint, msg), 2000);
     }
   }
 
-  disconnect() {
+  _disconnect() {
     if (this.stompClient) {
       this.stompClient.disconnect();
     }
     this.connected = false;
   }
 
-  reconnect() {
-    this.disconnect();
-    this.connect();
+  
+  _reconnect() {
+    this._disconnect();
+    this._connect();
+  }
+
+  _formatDate(date){
+    return moment(date).format('YYYY-MM-DD hh:mm:ss');
+  }
+
+  
+  _hasBoardStateChanged(boards){
+    //todo check if new boards have come in / old ones have been removed
+    return true;
+  }
+
+  _handleIncomingMessages(messages){
+    //todo
   }
 }
