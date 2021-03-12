@@ -159,7 +159,10 @@ export default {
       const message = {
         content: this.content,
         bgColor: this.colors.hex,
-        endDate: this.date,
+        //endDate: this.date,
+        //yyyy-mm-dd hh:mm:ss[.fffffffff]]
+        //while it seems to fit format 'yyyy-MM-dd'T'HH:mm:ss.SSSX', parsing fails (leniency? null))
+        endDate: "2024-03-01 17:03:17",
         active: this.active,
         displayTime: this.displayTime
       }
@@ -173,7 +176,6 @@ export default {
   created() {
     this.boardId = this.$route.params.id;
     //hier das passende Board anhand ID aus dem store holen und socket aufbauen für master
-
   },
   mounted() {
   },

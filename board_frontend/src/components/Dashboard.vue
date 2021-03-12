@@ -66,12 +66,11 @@ export default {
   created() {
   },
   mounted() {
-    boardsapi.getUserBoards(this.$store.state.user.id).then(groups => {
+    boardsapi.getUserGroups(this.$store.state.user.id).then(groups => {
       if (groups) {
         let boards = [];
         for (let group of groups) {
           if (group.board) {
-            console.log("board is", group.board);
             boards.push(group.board);
           }
         }

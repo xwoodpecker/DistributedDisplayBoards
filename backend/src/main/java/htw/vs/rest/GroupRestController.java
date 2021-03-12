@@ -1,6 +1,6 @@
 package htw.vs.rest;
 
-import htw.vs.base.CONST;
+import htw.vs.base.Const;
 import htw.vs.data.*;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The type Group rest controller.
@@ -66,7 +67,7 @@ public class GroupRestController {
         if(group.isPresent())
             response = new ResponseEntity(group.get(), HttpStatus.OK);
         else
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.NO_GROUP_MSG);
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_GROUP_MSG);
 
         return response;
     }
@@ -90,11 +91,11 @@ public class GroupRestController {
         Optional<Board> board = boardRepository.findById(boardId);
         Optional<User> user = userRepository.findById(coordinatorId);
         if(!board.isPresent()){
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.BOARD_NOT_FOUND_MSG);
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.BOARD_NOT_FOUND_MSG);
         }
         else if(!user.isPresent())
         {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
         }
 
         else {
@@ -102,7 +103,7 @@ public class GroupRestController {
             group.setGroupName(groupName);
             group.setBoard(board.get());
             group.setCoordinator(user.get());
-            Role userRole = roleRepository.findByName(CONST.COORDINATOR_ROLE);
+            Role userRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
             user.get().getRoles().add(userRole);
             userRole.getUsers().add(user.get());
             g = groupRepository.save(group);
@@ -134,7 +135,7 @@ public class GroupRestController {
 
             Optional<User> user = userRepository.findById(userId);
             if(!user.isPresent()){
-                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
+                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
             }
             else {
                 temp.getUsers().add(user.get());
@@ -142,7 +143,7 @@ public class GroupRestController {
                 response = new ResponseEntity(g, HttpStatus.OK);
             }
         }else {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.NO_GROUP_MSG);
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_GROUP_MSG);
         }
         return response;
     }
@@ -168,7 +169,7 @@ public class GroupRestController {
 
             Optional<User> user = userRepository.findById(userId);
             if(!user.isPresent()){
-                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
+                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
             }
             else {
                 temp.getUsers().remove(user.get());
@@ -176,7 +177,7 @@ public class GroupRestController {
                 response = new ResponseEntity(g, HttpStatus.OK);
             }
         }else {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.NO_GROUP_MSG);
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_GROUP_MSG);
         }
         return response;
     }
@@ -199,10 +200,10 @@ public class GroupRestController {
         Optional<User> user = userRepository.findById(newCoordinatorId);
 
         if(!group.isPresent()) {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.NO_GROUP_MSG);
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_GROUP_MSG);
         }
         else if(!user.isPresent()) {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.USER_NOT_FOUND_MSG);
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
         }
 
         else {
@@ -210,7 +211,7 @@ public class GroupRestController {
             User oldCoordinator = temp.getCoordinator();
             List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
 
-            Role coordinatorRole = roleRepository.findByName(CONST.COORDINATOR_ROLE);
+            Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
 
             //todo test
             if(groups.size() < 2) {
@@ -242,7 +243,13 @@ public class GroupRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteGroup(@PathVariable Long id) {
         Optional<Group> group = groupRepository.findById(id);
+
+        //todo: remove coordinator rights in case of only coordinated group
         group.get().setCoordinator(null);
+        group.get().getUsers().forEach(u -> u.setGroups(u.getGroups().stream().filter(g -> g.getId() != id).collect(Collectors.toSet())));
+        group.get().setUsers(null);
+        group.get().setBoard(null);
+
 
         groupRepository.deleteById(id);
         return new ResponseEntity<>(null, HttpStatus.OK);

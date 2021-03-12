@@ -1,6 +1,7 @@
 package htw.vs.data;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -16,4 +17,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
      * @return the board
      */
     Board findBoardByBoardName(String boardName);
+
+
+    @Query("select b from Board b join fetch b.group where b.id = ?1")
+    Board findBoardByIdEagerGroup(Long id);
 }

@@ -7,7 +7,7 @@ import {store} from '@/main';
 export default {
     getBoards,
     getBoard,
-    getUserBoards,
+    getUserGroups,
     addBoard,
     deleteBoard
 }
@@ -28,9 +28,8 @@ export async function getBoard(boardId){
     })
 }
 
-export async function getUserBoards(userId){
-    console.log(JSON.parse(JSON.stringify(store.getters.authHeader)));
-    return axios.get(ENV.baseUrl + sprintf(ENV.endpoints.userboards, userId), JSON.parse(JSON.stringify(store.getters.authHeader))).then( response => {
+export async function getUserGroups(userId){
+    return axios.get(ENV.baseUrl + sprintf(ENV.endpoints.usergroups, userId), {headers: store.getters.authHeader}).then( response => {
         if (response) {
             return response.data
         }

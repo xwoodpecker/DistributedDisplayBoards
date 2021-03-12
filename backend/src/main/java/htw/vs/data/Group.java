@@ -1,7 +1,6 @@
 package htw.vs.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,26 +11,51 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "BOARD_GROUPS")
-@JsonIgnoreProperties({"users"})
 public class Group {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "groupname")
+    @Column(name = "groupname",  unique = true, nullable = false)
     private String groupName;
 
     @JoinTable(name = "GROUPS_USERS")
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     private Set<User> users = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.EAGER)
+    //this might change in the future
+    // at the moment we have a onetoone relation but it is planned to have dynamic group assignments
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Board board;
 
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     private User coordinator;
+
+
+
+    public Group(Long id, String groupName, Set<User> users, Board board, User coordinator) {
+        this.id = id;
+        this.groupName = groupName;
+        this.users = users;
+        this.board = board;
+        this.coordinator = coordinator;
+    }
+
+    public Group(Long id, String groupName, Board board, User coordinator) {
+        this.id = id;
+        this.groupName = groupName;
+        this.board = board;
+        this.coordinator = coordinator;
+    }
+
+    public Group() {
+
+    }
 
     /**
      * Gets id.

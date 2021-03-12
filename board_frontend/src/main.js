@@ -81,11 +81,7 @@ export const store = new Vuex.Store({
             return state.userToEdit
         },
         authHeader: state => {
-            const header = {
-                headers:
-                state.authHeader
-            }
-            return header;
+            return state.authHeader
         }
     }
 });

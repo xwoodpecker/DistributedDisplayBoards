@@ -1,7 +1,7 @@
 package htw.vs.websocket;
 
-import htw.vs.base.CONFIG;
-import htw.vs.base.CONST;
+import htw.vs.base.Config;
+import htw.vs.base.Const;
 import htw.vs.data.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -96,16 +96,18 @@ public class WebSocketMessageController {
     @MessageMapping("/message")
     public boolean message(Authentication authentication,  @Payload Message message) {
 
-        Board board = message.getBoard();
+        message.setBoard(this.boardRepository.findBoardByIdEagerGroup(message.getBoard().getId()));
 
         User user = userRepository.findById(message.getUser().getId())
-                .orElseThrow(() -> new AccessDeniedException(CONST.USER_NOT_FOUND_EXCEPTION));
+                .orElseThrow(() -> new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION));
 
-        verifyUserBoard(authentication, user, board);
+        message.setUser(user);
+
+        verifyUserBoard(authentication, user, message.getBoard());
 
         List<Message> messages = addOrReplace(message);
 
-        sendToBoard(board.getId(),messages);
+        sendToBoard(message.getBoard().getId(),messages);
 
         return true;
     }
@@ -122,10 +124,10 @@ public class WebSocketMessageController {
     public boolean pushMessageToCentral(Authentication authentication, @Payload Message message) {
         Message centralMsg = new Message(message);
         centralMsg.setId(null);
-        Board centralBoard = boardRepository.findBoardByBoardName(CONFIG.CENTRAL_BOARD_NAME);
+        Board centralBoard = boardRepository.findBoardByBoardName(Config.CENTRAL_BOARD_NAME);
 
         if(message.getBoard().getId() == centralBoard.getId())
-            throw new IllegalArgumentException(CONST.PUSH_MESSAGE_EXCEPTION);
+            throw new IllegalArgumentException(Const.PUSH_MESSAGE_EXCEPTION);
 
         verifyCoordinator(authentication, message.getBoard().getGroup().getCoordinator());
         List<Message> messages = addOrReplace(centralMsg);
@@ -139,25 +141,25 @@ public class WebSocketMessageController {
 
     //todo : test
     private void verifyCoordinator(Authentication authentication, User coordinator) {
-        Role supervisor = roleRepository.findByName(CONST.SUPERVISOR_ROLE);
+        Role supervisor = roleRepository.findByName(Const.SUPERVISOR_ROLE);
         User authenticatedUser = userRepository.findUserByUserName(authentication.getName());
         if(authenticatedUser.getRoles().contains(supervisor))
             return;
 
         if (!coordinator.getUserName().equals(authentication.getName()))
-            throw new AccessDeniedException(CONST.VERIFY_USER_EXCEPTION);
+            throw new AccessDeniedException(Const.VERIFY_USER_EXCEPTION);
     }
 
     //todo : test
     private void verifyUserBoard(Authentication authentication, User user, Board board) {
-        Role supervisor = roleRepository.findByName(CONST.SUPERVISOR_ROLE);
+        Role supervisor = roleRepository.findByName(Const.SUPERVISOR_ROLE);
         User authenticatedUser = userRepository.findUserByUserName(authentication.getName());
         if(!(authenticatedUser.getRoles().contains(supervisor)) && !(authenticatedUser.getId() == board.getGroup().getCoordinator().getId()))
             if(!user.getUserName().equals(authentication.getName()))
-                throw new AccessDeniedException(CONST.VERIFY_USER_EXCEPTION);
+                throw new AccessDeniedException(Const.VERIFY_USER_EXCEPTION);
 
         if(!user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent())
-            throw new AccessDeniedException(CONST.USER_BOARD_EXCEPTION);
+            throw new AccessDeniedException(Const.USER_BOARD_EXCEPTION);
     }
 
 
@@ -169,7 +171,7 @@ public class WebSocketMessageController {
      */
     public void sendToBoard(Long boardId, List<Message> messages) {
         simpMessagingTemplate.convertAndSend(
-                CONFIG.BASIC_TOPIC + boardId,
+                Config.BASIC_TOPIC + boardId,
                 messages);
     }
 
@@ -192,6 +194,7 @@ public class WebSocketMessageController {
 
 
     /**
+     * todo: test
      * Add or replace list.
      *
      * @param msg the msg
@@ -199,7 +202,7 @@ public class WebSocketMessageController {
      */
     public List<Message> addOrReplace(Message msg) {
         msg = messageRepository.save(msg);
-        List<Message> msgs = boardMessages.get(msg.getBoard());
+        List<Message> msgs = boardMessages.get(msg.getBoard().getId());
         if(msgs == null) {
             msgs = new CopyOnWriteArrayList<>();
             boardMessages.put(msg.getBoard().getId(), msgs);

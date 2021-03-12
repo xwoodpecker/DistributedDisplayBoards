@@ -1,6 +1,6 @@
 package htw.vs.rest;
 
-import htw.vs.base.CONST;
+import htw.vs.base.Const;
 import htw.vs.data.Board;
 import htw.vs.data.BoardRepository;
 import io.swagger.annotations.Api;
@@ -58,7 +58,7 @@ public class BoardRestController {
         if(board.isPresent())
             response = new ResponseEntity(board.get(), HttpStatus.OK);
         else
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.NO_BOARD_MSG);
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_BOARD_MSG);
 
         return response;
     }
@@ -66,52 +66,48 @@ public class BoardRestController {
     /**
      * Add board response entity.
      *
-     * @param newBoard the new board
+     * @param boardName the name of the new board
      * @return the response entity
      */
     @Operation(summary = "Add a new board")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
-    public ResponseEntity addBoard(@RequestBody Board newBoard) {
+    public ResponseEntity addBoard(@RequestParam String boardName, @RequestParam String location) {
+        Board newBoard = new Board();
+        newBoard.setBoardName(boardName);
+        newBoard.setLocation(location);
         return new ResponseEntity<>(boardRepository.save(newBoard), HttpStatus.OK);
     }
+
 
     /**
      * Replace board response entity.
      *
-     * @param newBoard the new board
-     * @param id       the id
+     * @param boardName the board name
+     * @param id        the id
      * @return the response entity
      */
     @Operation(summary = "Change board name")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/{id}")
-    public ResponseEntity replaceBoard(@RequestBody Board newBoard, @PathVariable Long id) {
+    public ResponseEntity replaceBoard(@RequestParam String boardName, @RequestParam String location, @PathVariable Long id) {
+        ResponseEntity response;
         Optional<Board> board = boardRepository.findById(id);
         Board b;
-        if(board.isPresent()){
+        if(board.isPresent()) {
             Board temp = board.get();
-            temp.setBoardName(newBoard.getBoardName());
+            temp.setBoardName(boardName);
+            temp.setLocation(location);
             b = boardRepository.save(temp);
-        }else {
+            response = new ResponseEntity(b, HttpStatus.OK);
+        } else {
+            Board newBoard = new Board();
             newBoard.setId(id);
+            //todo
             b = boardRepository.save(newBoard);
+            response = new ResponseEntity(b, HttpStatus.OK);
         }
-        return new ResponseEntity(b, HttpStatus.OK);
-    }
-
-    /**
-     * Delete board response entity.
-     *
-     * @param id the id
-     * @return the response entity
-     */
-    @Operation(summary = "Delete a board")
-    @Secured("USER_SUPERVISOR")
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteBoard(@PathVariable Long id) {
-        boardRepository.deleteById(id);
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return response;
     }
 
 }
