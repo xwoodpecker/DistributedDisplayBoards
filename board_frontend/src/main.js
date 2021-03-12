@@ -45,6 +45,7 @@ export const store = new Vuex.Store({
         user: null,
         authHeader: null,
         boards: [],
+        userToEdit: null
     },
     mutations: {
         login(state, user) {
@@ -57,6 +58,9 @@ export const store = new Vuex.Store({
         },
         addBoards(state, boards) {
             state.boards = boards;
+        },
+        editUser(state, user) {
+            state.userToEdit = user;
         },
         clearBoards(state) {
             state.boards = {}
@@ -72,6 +76,9 @@ export const store = new Vuex.Store({
         },
         boards: state => {
             return state.boards;
+        },
+        userToEdit: state => {
+            return state.userToEdit
         },
         authHeader: state => {
             return state.authHeader
