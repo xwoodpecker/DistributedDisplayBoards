@@ -20,6 +20,8 @@ export default class BoardService {
 
     store.subscribe((mutation, state) => {
       if(mutation.type === "addBoards" || mutation.type === "clearBoards"){
+        console.log("state changed");
+        console.log(state.boards)
         if(state.boards){
           this.boards = state.boards;
 
@@ -48,7 +50,7 @@ export default class BoardService {
         for (let board of this.boards) {
           this._getActiveMessages(board.id);
           this.stompClient.subscribe("/topic/boards." + board.id, message => {
-            this._handleIncomingMessages(board.id, JSON.parse(message.body))
+            this._handleIncomingMessages({id: board.id, messages: JSON.parse(message.body)});
           });
         }
       },
@@ -60,14 +62,16 @@ export default class BoardService {
   }
 
   _getActiveMessages(boardId){
-    this._send("getActiveMessages", {id: boardId});
+    let userId = store.getters.getUser.id;
+    this._send("getActiveMessages", {user: { id: userId }, body:  {id: boardId} });
   }
 
   addMessage(content, boardId, displayTime, endDate, bgColor, active){
     let userId = store.getters.getUser.id;
     endDate = this._formatDate(endDate);
     //very javascript, much cool
-    const msg = {content, userId, boardId, displayTime, endDate, bgColor, active}
+    const msg = {content, user: {id: userId}, board: {id: boardId}, displayTime, endDate, bgColor, active}
+    console.log(msg)
     this._send("message", msg);
   }
 
@@ -75,7 +79,7 @@ export default class BoardService {
     let userId = store.getters.getUser.id;
     endDate = this._formatDate(endDate);
 
-    const msg = {messageId, content, userId, boardId, displayTime, endDate, active, bgColor}
+    const msg = {messageId, content, userId, board: {id: boardId}, displayTime, endDate, active, bgColor}
     this._send("message", msg);
   }
 
@@ -125,7 +129,9 @@ export default class BoardService {
     return false;
   }
 
-  _handleIncomingMessages(boardId, messages){
-    store.commit("setMessage", boardId, messages);
+  _handleIncomingMessages(board){
+    console.log(board);
+    store.commit("setMessages", board);
+    console.log(store.getters.boards);
   }
 }
