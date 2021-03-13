@@ -46,9 +46,9 @@ export default class BoardService {
         this.connected = true;
         
         for (let board of this.boards) {
-          //todo get all board messages here  todo todo maybe send automatically??
+          this._getActiveMessages(board.id);
           this.stompClient.subscribe("/topic/boards." + board.id, message => {
-            this._handleIncomingMessages(JSON.parse(message.body))
+            this._handleIncomingMessages(board.id, JSON.parse(message.body))
           });
         }
       },
@@ -57,6 +57,10 @@ export default class BoardService {
         this.connected = false;
       }
     );
+  }
+
+  _getActiveMessages(boardId){
+    this._send("getActiveMessages", {id: boardId});
   }
 
   addMessage(content, boardId, displayTime, endDate, bgColor, active){
@@ -76,9 +80,9 @@ export default class BoardService {
   }
 
   _send(endpoint, msg) {
-    console.log("sending msg " + msg);
+    console.log("sending msg " + msg + "to " + endpoint);
     if (this.stompClient && this.stompClient.connected) {
-      this.stompClient.send(`/app/${endpoint}`, JSON.stringify(msg));
+      this.stompClient.send(`/app/${endpoint}`, msg ? JSON.stringify(msg) : undefined);
     } else {
       console.log('tried to send a message, but stomp wasnt connected. trying again in 2 seconds.')
       this._connect();
@@ -106,10 +110,22 @@ export default class BoardService {
   
   _hasBoardStateChanged(boards){
     //todo check if new boards have come in / old ones have been removed
-    return true;
+    for(let newBoard of boards){
+      if(!this.boards.find(board => board.id == newBoard.id)){
+        return true;
+      }
+    }
+
+    for(let oldBoard of this.boards){
+      if(!boards.find(board => board.id == oldBoard.id)){
+        return true;
+      }
+    }
+
+    return false;
   }
 
-  _handleIncomingMessages(messages){
-    //todo
+  _handleIncomingMessages(boardId, messages){
+    store.commit("setMessage", boardId, messages);
   }
 }

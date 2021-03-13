@@ -59,6 +59,9 @@ export const store = new Vuex.Store({
         addBoards(state, boards) {
             state.boards = boards;
         },
+        setMessages(state, boardId, messages) {
+            state.boards.find(board => board.id == boardId).messages = messages;
+        },
         editUser(state, user) {
             state.userToEdit = user;
         },
