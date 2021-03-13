@@ -29,13 +29,14 @@ public class MessageRestController {
         this.boardRepository = boardRepository;
     }
 
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all messages")
     @Secured("ROLE_SUPERVISOR")
     @GetMapping(path = "/")
     public ResponseEntity<List<Message>> getMessages(){
         return new ResponseEntity<>(messageRepository.findAll(), HttpStatus.OK);
     }
-
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all messages of a group")
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
     @PreAuthorize("@securityService.hasPermission(authentication, #id)")
@@ -60,7 +61,7 @@ public class MessageRestController {
 
         return response;
     }
-
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all messages of a User")
     @GetMapping(path = "/user/{id}")
     public ResponseEntity<List<Message>> getMessageByUser(@PathVariable Long id){
@@ -76,6 +77,7 @@ public class MessageRestController {
 
         return response;
     }
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all active messages of a User")
     @GetMapping(path = "/active/user/{id}")
     public ResponseEntity<List<Message>> getActiveMessageByUser(@PathVariable Long id){
@@ -91,7 +93,7 @@ public class MessageRestController {
 
         return response;
     }
-
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "create a new Message")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
@@ -123,7 +125,7 @@ public class MessageRestController {
         return response;
     }
 
-
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Delete a Message")
     @Secured("ROLE_SUPERVISOR")
     @DeleteMapping("/{id}")
