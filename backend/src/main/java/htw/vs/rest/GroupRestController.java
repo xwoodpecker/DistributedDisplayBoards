@@ -46,6 +46,7 @@ public class GroupRestController {
      *
      * @return the groups
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all groups")
     @GetMapping(path = "/")
     public ResponseEntity<List<Group>> getGroups() {
@@ -58,6 +59,7 @@ public class GroupRestController {
      * @param id the id
      * @return the group
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get group by given id")
     @GetMapping("/{id}")
     public ResponseEntity getGroup(@PathVariable Long id) {
@@ -79,8 +81,9 @@ public class GroupRestController {
      * @param groupName     the group name
      * @param boardId       the board id
      * @param coordinatorId the coordinator id
-     * @return the response entity **/
-    /**
+     * @return the response entity
+     */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Add a new group")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
@@ -156,6 +159,7 @@ public class GroupRestController {
      * @param id     the id
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Add user to group")
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
     @PreAuthorize("@securityService.hasPermission(authentication, #id)")
@@ -190,6 +194,7 @@ public class GroupRestController {
      * @param id     the id
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Remove user from group")
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
     @PreAuthorize("@securityService.hasPermission(authentication, #id)")
@@ -224,6 +229,7 @@ public class GroupRestController {
      * @param id               the id
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Change Coordinator")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/coordinator/{id}")
@@ -273,6 +279,7 @@ public class GroupRestController {
      * @param id the id
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Delete a group")
     @Secured("ROLE_SUPERVISOR")
     @DeleteMapping("/{id}")
