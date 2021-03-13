@@ -36,6 +36,7 @@ public class BoardRestController {
      *
      * @return the boards
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all boards")
     @GetMapping(path = "/")
     public ResponseEntity<List<Board>> getBoards() {
@@ -49,6 +50,7 @@ public class BoardRestController {
      * @param id the id
      * @return the board
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get board by given id")
     @GetMapping("/{id}")
     public ResponseEntity getBoard(@PathVariable Long id) {
@@ -69,6 +71,7 @@ public class BoardRestController {
      * @param boardName the name of the new board
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Add a new board")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
@@ -87,6 +90,7 @@ public class BoardRestController {
      * @param id        the id
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Change board name")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/{id}")
