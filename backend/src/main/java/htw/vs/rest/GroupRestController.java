@@ -79,8 +79,8 @@ public class GroupRestController {
      * @param groupName     the group name
      * @param boardId       the board id
      * @param coordinatorId the coordinator id
-     * @return the response entity
-     */
+     * @return the response entity **/
+    /**
     @Operation(summary = "Add a new group")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
@@ -109,6 +109,41 @@ public class GroupRestController {
             g = groupRepository.save(group);
             response = new ResponseEntity(g, HttpStatus.OK);
         }
+
+        return response;
+    } **/
+
+
+    @Operation(summary = "Add a new group and a new board")
+    @Secured("ROLE_SUPERVISOR")
+    @PostMapping("/")
+    public ResponseEntity addGroup(@RequestParam String groupName, @RequestParam String boardName, @RequestParam String location, @RequestParam Long coordinatorId) {
+        ResponseEntity response;
+        Group g;
+
+
+        Optional<User> user = userRepository.findById(coordinatorId);
+        if(!user.isPresent())
+        {
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
+        }
+
+        Board newBoard = new Board();
+        newBoard.setBoardName(boardName);
+        newBoard.setLocation(location);
+        newBoard = boardRepository.save(newBoard);
+
+
+
+        Group group = new Group();
+        group.setGroupName(groupName);
+        group.setBoard(newBoard);
+        group.setCoordinator(user.get());
+        Role userRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
+        user.get().getRoles().add(userRole);
+        userRole.getUsers().add(user.get());
+        g = groupRepository.save(group);
+        response = new ResponseEntity(g, HttpStatus.OK);
 
         return response;
     }
