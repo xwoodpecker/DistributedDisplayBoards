@@ -15,18 +15,18 @@
         <Sidebar></Sidebar>
       </md-app-drawer>
 
-      <md-app-content>
+      <md-app-content v-if="boards && boards.length">
         <div class="md-layout md-gutter board-overview">
           <div
-            v-for="board in boards"
-            v-bind:key="board.id"
-            class="md-layout-item md-size-25 md-medium-size-33 md-small-size-50 md-xsmall-size-100"
+              v-for="board in boards"
+              v-bind:key="board.id"
+              class="md-layout-item md-size-25 md-medium-size-33 md-small-size-50 md-xsmall-size-100"
           >
             <BoardMaster
-              :title="board.title"
-              :location="board.location"
-              :messages="board.messages"
-              :id="board.id"
+                :title="board.boardName"
+                :location="board.location"
+                :messages="board.messages"
+                :id="board.id"
             >
             </BoardMaster>
           </div>
@@ -41,6 +41,7 @@ import authenticationService from "../services/authenticationService";
 import Sidebar from "@/components/Layout/Sidebar";
 import BoardMaster from "@/components/Board/BoardMaster.vue";
 import boardsapi from "@/http/boardsapi";
+
 export default {
   name: "Dashboard",
   props: {},
@@ -50,28 +51,35 @@ export default {
   },
   data() {
     return {
-      user: this.$store.state.user,
-      boards: this.$store.state.boards,
+      user: this.$store.getters.user,
+      boards: this.$store.getters.boards,
       menuVisible: false,
     };
   },
   methods: {
     logout() {
       authenticationService.logout();
-      this.$router.push({ name: "login" });
+      this.$router.push({name: "login"});
     },
   },
   computed: {},
-  created() {},
-  async mounted() {
+  created() {
+  },
+  mounted() {
+    boardsapi.getUserGroups(this.$store.state.user.id).then(groups => {
+      if (groups) {
+        let boards = [];
+        for (let group of groups) {
+          if (group.board) {
+            boards.push(group.board);
+          }
+        }
+        this.$store.commit('addBoards', boards)
+      }
+    });
     //get boards for user
-    /*boardsapi.getUserBoards(this.$store.state.user.id).then( response => {
-       if (response){
-         this.$store.commit('addBoards', [response.data])
-       }
-    });*/
     //todo dont do this here
-    this.$store.commit("addBoards", [
+    /*this.$store.commit("addBoards", [
       {
         id: 1,
         title: "Board 1",
@@ -96,7 +104,7 @@ export default {
         location: "Meetingraum 2. Stock",
         messages: [],
       },
-    ]);
+    ]);*/
   },
 };
 </script>
@@ -107,6 +115,7 @@ export default {
   height: 100vh;
   width: 100%;
   border: 1px solid rgba(#000, 0.12);
+
   .md-app-toolbar {
     background-color: #34495e;
   }

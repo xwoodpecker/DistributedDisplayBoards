@@ -1,6 +1,6 @@
 package htw.vs.rest;
 
-import htw.vs.base.Const;
+import htw.vs.base.CONST;
 import htw.vs.data.*;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,6 +46,7 @@ public class GroupRestController {
      *
      * @return the groups
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all groups")
     @GetMapping(path = "/")
     public ResponseEntity<List<Group>> getGroups() {
@@ -58,6 +59,7 @@ public class GroupRestController {
      * @param id the id
      * @return the group
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get group by given id")
     @GetMapping("/{id}")
     public ResponseEntity getGroup(@PathVariable Long id) {
@@ -72,43 +74,36 @@ public class GroupRestController {
         return response;
     }
 
-
-    /**
-     * Add group response entity.
-     *
-     * @param groupName     the group name
-     * @param boardId       the board id
-     * @param coordinatorId the coordinator id
-     * @return the response entity
-     */
-    @Operation(summary = "Add a new group")
+    @Operation(summary = "Add a new group and a new board")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
-    public ResponseEntity addGroup(@RequestParam String groupName, @RequestParam Long boardId, @RequestParam Long coordinatorId) {
+    public ResponseEntity addGroup(@RequestParam String groupName, @RequestParam String boardName, @RequestParam String location, @RequestParam Long coordinatorId) {
         ResponseEntity response;
         Group g;
 
-        Optional<Board> board = boardRepository.findById(boardId);
+
         Optional<User> user = userRepository.findById(coordinatorId);
-        if(!board.isPresent()){
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.BOARD_NOT_FOUND_MSG);
-        }
-        else if(!user.isPresent())
+        if(!user.isPresent())
         {
             response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
         }
 
-        else {
-            Group group = new Group();
-            group.setGroupName(groupName);
-            group.setBoard(board.get());
-            group.setCoordinator(user.get());
-            Role userRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
-            user.get().getRoles().add(userRole);
-            userRole.getUsers().add(user.get());
-            g = groupRepository.save(group);
-            response = new ResponseEntity(g, HttpStatus.OK);
-        }
+        Board newBoard = new Board();
+        newBoard.setBoardName(boardName);
+        newBoard.setLocation(location);
+        newBoard = boardRepository.save(newBoard);
+
+
+
+        Group group = new Group();
+        group.setGroupName(groupName);
+        group.setBoard(newBoard);
+        group.setCoordinator(user.get());
+        Role userRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
+        user.get().getRoles().add(userRole);
+        userRole.getUsers().add(user.get());
+        g = groupRepository.save(group);
+        response = new ResponseEntity(g, HttpStatus.OK);
 
         return response;
     }
@@ -121,6 +116,7 @@ public class GroupRestController {
      * @param id     the id
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Add user to group")
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
     @PreAuthorize("@securityService.hasPermission(authentication, #id)")
@@ -155,6 +151,7 @@ public class GroupRestController {
      * @param id     the id
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Remove user from group")
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
     @PreAuthorize("@securityService.hasPermission(authentication, #id)")
@@ -306,13 +303,19 @@ public class GroupRestController {
      * @param id the id
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Delete a group")
     @Secured("ROLE_SUPERVISOR")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteGroup(@PathVariable Long id) {
+        //todo: test if coordinator rights get removed
         Optional<Group> group = groupRepository.findById(id);
+        User coordinator = group.get().getCoordinator();
+        List<Group> coordinatedGroups = groupRepository.getCoordinatedGroups(coordinator);
+        coordinatedGroups.removeIf(g -> g.getId() == group.get().getId());
+        if(coordinatedGroups.size() == 0)
+            coordinator.getRoles().removeIf(r -> r.getName().equals(Const.COORDINATOR_ROLE));
 
-        //todo: remove coordinator rights in case of only coordinated group
         group.get().setCoordinator(null);
         group.get().getUsers().forEach(u -> u.setGroups(u.getGroups().stream().filter(g -> g.getId() != id).collect(Collectors.toSet())));
         group.get().setUsers(null);

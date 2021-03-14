@@ -1,6 +1,6 @@
 package htw.vs.rest;
 
-import htw.vs.base.Const;
+import htw.vs.base.CONST;
 import htw.vs.data.Board;
 import htw.vs.data.BoardRepository;
 import io.swagger.annotations.Api;
@@ -36,6 +36,7 @@ public class BoardRestController {
      *
      * @return the boards
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all boards")
     @GetMapping(path = "/")
     public ResponseEntity<List<Board>> getBoards() {
@@ -49,6 +50,7 @@ public class BoardRestController {
      * @param id the id
      * @return the board
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get board by given id")
     @GetMapping("/{id}")
     public ResponseEntity getBoard(@PathVariable Long id) {
@@ -79,7 +81,6 @@ public class BoardRestController {
         newBoard.setLocation(location);
         return new ResponseEntity<>(boardRepository.save(newBoard), HttpStatus.OK);
     }
-
 
     /**
      * Replace board response entity.

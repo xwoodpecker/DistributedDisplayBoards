@@ -1,0 +1,71 @@
+version: "3.7"
+services:
+
+    # MySQL Container
+    db:
+        image: mysql:5.7
+        restart: always
+        container_name: db_mysql
+        environment:
+            MYSQL_DATABASE: testapp
+            MYSQL_USER: user
+            MYSQL_PASSWORD: password
+            MYSQL_RANDOM_ROOT_PASSWORD: '1'
+        volumes:
+            - ./docker/mysql:/var/lib/mysql
+        networks:
+            - spring-cloud-network
+
+    # DB Administration
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links:
+            - db:mysql
+        ports:
+            - 8181:80
+        environment:
+            PMA_HOST: db
+            MYSQL_USERNAME: user
+            MYSQL_ROOT_PASSWORD: password
+        networks:
+            - spring-cloud-network
+
+    app_backend:
+        build:
+            context: ./
+            dockerfile: docker/backend/Dockerfile
+        image: springboot-backend
+        container_name: backend
+        restart: unless-stopped
+        depends_on:
+            -   db
+        ports:
+            - 8000:8000
+        networks:
+            - spring-cloud-network
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:mysql://db_mysql:3306/testapp
+            SPRING_DATASOURCE_USERNAME: user
+            SPRING_DATASOURCE_PASSWORD: password
+
+    app_frontend:
+        build:
+            context: ./
+            dockerfile: docker/frontend/Dockerfile
+        image: vue-frontend
+        container_name: frontend
+        restart: unless-stopped
+        links:
+            -   "app_backend"
+        ports:
+            - 80:80
+        networks:
+            - spring-cloud-network
+        environment:
+            FRONTEND_SERVER: docker
+
+
+
+networks:
+    spring-cloud-network:
+        driver: bridge

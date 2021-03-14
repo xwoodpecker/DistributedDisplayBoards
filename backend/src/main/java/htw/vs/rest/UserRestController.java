@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,7 @@ public class UserRestController {
      *
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all users")
     @GetMapping("/")
     public ResponseEntity getUsers(){
@@ -58,6 +60,7 @@ public class UserRestController {
      * @param id the id
      * @return the user
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get user with given id")
     @GetMapping("/{id}")
     public ResponseEntity getUser(@PathVariable Long id) {
@@ -77,6 +80,7 @@ public class UserRestController {
      *
      * @return the user
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get user that is authenticated")
     @GetMapping("/login")
     public ResponseEntity getUserByLoginCredentials(UsernamePasswordAuthenticationToken principal){
@@ -102,6 +106,7 @@ public class UserRestController {
      * @param isSupervisor the is supervisor
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Add a new user")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
@@ -129,6 +134,7 @@ public class UserRestController {
      * @param newPassword the new password
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Change the password of a user")
     @PostMapping("/password/own")
     public ResponseEntity changeOwnPassword(UsernamePasswordAuthenticationToken principal, @RequestParam String newPassword){
@@ -148,10 +154,11 @@ public class UserRestController {
      * @param newPassword the new password
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Change password of a specified user. Supervisor only")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/password/other")
-    public ResponseEntity changeSomeonesPassword(@RequestParam String username, @RequestParam String newPassword){
+    public ResponseEntity changeSomeonesPassword(String username, String newPassword){
         User user = userRepository.findUserByUserName(username);
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
@@ -165,6 +172,7 @@ public class UserRestController {
      * @param id      the id
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Replace a user with a new user")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/{id}")
@@ -193,6 +201,7 @@ public class UserRestController {
      * @param id the id
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Delete a user")
     @Secured("ROLE_SUPERVISOR")
     @DeleteMapping("/{id}")
@@ -211,10 +220,11 @@ public class UserRestController {
      * @param id the id
      * @return the response entity
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get Groups of a user")
     @Secured("ROLE_USER")
     @GetMapping("/{id}/groups")
-    public ResponseEntity getGroupsOfUser(@PathVariable Long id){
+    public ResponseEntity getGroupsOfUser(@PathVariable Long id, Authentication authentication){
         return new ResponseEntity<>(userRepository.findById(id).get().getGroups(), HttpStatus.OK);
     }
 
