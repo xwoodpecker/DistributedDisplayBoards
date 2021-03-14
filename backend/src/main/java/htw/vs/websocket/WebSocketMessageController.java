@@ -148,6 +148,9 @@ public class WebSocketMessageController {
 
     //todo : test
     private void verifyCoordinator(Authentication authentication, User coordinator) {
+        if(coordinator == null)
+            throw new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION);
+
         Role supervisor = roleRepository.findByName(Const.SUPERVISOR_ROLE);
         User authenticatedUser = userRepository.findUserByUserName(authentication.getName());
         if(authenticatedUser.getRoles().contains(supervisor))
@@ -159,6 +162,9 @@ public class WebSocketMessageController {
 
     //todo : test
     private void verifyUserBoard(Authentication authentication, User user, Board board) {
+        if(user == null)
+            throw new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION);
+
         Role supervisor = roleRepository.findByName(Const.SUPERVISOR_ROLE);
         User authenticatedUser = userRepository.findUserByUserName(authentication.getName());
         if(!(authenticatedUser.getRoles().contains(supervisor)) && !(authenticatedUser.getId() == board.getGroup().getCoordinator().getId()))

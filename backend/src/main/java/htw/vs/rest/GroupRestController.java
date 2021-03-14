@@ -99,6 +99,7 @@ public class GroupRestController {
         group.setGroupName(groupName);
         group.setBoard(newBoard);
         group.setCoordinator(user.get());
+        group.getUsers().add(user.get());
         Role userRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
         user.get().getRoles().add(userRole);
         userRole.getUsers().add(user.get());
@@ -221,6 +222,9 @@ public class GroupRestController {
             newCoordinator.getRoles().add(coordinatorRole);
             coordinatorRole.getUsers().add(newCoordinator);
             temp.setCoordinator(newCoordinator);
+
+            group.get().getUsers().add(user.get());
+            group.get().getUsers().removeIf(u -> u.getId() == oldCoordinator.getId());
 
             g = groupRepository.save(temp);
 
