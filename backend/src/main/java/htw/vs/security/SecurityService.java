@@ -49,6 +49,9 @@ public class SecurityService {
         Optional<Group> opt = groupRepository.findById(groupId);
         Group group;
 
+        if(user == null){
+            return false;
+        }
         if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 0)
         {
             return true;

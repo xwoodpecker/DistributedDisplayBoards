@@ -263,7 +263,6 @@ public class GroupRestControllerTest {
         assert(!stringResult.contains("\"id\":3,\"groupName\":\"testgroup3\""));
     }
 
-    //todo
 
     @Test
     @WithMockUser(roles="SUPERVISOR",username="Admin")
@@ -307,7 +306,9 @@ public class GroupRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles="SUPERVISOR",username="Admin")
     public void testAddUserToGroupGroupNotFound() throws Exception {
-
+        this.mockMvc.perform(post("/groups/user/90").principal(SecurityContextHolder.getContext().getAuthentication()).param("userId","3")
+        ).andDo(print()).andExpect(status().isNotFound());
     }
 }
