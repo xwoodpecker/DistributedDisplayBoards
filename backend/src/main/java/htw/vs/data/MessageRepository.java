@@ -19,7 +19,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      *
      * @return the list
      */
-    @Query(value = "SELECT m from Message m WHERE m.active = true AND m.endDate > CURRENT_TIMESTAMP")
+    @Query(value = "SELECT m from Message m WHERE m.active = true AND m.endDate < CURRENT_TIMESTAMP")
     List<Message> findMessagesToDisplay();
     List<Message> findMessagesByBoard(Board board);
     List<Message> findMessagesByUser(User user);

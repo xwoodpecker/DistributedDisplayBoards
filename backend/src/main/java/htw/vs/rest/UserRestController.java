@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,20 +27,20 @@ public class UserRestController {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
-    private MessageRepository messageRepository;
+    private GroupRepository groupRepository;
 
     /**
      * Instantiates a new User rest controller.
      *  @param userRepository  the user repository
      * @param passwordEncoder the password encoder
      * @param roleRepository  the role repository
-     * @param messageRepository
+     * @param groupRepository
      */
-    public UserRestController(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, MessageRepository messageRepository) {
+    public UserRestController(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, GroupRepository groupRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
-        this.messageRepository = messageRepository;
+        this.groupRepository = groupRepository;
     }
 
     /**
@@ -225,6 +226,10 @@ public class UserRestController {
     @Secured("ROLE_USER")
     @GetMapping("/{id}/groups")
     public ResponseEntity getGroupsOfUser(@PathVariable Long id, Authentication authentication){
+        User user = userRepository.findById(id).orElseThrow(() -> new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION));
+        if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 1)
+            return new ResponseEntity<>(groupRepository.findAll(), HttpStatus.OK);
+
         return new ResponseEntity<>(userRepository.findById(id).get().getGroups(), HttpStatus.OK);
     }
 }

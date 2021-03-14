@@ -69,9 +69,9 @@ public class BoardRestController {
      * Add board response entity.
      *
      * @param boardName the name of the new board
+     * @param location  the location
      * @return the response entity
      */
-    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Add a new board")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
@@ -82,36 +82,31 @@ public class BoardRestController {
         return new ResponseEntity<>(boardRepository.save(newBoard), HttpStatus.OK);
     }
 
-
     /**
      * Replace board response entity.
      *
-     * @param boardName the board name
-     * @param id        the id
+     * @param newBoard the new board
+     * @param id       the id
      * @return the response entity
      */
-    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Change board name")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/{id}")
-    public ResponseEntity replaceBoard(@RequestParam String boardName, @RequestParam String location, @PathVariable Long id) {
+    public ResponseEntity replaceBoard(@RequestBody Board newBoard, @PathVariable Long id) {
         ResponseEntity response;
         Optional<Board> board = boardRepository.findById(id);
         Board b;
         if(board.isPresent()) {
             Board temp = board.get();
-            temp.setBoardName(boardName);
-            temp.setLocation(location);
+            temp.setBoardName(newBoard.getBoardName());
+            temp.setLocation(newBoard.getLocation());
             b = boardRepository.save(temp);
-            response = new ResponseEntity(b, HttpStatus.OK);
         } else {
-            Board newBoard = new Board();
             newBoard.setId(id);
             //todo
             b = boardRepository.save(newBoard);
-            response = new ResponseEntity(b, HttpStatus.OK);
         }
-        return response;
+        return new ResponseEntity(b, HttpStatus.OK);
     }
 
 }

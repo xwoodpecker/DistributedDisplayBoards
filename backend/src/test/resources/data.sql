@@ -1,8 +1,8 @@
 -- boards
-INSERT INTO boards(id, boardname) VALUES (1, 'testboard1');
-INSERT INTO boards(id, boardname) VALUES (2, 'testboard2');
-INSERT INTO boards(id, boardname) VALUES (3, 'testboard3');
-INSERT INTO boards(id, boardname) VALUES (4, 'testboard4');
+INSERT INTO boards(id, boardname, location) VALUES (1, 'testboard1', 'location1');
+INSERT INTO boards(id, boardname, location) VALUES (2, 'testboard2', 'location2');
+INSERT INTO boards(id, boardname, location) VALUES (3, 'testboard3', 'location3');
+INSERT INTO boards(id, boardname, location) VALUES (4, 'testboard4', 'location4');
 
 -- users
 INSERT INTO users(id, email, enabled, password, username) VALUES (1, 'User1@mail', 1, '123456', 'User1');

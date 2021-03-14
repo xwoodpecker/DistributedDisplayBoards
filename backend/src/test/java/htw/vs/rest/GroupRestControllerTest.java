@@ -1,5 +1,11 @@
 package htw.vs.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import htw.vs.data.Board;
+import htw.vs.data.Group;
+import htw.vs.data.User;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -17,6 +23,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.hamcrest.Matchers.*;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -51,7 +59,8 @@ public class GroupRestControllerTest {
     @WithMockUser(roles="SUPERVISOR")
     public void testAddGroup() throws Exception {
         this.mockMvc.perform(post("/groups/").param("boardId","4").param("coordinatorId","1").param("groupName","testgroup4"))
-                .andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("{\"id\":4,\"groupName\":\"testgroup4\",\"users\":[],\"board\":4,\"coordinator\":1}")));
+                .andDo(print()).andExpect(status().isOk()).andExpect(content()
+                .string(containsString("{\"id\":4,\"groupName\":\"testgroup4\",\"users\":[],\"board\":{\"id\":4,\"boardName\":\"testboard4\",\"location\":\"location4\"},\"coordinator\":1}")));
     }
 
     @Test
@@ -82,8 +91,40 @@ public class GroupRestControllerTest {
     }
 
     @Test
+    @Order(4)
+    @WithMockUser(roles="SUPERVISOR")
     public void testReplaceGroup() throws Exception {
-        //?
+        Board board = new Board();
+        User coordinator = new User();
+        Group group = new Group();
+        group.setId(2l);
+        group.setGroupName("changedBoardName");
+        group.setBoard(board);
+        group.setCoordinator(coordinator);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(group);
+
+        this.mockMvc.perform(post("/groups/2").contentType(APPLICATION_JSON).content(requestJson)).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testReplaceGroupWithoutRole() throws Exception {
+
+    }
+
+    @Test
+    @WithMockUser(roles="USER")
+    public void testReplaceGroupWithoutPermission() throws Exception {
+
+    }
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testReplaceGroupGroupNotFound() throws Exception {
+
     }
 
     @Test
@@ -107,22 +148,36 @@ public class GroupRestControllerTest {
 
     @Test
     public void testAddUserToGroupWithoutRole() throws Exception {
-
+        this.mockMvc.perform(post("/groups/user/1").principal(SecurityContextHolder.getContext().getAuthentication()).param("userId","3")
+        ).andDo(print()).andExpect(status().isUnauthorized());
     }
 
     @Test
+    @WithMockUser(roles="USER",username="User1")
     public void testAddUserToGroupWithoutPermission() throws Exception {
-
+        this.mockMvc.perform(post("/groups/user/1").principal(SecurityContextHolder.getContext().getAuthentication()).param("userId","3")
+        ).andDo(print()).andExpect(status().isForbidden());
     }
 
     @Test
-    public void testAddUserToGroupDifferentCoordinator() throws Exception {
-
+    @WithMockUser(roles="COORDINATOR",username="Coordinator1")
+    public void testAddUserToGroupAsCoordinator() throws Exception {
+        this.mockMvc.perform(post("/groups/user/1").principal(SecurityContextHolder.getContext().getAuthentication()).param("userId","3")
+        ).andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("{\"id\":1,\"groupName\":\"testgroup1\"")));
     }
 
     @Test
+    @WithMockUser(roles="COORDINATOR",username="Coordinator2")
+    public void testAddUserToGroupDiffernetCoordinator() throws Exception {
+        this.mockMvc.perform(post("/groups/user/1").principal(SecurityContextHolder.getContext().getAuthentication()).param("userId","3")
+        ).andDo(print()).andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR",username="Admin")
     public void testAddUserToGroupUserNotFound() throws Exception {
-
+        this.mockMvc.perform(post("/groups/user/1").principal(SecurityContextHolder.getContext().getAuthentication()).param("userId","90")
+        ).andDo(print()).andExpect(status().isNotFound());
     }
 
     @Test
