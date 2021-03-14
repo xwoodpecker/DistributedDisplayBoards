@@ -1,5 +1,6 @@
 package htw.vs.rest;
 
+import htw.vs.base.Const;
 import htw.vs.data.*;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,10 +37,28 @@ public class MessageRestController {
     public ResponseEntity<List<Message>> getMessages(){
         return new ResponseEntity<>(messageRepository.findAll(), HttpStatus.OK);
     }
+
+
+    @CrossOrigin(origins = "http://localhost")
+    @Operation(summary = "Get messsage by given id")
+    @GetMapping("/{id}")
+    public ResponseEntity getMessage(@PathVariable Long id) {
+        ResponseEntity response;
+        Optional<Message> message = messageRepository.findById(id);
+
+        if (message.isPresent())
+            response = new ResponseEntity(message.get(), HttpStatus.OK);
+        else
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Message not found");
+
+        return response;
+    }
+
+
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all messages of a group")
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
-    @PreAuthorize("@securityService.hasPermission(authentication, #id)")
+    @PreAuthorize("@securityService.hasPermissionGroup(authentication, #id)")
     @GetMapping(path = "/group/{id}")
     public ResponseEntity<List<Message>> getMessagesOfGroup(@PathVariable Long id){
         ResponseEntity response;
@@ -61,10 +80,75 @@ public class MessageRestController {
 
         return response;
     }
+
+    @CrossOrigin(origins = "http://localhost")
+    @Operation(summary = "Get all messages of a board")
+    @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
+    @PreAuthorize("@securityService.hasPermissionBoard(authentication, #id)")
+    @GetMapping(path = "/board/{id}")
+    public ResponseEntity<List<Message>> getMessagesOfBoard(@PathVariable Long id){
+        ResponseEntity response;
+        Optional<Board> board = boardRepository.findById(id);
+
+        if(!board.isPresent()){
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Board not found");
+        }
+        else {
+            response = new ResponseEntity(messageRepository.findMessagesByBoard(board.get()), HttpStatus.OK);
+        }
+
+        return response;
+    }
+
+    @CrossOrigin(origins = "http://localhost")
+    @Operation(summary = "Get all active messages of a group")
+    @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
+    @PreAuthorize("@securityService.hasPermissionGroup(authentication, #id)")
+    @GetMapping(path = "/active/group/{id}")
+    public ResponseEntity<List<Message>> getActiveMessagesOfGroup(@PathVariable Long id){
+        ResponseEntity response;
+        Optional<Group> group = groupRepository.findById(id);
+
+        if(group.isPresent()){
+            Group temp = group.get();
+
+            Optional<Board> board = boardRepository.findById(temp.getId());
+            if(!board.isPresent()){
+                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Board not found");
+            }
+            else {
+                response = new ResponseEntity(messageRepository.findActiveMessagesByBoard(board.get()), HttpStatus.OK);
+            }
+        } else {
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("No group found");
+        }
+
+        return response;
+    }
+
+    @CrossOrigin(origins = "http://localhost")
+    @Operation(summary = "Get all active messages of a board")
+    @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
+    @PreAuthorize("@securityService.hasPermissionBoard(authentication, #id)")
+    @GetMapping(path = "/active/board/{id}")
+    public ResponseEntity<List<Message>> getActiveMessagesOfBoard(@PathVariable Long id){
+        ResponseEntity response;
+        Optional<Board> board = boardRepository.findById(id);
+
+        if(!board.isPresent()){
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Board not found");
+        }
+        else {
+            response = new ResponseEntity(messageRepository.findActiveMessagesByBoard(board.get()), HttpStatus.OK);
+        }
+
+        return response;
+    }
+
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all messages of a User")
     @GetMapping(path = "/user/{id}")
-    public ResponseEntity<List<Message>> getMessageByUser(@PathVariable Long id){
+    public ResponseEntity<List<Message>> getMessagesOfUser(@PathVariable Long id){
         ResponseEntity response;
         Optional<User> user = userRepository.findById(id);
 
@@ -80,7 +164,7 @@ public class MessageRestController {
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all active messages of a User")
     @GetMapping(path = "/active/user/{id}")
-    public ResponseEntity<List<Message>> getActiveMessageByUser(@PathVariable Long id){
+    public ResponseEntity<List<Message>> getActiveMessageOfUser(@PathVariable Long id){
         ResponseEntity response;
         Optional<User> user = userRepository.findById(id);
 
@@ -93,6 +177,7 @@ public class MessageRestController {
 
         return response;
     }
+
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "create a new Message")
     @Secured("ROLE_SUPERVISOR")
