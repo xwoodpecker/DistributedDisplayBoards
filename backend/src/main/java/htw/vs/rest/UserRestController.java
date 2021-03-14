@@ -227,5 +227,4 @@ public class UserRestController {
     public ResponseEntity getGroupsOfUser(@PathVariable Long id, Authentication authentication){
         return new ResponseEntity<>(userRepository.findById(id).get().getGroups(), HttpStatus.OK);
     }
-
 }

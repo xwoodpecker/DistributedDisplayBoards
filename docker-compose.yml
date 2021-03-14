@@ -30,6 +30,19 @@ services:
         networks:
             - spring-cloud-network
 
+    rabbitmq:
+        image: rabbitmq:3-management
+        ports:
+            - 5672:5672
+            - 15672:15672
+            - 61613:61613
+        environment: 
+            BROKER_HOST: localhost
+        volumes:
+            - ./docker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+        networks:
+            - spring-cloud-network
+
     app_backend:
         build:
             context: ./
@@ -38,7 +51,8 @@ services:
         container_name: backend
         restart: unless-stopped
         depends_on:
-            -   db
+            - db
+            - rabbitmq
         ports:
             - 8000:8000
         networks:
@@ -63,9 +77,7 @@ services:
             - spring-cloud-network
         environment:
             FRONTEND_SERVER: docker
-
-
-
+            
 networks:
     spring-cloud-network:
         driver: bridge

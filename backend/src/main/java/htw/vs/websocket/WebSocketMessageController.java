@@ -68,16 +68,15 @@ public class WebSocketMessageController {
      * Gets active messages.
      *
      * @param authentication the authentication
-     * @param user           the user
      * @param board          the board
      * @return the active messages
      */
     @MessageMapping("/getActiveMessages")
-    public boolean getActiveMessages(Authentication authentication, @Payload User user, @Payload Board board) {
+    public boolean getActiveMessages(Authentication authentication, @Payload Board board) {
 
         //todo: check if findbyId works as well
         board = this.boardRepository.findBoardByIdEagerGroup(board.getId());
-        user = this.userRepository.findById(user.getId()).orElseThrow(() -> new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION));
+        User user = this.userRepository.findUserByUserName(authentication.getName());
 
         verifyUserBoard(authentication, user, board);
 
@@ -159,6 +158,9 @@ public class WebSocketMessageController {
 
     //todo : test
     private void verifyUserBoard(Authentication authentication, User user, Board board) {
+        if(user == null){
+            throw new AccessDeniedException(Const.VERIFY_USER_EXCEPTION);
+        }
         Role supervisor = roleRepository.findByName(Const.SUPERVISOR_ROLE);
         User authenticatedUser = userRepository.findUserByUserName(authentication.getName());
         if(!(authenticatedUser.getRoles().contains(supervisor)) && !(authenticatedUser.getId() == board.getGroup().getCoordinator().getId()))
@@ -229,7 +231,7 @@ public class WebSocketMessageController {
      * @return the all by board
      */
     public List<Message> getAllByBoard(Board board) {
-        return boardMessages.get(board);
+        return boardMessages.get(board.getId());
     }
 
 

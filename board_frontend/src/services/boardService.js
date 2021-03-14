@@ -19,13 +19,13 @@ export default class BoardService {
     this._connect();
 
     store.subscribe((mutation, state) => {
+      console.log("state changed");
+      console.log(state.boards)
       if(mutation.type === "addBoards" || mutation.type === "clearBoards"){
-        console.log("state changed");
-        console.log(state.boards)
         if(state.boards){
           this.boards = state.boards;
 
-          if(_hasBoardStateChanged(state.boards)){
+          if(this._hasBoardStateChanged(state.boards)){
             this._reconnect();
           }
         } else {
@@ -38,15 +38,11 @@ export default class BoardService {
     })
   }
 
-
-
-
   _connect() {
     this.stompClient.connect(
       JSON.parse(JSON.stringify(store.getters.authHeader)),
       frame => {
         this.connected = true;
-        
         for (let board of this.boards) {
           this._getActiveMessages(board.id);
           this.stompClient.subscribe("/topic/boards." + board.id, message => {
@@ -62,8 +58,7 @@ export default class BoardService {
   }
 
   _getActiveMessages(boardId){
-    let userId = store.getters.getUser.id;
-    this._send("getActiveMessages", {user: { id: userId }, body:  {id: boardId} });
+    this._send("getActiveMessages", {id: boardId});
   }
 
   addMessage(content, boardId, displayTime, endDate, bgColor, active){

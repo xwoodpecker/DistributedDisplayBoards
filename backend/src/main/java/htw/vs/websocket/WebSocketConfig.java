@@ -41,7 +41,7 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/backend").setAllowedOrigins("http://localhost:8080").withSockJS();
+        registry.addEndpoint("/backend").setAllowedOrigins("http://localhost").withSockJS();
     }
 
     @Override

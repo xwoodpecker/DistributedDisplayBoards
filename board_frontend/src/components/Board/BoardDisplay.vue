@@ -20,7 +20,9 @@ import gsap from "gsap";
 export default {
   name: "BoardDisplay",
   props: {
-    //messages: Array,
+    boardId: {
+      type: Number,
+    },
     autoStart: {
       type: Boolean,
       default: true,
@@ -39,20 +41,7 @@ export default {
       amount: 0,
       currentSlide: 0,
       animation: undefined,
-      messages: [
-        {
-          id: 1,
-          content: "<p style=\"text-align: center;\">Das hier ist normale Schrift</p><h1 style=\"text-align: center;\">Heading 1</h1><p style=\"text-align: center;\"><span style=\"color: rgb(0, 138, 0);\">Geht </span><span style=\"color: rgb(0, 102, 204);\">auch </span><span style=\"color: rgb(240, 102, 102);\">bunt</span></p>",
-          duration: 5,
-          backgroundColor: '#008080',
-        },
-        {
-          id: 2,
-          content: "<p><span style=\"color: rgb(255, 255, 0);\">T</span><span style=\"color: rgb(230, 0, 0);\">E</span><span style=\"color: rgb(255, 255, 102);\">S</span><span style=\"color: rgb(240, 102, 102);\">T</span></p>",
-          duration: 5,
-          backgroundColor: '#000000',
-        },
-      ],
+      messages: [],
     };
   },
   methods: {
@@ -96,6 +85,7 @@ export default {
   },
   created() {},
   mounted() {
+    this.messages = this.$store.getters.boards.find(board => board.id == this.boardId).messages;
     //make sure to fill available height. necessary due to limitations with vue-agile
     //todo add event listener to displayContainer, execute resize of this.height as its size changes
     this.height = (this.$refs.displayContainer.clientHeight - 5) + 'px';
