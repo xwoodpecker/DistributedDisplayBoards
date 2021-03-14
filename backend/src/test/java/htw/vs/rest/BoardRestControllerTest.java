@@ -9,6 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import htw.vs.data.Board;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -20,6 +24,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -72,32 +77,77 @@ public class BoardRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceBoard() throws Exception {
-        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName1").param("location", "newlocation")).andDo(print()).andExpect(status().isOk())
+        Board board = new Board(1l);
+        board.setBoardName("replacedBoardName1");
+        board.setLocation("newlocation");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(board);
+
+        this.mockMvc.perform(post("/boards/1").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"replacedBoardName1\",\"location\":\"newlocation\"}")));
     }
 
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceBoardIdNotFound() throws Exception {
-        this.mockMvc.perform(post("/boards/5").param("boardName", "replacedBoardName2").param("location", "newlocation")).andDo(print()).andExpect(status().isOk())
+        Board board = new Board(5l);
+        board.setBoardName("replacedBoardName2");
+        board.setLocation("newlocation");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(board);
+
+        this.mockMvc.perform(post("/boards/5").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":5,\"boardName\":\"replacedBoardName2\",\"location\":\"newlocation\"}")));
     }
 
     @Test
     public void testReplaceBoardWithoutRole() throws Exception {
-        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName3").param("location", "newlocation")).andDo(print()).andExpect(status().isUnauthorized());
+        Board board = new Board(1l);
+        board.setBoardName("replacedBoardName3");
+        board.setLocation("newlocation");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(board);
+
+        this.mockMvc.perform(post("/boards/1").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser(roles="USER")
     public void testReplaceBoardWithoutPermission() throws Exception {
-        this.mockMvc.perform(post("/boards/1").param("boardName", "replacedBoardName3").param("location", "newlocation")).andDo(print()).andExpect(status().isForbidden());
+        Board board = new Board(1l);
+        board.setBoardName("replacedBoardName3");
+        board.setLocation("newlocation");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(board);
+
+        this.mockMvc.perform(post("/boards/1").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceBoardExistingName() throws Exception {
-        this.mockMvc.perform(post("/boards/1").param("boardName", "testboard2").param("location", "newlocation")).andDo(print()).andExpect(status().isInternalServerError());
+        Board board = new Board(1l);
+        board.setBoardName("testboard2");
+        board.setLocation("newlocation");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(board);
+
+        this.mockMvc.perform(post("/boards/1").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isInternalServerError());
     }
 
     @Test
