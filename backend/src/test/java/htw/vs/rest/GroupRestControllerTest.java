@@ -1,12 +1,5 @@
 package htw.vs.rest;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import htw.vs.data.Board;
-import htw.vs.data.Group;
-import htw.vs.data.User;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -16,7 +9,6 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,7 +17,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.hamcrest.Matchers.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -61,9 +52,11 @@ public class GroupRestControllerTest {
     @WithMockUser(roles="SUPERVISOR")
     public void testAddGroup() throws Exception {
         this.mockMvc.perform(post("/groups/").param("coordinatorId","1").param("groupName","testgroup4")
-                .param("boardName", "testboard5").param("location", "location5")).andDo(print()).andExpect(status().isOk()).andExpect(content()
-                .string(containsString("{\"id\":4,\"groupName\":\"testgroup4\",\"users\":[1],\"board\":{\"id\":6,\"boardName\":\"testboard5\",\"location\":\"location5\"},\"coordinator\":1}")));
+                .param("boardName", "testboard5").param("location", "location5")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(anyOf(containsString("{\"id\":4,\"groupName\":\"testgroup4\",\"users\":[1],\"board\":{\"id\":6,\"boardName\":\"testboard5\",\"location\":\"location5\"},\"coordinator\":1}")
+                        ,containsString("{\"id\":4,\"groupName\":\"testgroup4\",\"users\":[1],\"board\":{\"id\":7,\"boardName\":\"testboard5\",\"location\":\"location5\"},\"coordinator\":1}"))));
     }
+
 
     @Test
     public void testAddGroupWithoutRole() throws Exception {
