@@ -74,49 +74,6 @@ public class GroupRestController {
         return response;
     }
 
-
-    /**
-     * Add group response entity.
-     *
-     * @param groupName     the group name
-     * @param boardId       the board id
-     * @param coordinatorId the coordinator id
-     * @return the response entity
-     */
-    @CrossOrigin(origins = "http://localhost")
-    @Operation(summary = "Add a new group")
-    @Secured("ROLE_SUPERVISOR")
-    @PostMapping("/")
-    public ResponseEntity addGroup(@RequestParam String groupName, @RequestParam Long boardId, @RequestParam Long coordinatorId) {
-        ResponseEntity response;
-        Group g;
-
-        Optional<Board> board = boardRepository.findById(boardId);
-        Optional<User> user = userRepository.findById(coordinatorId);
-        if(!board.isPresent()){
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.BOARD_NOT_FOUND_MSG);
-        }
-        else if(!user.isPresent())
-        {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
-        }
-
-        else {
-            Group group = new Group();
-            group.setGroupName(groupName);
-            group.setBoard(board.get());
-            group.setCoordinator(user.get());
-            Role userRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
-            user.get().getRoles().add(userRole);
-            userRole.getUsers().add(user.get());
-            g = groupRepository.save(group);
-            response = new ResponseEntity(g, HttpStatus.OK);
-        }
-
-        return response;
-    } **/
-
-
     @Operation(summary = "Add a new group and a new board")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
