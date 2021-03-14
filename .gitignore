@@ -7,4 +7,4 @@ backend/.idea/
 *.iml
 backend/target
 backend/src/main/resources/public
-docker/mysql/**
+docker/mysql

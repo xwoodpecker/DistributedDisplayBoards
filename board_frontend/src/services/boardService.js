@@ -3,7 +3,7 @@ import Stomp from "webstomp-client";
 import {store} from '@/main';
 import moment from 'moment';
 
-const backendEndpoint = 'http://localhost:8000/backend';
+const backendEndpoint = 'http://localhost:80/backend';
 
 export default class BoardService {
   socket;
