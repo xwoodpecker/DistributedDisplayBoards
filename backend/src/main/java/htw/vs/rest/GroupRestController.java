@@ -241,9 +241,14 @@ public class GroupRestController {
     @Secured("ROLE_SUPERVISOR")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteGroup(@PathVariable Long id) {
+        //todo: test if coordinator rights get removed
         Optional<Group> group = groupRepository.findById(id);
+        User coordinator = group.get().getCoordinator();
+        List<Group> coordinatedGroups = groupRepository.getCoordinatedGroups(coordinator);
+        coordinatedGroups.removeIf(g -> g.getId() == group.get().getId());
+        if(coordinatedGroups.size() == 0)
+            coordinator.getRoles().removeIf(r -> r.getName().equals(Const.COORDINATOR_ROLE));
 
-        //todo: remove coordinator rights in case of only coordinated group
         group.get().setCoordinator(null);
         group.get().getUsers().forEach(u -> u.setGroups(u.getGroups().stream().filter(g -> g.getId() != id).collect(Collectors.toSet())));
         group.get().setUsers(null);
