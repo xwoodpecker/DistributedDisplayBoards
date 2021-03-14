@@ -229,7 +229,7 @@ public class WebSocketMessageController {
      * @return the all by board
      */
     public List<Message> getAllByBoard(Board board) {
-        return boardMessages.get(board);
+        return boardMessages.get(board.getId());
     }
 
 
