@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The type User rest controller.
@@ -24,18 +25,20 @@ public class UserRestController {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
+    private MessageRepository messageRepository;
 
     /**
      * Instantiates a new User rest controller.
-     *
-     * @param userRepository  the user repository
+     *  @param userRepository  the user repository
      * @param passwordEncoder the password encoder
      * @param roleRepository  the role repository
+     * @param messageRepository
      */
-    public UserRestController(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public UserRestController(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, MessageRepository messageRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.messageRepository = messageRepository;
     }
 
     /**
@@ -195,6 +198,7 @@ public class UserRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteUser(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
+        user.get().getGroups().forEach(g -> g.setUsers(g.getUsers().stream().filter(u -> u.getId() != id).collect(Collectors.toSet())));
         user.get().setGroups(null);
         user.get().setRoles(null);
         userRepository.deleteById(id);

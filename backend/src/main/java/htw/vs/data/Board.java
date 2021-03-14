@@ -34,7 +34,7 @@ public class Board {
     private Group group;
 
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "board", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "board", fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnore
     private Set<Message> messages = new HashSet<>();
 
@@ -75,7 +75,7 @@ public class Board {
         this.id = id;
         this.boardName = boardName;
         this.group = group;
-        this.messages = messages;
+        //this.messages = messages;
     }
 
     /**
@@ -147,5 +147,13 @@ public class Board {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public Set<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Set<Message> messages) {
+        this.messages = messages;
     }
 }

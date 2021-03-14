@@ -2,6 +2,7 @@ package htw.vs.data;
 
 
 import com.fasterxml.jackson.annotation.*;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -39,7 +40,7 @@ public class User {
     @JsonIdentityReference(alwaysAsId=true)
     private Set<Group> groups  = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnore
     private Set<Message> messages = new HashSet<>();
 

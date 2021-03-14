@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The type Group rest controller.
@@ -313,8 +314,10 @@ public class GroupRestController {
 
         //todo: remove coordinator rights in case of only coordinated group
         group.get().setCoordinator(null);
+        group.get().getUsers().forEach(u -> u.setGroups(u.getGroups().stream().filter(g -> g.getId() != id).collect(Collectors.toSet())));
         group.get().setUsers(null);
         group.get().setBoard(null);
+
 
         groupRepository.deleteById(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
