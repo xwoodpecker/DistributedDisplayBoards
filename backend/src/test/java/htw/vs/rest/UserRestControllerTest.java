@@ -1,7 +1,6 @@
 package htw.vs.rest;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.stringContainsInOrder;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,6 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import htw.vs.data.User;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 
@@ -21,9 +23,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -34,6 +39,8 @@ public class UserRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Test
     @Order(1)
@@ -58,13 +65,53 @@ public class UserRestControllerTest {
     }
 
     @Test
-    public void testAddUser() throws Exception {
-        //?
+    @WithMockUser(username = "User1", password = "123456", roles="USER")
+    public void testGetUserByLoginCredentials() throws Exception {
+        this.mockMvc.perform(get("/users/login")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString(
+                        "\"id\":1,\"userName\":\"User1\",\"password\":\"123456\",\"enabled\":true,\"email\":\"User1@mail\"")));
     }
 
     @Test
+    public void testAddUser() throws Exception {
+        //todo julian pls <3
+    }
+
+    @Test
+    @Order(5)
+    @WithMockUser(username = "User1", password = "123456", roles="USER")
+    public void testChangeOwnPassword() throws Exception {
+        this.mockMvc.perform(post("/users/password/own").param("newPassword","qwerasdf")).andDo(print()).andExpect(status().isOk());
+
+        MvcResult result = this.mockMvc.perform(get("/users/1")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(stringResult);
+        JsonNode passwordNode = rootNode.get("password");
+        String textValue = passwordNode.textValue();
+        assert(passwordEncoder.matches("qwerasdf", textValue));
+    }
+
+
+    @Test
+    @Order(6)
+    @WithMockUser(roles="SUPERVISOR")
+    public void testChangeOtherPassword() throws Exception {
+        this.mockMvc.perform(post("/users/password/other").param("username", "User1").param("newPassword","asdfqwer")).andDo(print()).andExpect(status().isOk());
+
+        MvcResult result = this.mockMvc.perform(get("/users/1")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(stringResult);
+        JsonNode passwordNode = rootNode.get("password");
+        String textValue = passwordNode.textValue();
+        assert(passwordEncoder.matches("asdfqwer", textValue));
+    }
+
+
+    @Test
     public void testReplaceUser() throws Exception {
-        //?
+        //todo julian pls <3
     }
 
     @Test
@@ -77,5 +124,20 @@ public class UserRestControllerTest {
         assert(!stringResult.contains("\"id\":7,\"userName\":\"User4\",\"password\":\"123456\",\"enabled\":true,\"email\":\"User4@mail\""));
     }
 
-    //todo
+
+    @Test
+    @Order(4)
+    @WithMockUser(roles="SUPERVISOR")
+    public void testDeleteUserCoordinator() throws Exception {
+        this.mockMvc.perform(delete("/users/8").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void testGetGroupsOfUser() throws Exception {
+        this.mockMvc.perform(get("/users/1/groups")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString(
+                        "\"id\":1,\"groupName\":\"testgroup1\"")));
+
+    }
+
 }

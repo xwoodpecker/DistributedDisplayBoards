@@ -120,7 +120,7 @@ public class GroupRestController {
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Add user to group")
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
-    @PreAuthorize("@securityService.hasPermission(authentication, #id)")
+    @PreAuthorize("@securityService.hasPermissionGroup(authentication, #id)")
     @PostMapping("/user/{id}")
     public ResponseEntity addUserToGroup(@RequestParam Long userId, @PathVariable Long id) {
         ResponseEntity response;
@@ -155,7 +155,7 @@ public class GroupRestController {
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Remove user from group")
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
-    @PreAuthorize("@securityService.hasPermission(authentication, #id)")
+    @PreAuthorize("@securityService.hasPermissionGroup(authentication, #id)")
     @DeleteMapping("/user/{id}")
     public ResponseEntity deleteUserFromGroup(@RequestParam Long userId, @PathVariable Long id) {
         ResponseEntity response;
