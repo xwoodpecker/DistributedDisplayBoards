@@ -1,6 +1,6 @@
 package htw.vs.rest;
 
-import htw.vs.base.CONST;
+import htw.vs.base.Const;
 import htw.vs.data.Board;
 import htw.vs.data.BoardRepository;
 import io.swagger.annotations.Api;

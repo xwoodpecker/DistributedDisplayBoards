@@ -1,6 +1,6 @@
 package htw.vs.rest;
 
-import htw.vs.base.CONST;
+import htw.vs.base.Const;
 import htw.vs.data.*;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
