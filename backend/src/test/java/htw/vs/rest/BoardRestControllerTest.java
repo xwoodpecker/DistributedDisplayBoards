@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import htw.vs.data.Board;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.TestMethodOrder;
@@ -38,6 +39,7 @@ public class BoardRestControllerTest {
     private MockMvc mockMvc;
 
     @Test
+    @Order(1)
     public void testGetBoards() throws Exception {
         this.mockMvc.perform(get("/boards/")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"testboard1\",\"location\":\"location1\"},{\"id\":2,\"boardName\":\"testboard2\",\"location\":\"location2\"},{\"id\":3,\"boardName\":\"testboard3\",\"location\":\"location3\"},{\"id\":4,\"boardName\":\"testboard4\",\"location\":\"location4\"},{\"id\":5,\"boardName\":\"central\",\"location\":null}")));
