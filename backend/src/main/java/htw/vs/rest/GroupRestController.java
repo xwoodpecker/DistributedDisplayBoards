@@ -82,7 +82,7 @@ public class GroupRestController {
      * @param boardId       the board id
      * @param coordinatorId the coordinator id
      * @return the response entity
-     */
+     *
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Add a new group")
     @Secured("ROLE_SUPERVISOR")
