@@ -231,19 +231,32 @@ public class GroupRestController {
         return response;
     }
 
+
     @Operation
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/{id}")
     public ResponseEntity replaceGroup(@PathVariable Long id, @RequestBody Group newGroup){
         ResponseEntity response;
         Group g;
+        Optional<Board> board;
+        Optional<User>  coordidnator;
 
         Optional<Group> group = groupRepository.findById(id);
-        Optional<Board> board = boardRepository.findById(newGroup.getBoard().getId());
-        Optional<User>  coordidnator = userRepository.findById(newGroup.getCoordinator().getId());
+        if(newGroup.getBoard() != null){
+            board = boardRepository.findById(newGroup.getBoard().getId());
+        }else {
+            board = null;
+        }
+        if(newGroup.getCoordinator() != null){
+           coordidnator = userRepository.findById(newGroup.getCoordinator().getId());
+        } else {
+            coordidnator = null;
+        }
         if(group.isPresent()) {
             Group temp = group.get();
-            temp.setGroupName(newGroup.getGroupName());
+            if(!newGroup.getGroupName().isEmpty()){
+                temp.setGroupName(newGroup.getGroupName());
+            }
 
             if(!board.isPresent()){
                 response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_BOARD_MSG);

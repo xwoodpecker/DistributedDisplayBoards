@@ -95,11 +95,7 @@ public class GroupRestControllerTest {
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceGroup() throws Exception {
         Board board = new Board();
-        board.setId(2l);
-        board.setBoardName("");
-        board.setLocation("");
-        User coordinator = new User(5l);
-
+        User coordinator = new User();
         Group group = new Group();
         group.setId(2l);
         group.setGroupName("changedBoardName");
