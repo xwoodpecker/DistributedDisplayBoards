@@ -8,6 +8,7 @@ import htw.vs.data.Board;
 import htw.vs.data.Group;
 import htw.vs.data.User;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -57,38 +57,39 @@ public class GroupRestControllerTest {
     }
 
     @Test
+    @Order(3)
     @WithMockUser(roles="SUPERVISOR")
     public void testAddGroup() throws Exception {
-        this.mockMvc.perform(post("/groups/").param("boardId","4").param("coordinatorId","1").param("groupName","testgroup4"))
-                .andDo(print()).andExpect(status().isOk()).andExpect(content()
-                .string(containsString("{\"id\":4,\"groupName\":\"testgroup4\",\"users\":[],\"board\":{\"id\":4,\"boardName\":\"testboard4\",\"location\":\"location4\"},\"coordinator\":1}")));
+        this.mockMvc.perform(post("/groups/").param("coordinatorId","1").param("groupName","testgroup4")
+                .param("boardName", "testboard5").param("location", "location5")).andDo(print()).andExpect(status().isOk()).andExpect(content()
+                .string(containsString("{\"id\":4,\"groupName\":\"testgroup4\",\"users\":[1],\"board\":{\"id\":6,\"boardName\":\"testboard5\",\"location\":\"location5\"},\"coordinator\":1}")));
     }
 
     @Test
     public void testAddGroupWithoutRole() throws Exception {
-        this.mockMvc.perform(post("/groups/").param("boardId","4").param("coordinatorId","1").param("groupName","testgroup4"))
-                .andDo(print()).andExpect(status().isUnauthorized());
+        this.mockMvc.perform(post("/groups/").param("coordinatorId","1").param("groupName","testgroup4")
+                .param("boardName", "testboard5").param("location", "location5")).andDo(print()).andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser(roles="USER")
     public void testAddGroupWithoutPermission() throws Exception {
-        this.mockMvc.perform(post("/groups/").param("boardId","4").param("coordinatorId","1").param("groupName","testgroup4"))
-                .andDo(print()).andExpect(status().isForbidden());
+        this.mockMvc.perform(post("/groups/").param("coordinatorId","1").param("groupName","testgroup4")
+                .param("boardName", "testboard5").param("location", "location5")).andDo(print()).andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockUser(roles="SUPERVISOR")
-    public void testAddGroupBoardNotFound() throws Exception {
-        this.mockMvc.perform(post("/groups/").param("boardId","90").param("coordinatorId","1").param("groupName","testgroup4"))
-                .andDo(print()).andExpect(status().isNotFound());
+    public void testAddGroupBoardNameNotUnique() throws Exception {
+        this.mockMvc.perform(post("/groups/").param("coordinatorId","1").param("groupName","testgroup4")
+                .param("boardName", "testboard2").param("location", "location5")).andDo(print()).andExpect(status().isInternalServerError());
     }
 
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testAddGroupUserNotFound() throws Exception {
-        this.mockMvc.perform(post("/groups/").param("boardId","4").param("coordinatorId","90").param("groupName","testgroup4"))
-                .andDo(print()).andExpect(status().isNotFound());
+        this.mockMvc.perform(post("/groups/").param("coordinatorId","90").param("groupName","testgroup4")
+                .param("boardName", "testboard5").param("location", "location5")).andDo(print()).andExpect(status().isNotFound());
     }
 
     @Test
@@ -114,7 +115,7 @@ public class GroupRestControllerTest {
                 .string(containsString("{\"id\":2,\"groupName\":\"changedGroupName\",")));
         MvcResult result = this.mockMvc.perform(get("/users/5")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
-        assert(stringResult.contains("\"roles\":[{\"name\":\"USER\"},{\"name\":\"COORDINATOR\"}]"));
+        assert(stringResult.contains("\"COORDINATOR\""));
     }
 
     @Test
@@ -177,7 +178,7 @@ public class GroupRestControllerTest {
                 .string(containsString("{\"id\":4,\"groupName\":\"newGroupName\",")));
         MvcResult result = this.mockMvc.perform(get("/users/3")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
-        assert(stringResult.contains("\"roles\":[{\"name\":\"USER\"},{\"name\":\"COORDINATOR\"}]"));
+        assert(stringResult.contains("\"COORDINATOR\""));
     }
 
     @Test
@@ -201,7 +202,7 @@ public class GroupRestControllerTest {
                 .string(containsString("{\"id\":4,\"groupName\":\"newGroupName\",")));
         MvcResult result = this.mockMvc.perform(get("/users/5")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
-        assert(stringResult.contains("\"roles\":[{\"name\":\"USER\"},{\"name\":\"COORDINATOR\"}]"));
+        assert(stringResult.contains("\"COORDINATOR\""));
     }
 
     @Test
@@ -209,7 +210,7 @@ public class GroupRestControllerTest {
     public void testReplaceGroupChangeCoordinator() throws Exception {
         String requestJson = "{\n" +
                 "  \"id\" : 1,\n" +
-                "  \"groupName\" : \"newGroupName\",\n" +
+                "  \"groupName\" : \"newGroupName2\",\n" +
                 "  \"users\" : [ ],\n" +
                 "  \"board\" : {\n" +
                 "    \"id\" : 1,\n" +
@@ -222,13 +223,13 @@ public class GroupRestControllerTest {
                 "}";
 
         this.mockMvc.perform(post("/groups/1").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk()).andExpect(content()
-                .string(containsString("{\"id\":1,\"groupName\":\"newGroupName\",")));
+                .string(containsString("{\"id\":1,\"groupName\":\"newGroupName2\",")));
         MvcResult result = this.mockMvc.perform(get("/users/2")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
-        assert(stringResult.contains("\"roles\":[{\"name\":\"USER\"},{\"name\":\"COORDINATOR\"}]"));
+        assert(stringResult.contains("\"COORDINATOR\""));
         MvcResult result2 = this.mockMvc.perform(get("/users/4")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult2 = result2.getResponse().getContentAsString();
-        assert(!stringResult2.contains("\"roles\":[{\"name\":\"USER\"},{\"name\":\"COORDINATOR\"}]"));
+        assert(!stringResult2.contains("\"COORDINATOR\""));
     }
 
     @Test
@@ -244,14 +245,37 @@ public class GroupRestControllerTest {
                 "    \"location\" : null\n" +
                 "  },\n" +
                 "  \"coordinator\" : {\n" +
-                "  \"id\" : 7 \n"+
+                "  \"id\" : 8 \n"+
                 "  }\n"+
                 "}";
 
         this.mockMvc.perform(post("/groups/3").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk()).andExpect(content()
-                .string(containsString("\"board\":{\"id\":4,\"boardName\":\"testboard4\",\"location\":\"location4\"},\"coordinator\":7}")));
+                .string(containsString("\"board\":{\"id\":4,\"boardName\":\"testboard4\",\"location\":\"location4\"},\"coordinator\":8}")));
     }
 
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testReplaceGroupNameNotUnique() throws Exception {
+
+        String requestJson = "{\n" +
+                "  \"id\" : 2,\n" +
+                "  \"groupName\" : \"testgroup1\",\n" +
+                "  \"users\" : [ ],\n" +
+                "  \"board\" : {\n" +
+                "    \"id\" : 2,\n" +
+                "    \"boardName\" : null,\n" +
+                "    \"location\" : null\n" +
+                "  },\n" +
+                "  \"coordinator\" : {\n" +
+                "  \"id\" : 5 \n" +
+                "  }\n" +
+                "}";
+
+        this.mockMvc.perform(post("/groups/2").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isInternalServerError());
+        MvcResult result = this.mockMvc.perform(get("/users/5")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        assert (stringResult.contains("\"COORDINATOR\""));
+    }
 
     @Test
     @Order(3)
@@ -268,7 +292,10 @@ public class GroupRestControllerTest {
     @WithMockUser(roles="SUPERVISOR",username="Admin")
     public void testAddUserToGroup() throws Exception {
         this.mockMvc.perform(post("/groups/user/1").principal(SecurityContextHolder.getContext().getAuthentication()).param("userId","3")
-        ).andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("{\"id\":1,\"groupName\":\"testgroup1\"")));
+        ).andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("{\"id\":1")));
+        MvcResult result = this.mockMvc.perform(get("/users/1/groups")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        assert (stringResult.contains("\"id\":1,\"groupName\":"));
     }
 
     @Test
@@ -288,7 +315,10 @@ public class GroupRestControllerTest {
     @WithMockUser(roles="COORDINATOR",username="Coordinator1")
     public void testAddUserToGroupAsCoordinator() throws Exception {
         this.mockMvc.perform(post("/groups/user/1").principal(SecurityContextHolder.getContext().getAuthentication()).param("userId","3")
-        ).andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("{\"id\":1,\"groupName\":\"testgroup1\"")));
+        ).andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("{\"id\":1")));
+        MvcResult result = this.mockMvc.perform(get("/users/1/groups")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        assert (stringResult.contains("\"id\":1,\"groupName\":"));
     }
 
     @Test

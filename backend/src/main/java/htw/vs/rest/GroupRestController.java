@@ -88,24 +88,24 @@ public class GroupRestController {
             response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
         }
 
-        Board newBoard = new Board();
-        newBoard.setBoardName(boardName);
-        newBoard.setLocation(location);
-        newBoard = boardRepository.save(newBoard);
+        else {
+            Board newBoard = new Board();
+            newBoard.setBoardName(boardName);
+            newBoard.setLocation(location);
+            newBoard = boardRepository.save(newBoard);
 
 
-
-        Group group = new Group();
-        group.setGroupName(groupName);
-        group.setBoard(newBoard);
-        group.setCoordinator(user.get());
-        group.getUsers().add(user.get());
-        Role userRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
-        user.get().getRoles().add(userRole);
-        userRole.getUsers().add(user.get());
-        g = groupRepository.save(group);
-        response = new ResponseEntity(g, HttpStatus.OK);
-
+            Group group = new Group();
+            group.setGroupName(groupName);
+            group.setBoard(newBoard);
+            group.setCoordinator(user.get());
+            group.getUsers().add(user.get());
+            Role userRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
+            user.get().getRoles().add(userRole);
+            userRole.getUsers().add(user.get());
+            g = groupRepository.save(group);
+            response = new ResponseEntity(g, HttpStatus.OK);
+        }
         return response;
     }
 
