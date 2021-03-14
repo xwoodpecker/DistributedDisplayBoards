@@ -224,7 +224,6 @@ public class GroupRestController {
             temp.setCoordinator(newCoordinator);
 
             group.get().getUsers().add(user.get());
-            group.get().getUsers().removeIf(u -> u.getId() == oldCoordinator.getId());
 
             g = groupRepository.save(temp);
 
@@ -256,7 +255,7 @@ public class GroupRestController {
         }
         if(group.isPresent()) {
             Group temp = group.get();
-            if(!newGroup.getGroupName().isEmpty()){
+            if(newGroup.getGroupName() != null){
                 temp.setGroupName(newGroup.getGroupName());
             }
 
@@ -264,27 +263,13 @@ public class GroupRestController {
                 response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_BOARD_MSG);
             }
             else {
-                temp.setBoard(newGroup.getBoard());
+                temp.setBoard(board.get());
 
                 if(!coordidnator.isPresent()){
                     response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
                 }
                 else {
-                    User oldCoordinator = temp.getCoordinator();
-                    List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
-                    Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
-
-                    //todo test
-                    if(groups.size() < 2) {
-                        oldCoordinator.getRoles().remove(coordinatorRole);
-                        coordinatorRole.getUsers().remove(oldCoordinator);
-                    }
-                    User newCoordinator = coordidnator.get();
-                    //todo test duplicate ?
-                    newCoordinator.getRoles().add(coordinatorRole);
-                    coordinatorRole.getUsers().add(newCoordinator);
-                    temp.setCoordinator(newCoordinator);
-
+                    temp = coordinatorRole(coordidnator.get(), temp);
                     g = groupRepository.save(temp);
 
                     response = new ResponseEntity(g, HttpStatus.OK);
@@ -294,6 +279,9 @@ public class GroupRestController {
 
         }else {
             newGroup.setId(id);
+            newGroup.setBoard(board.get());
+            newGroup = coordinatorRole(coordidnator.get(), newGroup);
+
             g = groupRepository.save(newGroup);
             response = new ResponseEntity(g, HttpStatus.OK);
         }
@@ -328,5 +316,21 @@ public class GroupRestController {
 
         groupRepository.deleteById(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    private Group coordinatorRole(User newCoordinator, Group group){
+        User oldCoordinator = group.getCoordinator();
+        List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
+        Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
+        //todo test
+        if(groups.size() < 2) {
+            oldCoordinator.getRoles().remove(coordinatorRole);
+            coordinatorRole.getUsers().remove(oldCoordinator);
+        }
+        newCoordinator.getRoles().add(coordinatorRole);
+        coordinatorRole.getUsers().add(newCoordinator);
+        group.setCoordinator(newCoordinator);
+        group.getUsers().add(newCoordinator);
+        return group;
     }
 }

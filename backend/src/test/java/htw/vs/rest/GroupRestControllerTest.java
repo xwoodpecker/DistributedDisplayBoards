@@ -1,5 +1,6 @@
 package htw.vs.rest;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -94,38 +95,163 @@ public class GroupRestControllerTest {
     @Order(4)
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceGroup() throws Exception {
-        Board board = new Board();
-        User coordinator = new User();
-        Group group = new Group();
-        group.setId(2l);
-        group.setGroupName("changedBoardName");
-        group.setBoard(board);
-        group.setCoordinator(coordinator);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        String requestJson=ow.writeValueAsString(group);
+        String requestJson = "{\n" +
+                "  \"id\" : 2,\n" +
+                "  \"groupName\" : \"changedGroupName\",\n" +
+                "  \"users\" : [ ],\n" +
+                "  \"board\" : {\n" +
+                "    \"id\" : 2,\n" +
+                "    \"boardName\" : null,\n" +
+                "    \"location\" : null\n" +
+                "  },\n" +
+                "  \"coordinator\" : {\n" +
+                "  \"id\" : 5 \n"+
+                "  }\n"+
+                "}";
 
-        this.mockMvc.perform(post("/groups/2").contentType(APPLICATION_JSON).content(requestJson)).andExpect(status().isOk());
+        this.mockMvc.perform(post("/groups/2").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk()).andExpect(content()
+                .string(containsString("{\"id\":2,\"groupName\":\"changedGroupName\",")));
+        MvcResult result = this.mockMvc.perform(get("/users/5")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        assert(stringResult.contains("\"roles\":[{\"name\":\"USER\"},{\"name\":\"COORDINATOR\"}]"));
     }
 
     @Test
     public void testReplaceGroupWithoutRole() throws Exception {
+        String requestJson = "{\n" +
+                "  \"id\" : 2,\n" +
+                "  \"groupName\" : \"changedGroupName\",\n" +
+                "  \"users\" : [ ],\n" +
+                "  \"board\" : {\n" +
+                "    \"id\" : 2,\n" +
+                "    \"boardName\" : null,\n" +
+                "    \"location\" : null\n" +
+                "  },\n" +
+                "  \"coordinator\" : {\n" +
+                "  \"id\" : 5 \n"+
+                "  }\n"+
+                "}";
 
+        this.mockMvc.perform(post("/groups/2").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser(roles="USER")
     public void testReplaceGroupWithoutPermission() throws Exception {
+        String requestJson = "{\n" +
+                "  \"id\" : 2,\n" +
+                "  \"groupName\" : \"changedGroupName\",\n" +
+                "  \"users\" : [ ],\n" +
+                "  \"board\" : {\n" +
+                "    \"id\" : 2,\n" +
+                "    \"boardName\" : null,\n" +
+                "    \"location\" : null\n" +
+                "  },\n" +
+                "  \"coordinator\" : {\n" +
+                "  \"id\" : 5 \n"+
+                "  }\n"+
+                "}";
 
+        this.mockMvc.perform(post("/groups/2").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockUser(roles="SUPERVISOR")
-    public void testReplaceGroupGroupNotFound() throws Exception {
+    public void testReplaceGroupGroupNotFoundWithNewCoordinator() throws Exception {
+        String requestJson = "{\n" +
+                "  \"id\" : 4,\n" +
+                "  \"groupName\" : \"newGroupName\",\n" +
+                "  \"users\" : [ ],\n" +
+                "  \"board\" : {\n" +
+                "    \"id\" : 4,\n" +
+                "    \"boardName\" : null,\n" +
+                "    \"location\" : null\n" +
+                "  },\n" +
+                "  \"coordinator\" : {\n" +
+                "  \"id\" : 3 \n"+
+                "  }\n"+
+                "}";
 
+        this.mockMvc.perform(post("/groups/4").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk()).andExpect(content()
+                .string(containsString("{\"id\":4,\"groupName\":\"newGroupName\",")));
+        MvcResult result = this.mockMvc.perform(get("/users/3")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        assert(stringResult.contains("\"roles\":[{\"name\":\"USER\"},{\"name\":\"COORDINATOR\"}]"));
     }
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testReplaceGroupGroupNotFoundWithCoordinator() throws Exception {
+        String requestJson = "{\n" +
+                "  \"id\" : 4,\n" +
+                "  \"groupName\" : \"newGroupName\",\n" +
+                "  \"users\" : [ ],\n" +
+                "  \"board\" : {\n" +
+                "    \"id\" : 4,\n" +
+                "    \"boardName\" : null,\n" +
+                "    \"location\" : null\n" +
+                "  },\n" +
+                "  \"coordinator\" : {\n" +
+                "  \"id\" : 5 \n"+
+                "  }\n"+
+                "}";
+
+        this.mockMvc.perform(post("/groups/4").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk()).andExpect(content()
+                .string(containsString("{\"id\":4,\"groupName\":\"newGroupName\",")));
+        MvcResult result = this.mockMvc.perform(get("/users/5")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        assert(stringResult.contains("\"roles\":[{\"name\":\"USER\"},{\"name\":\"COORDINATOR\"}]"));
+    }
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testReplaceGroupChangeCoordinator() throws Exception {
+        String requestJson = "{\n" +
+                "  \"id\" : 1,\n" +
+                "  \"groupName\" : \"newGroupName\",\n" +
+                "  \"users\" : [ ],\n" +
+                "  \"board\" : {\n" +
+                "    \"id\" : 1,\n" +
+                "    \"boardName\" : null,\n" +
+                "    \"location\" : null\n" +
+                "  },\n" +
+                "  \"coordinator\" : {\n" +
+                "  \"id\" : 2 \n"+
+                "  }\n"+
+                "}";
+
+        this.mockMvc.perform(post("/groups/1").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk()).andExpect(content()
+                .string(containsString("{\"id\":1,\"groupName\":\"newGroupName\",")));
+        MvcResult result = this.mockMvc.perform(get("/users/2")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        assert(stringResult.contains("\"roles\":[{\"name\":\"USER\"},{\"name\":\"COORDINATOR\"}]"));
+        MvcResult result2 = this.mockMvc.perform(get("/users/4")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult2 = result2.getResponse().getContentAsString();
+        assert(!stringResult2.contains("\"roles\":[{\"name\":\"USER\"},{\"name\":\"COORDINATOR\"}]"));
+    }
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testReplaceGroupChangeBoard() throws Exception {
+        String requestJson = "{\n" +
+                "  \"id\" : 3,\n" +
+                "  \"groupName\" : \"boardChange\",\n" +
+                "  \"users\" : [ ],\n" +
+                "  \"board\" : {\n" +
+                "    \"id\" : 4,\n" +
+                "    \"boardName\" : null,\n" +
+                "    \"location\" : null\n" +
+                "  },\n" +
+                "  \"coordinator\" : {\n" +
+                "  \"id\" : 7 \n"+
+                "  }\n"+
+                "}";
+
+        this.mockMvc.perform(post("/groups/3").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk()).andExpect(content()
+                .string(containsString("\"board\":{\"id\":4,\"boardName\":\"testboard4\",\"location\":\"location4\"},\"coordinator\":7}")));
+    }
+
 
     @Test
     @Order(3)
@@ -148,7 +274,7 @@ public class GroupRestControllerTest {
 
     @Test
     public void testAddUserToGroupWithoutRole() throws Exception {
-        this.mockMvc.perform(post("/groups/user/1").principal(SecurityContextHolder.getContext().getAuthentication()).param("userId","3")
+        this.mockMvc.perform(post("/groups/user/1").param("userId","3")
         ).andDo(print()).andExpect(status().isUnauthorized());
     }
 
