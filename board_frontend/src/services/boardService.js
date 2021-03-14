@@ -3,7 +3,7 @@ import Stomp from "webstomp-client";
 import {store} from '@/main';
 import moment from 'moment';
 
-const backendEndpoint = 'http://localhost:80/backend';
+const backendEndpoint = 'http://localhost:8000/backend';
 
 export default class BoardService {
   socket;
@@ -39,22 +39,27 @@ export default class BoardService {
   }
 
   _connect() {
-    this.stompClient.connect(
-      JSON.parse(JSON.stringify(store.getters.authHeader)),
-      frame => {
-        this.connected = true;
-        for (let board of this.boards) {
-          this._getActiveMessages(board.id);
-          this.stompClient.subscribe("/topic/boards." + board.id, message => {
-            this._handleIncomingMessages({id: board.id, messages: JSON.parse(message.body)});
-          });
+    if(this.boards){
+      this.stompClient.connect(
+        JSON.parse(JSON.stringify(store.getters.authHeader)),
+        frame => {
+          this.connected = true;
+          for (let board of this.boards) {
+            this._getActiveMessages(board.id);
+            this.stompClient.subscribe("/topic/boards." + board.id, message => {
+              this._handleIncomingMessages({id: board.id, messages: JSON.parse(message.body)});
+            });
+          }
+        },
+        error => {
+          console.log(error);
+          this.connected = false;
         }
-      },
-      error => {
-        console.log(error);
-        this.connected = false;
-      }
-    );
+      );
+    }
+    else {
+      this.connected = false;
+    } 
   }
 
   _getActiveMessages(boardId){

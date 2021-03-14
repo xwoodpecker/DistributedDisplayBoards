@@ -79,12 +79,12 @@
           <MessageManagement v-if="this.messageManagementActive"></MessageManagement>
         </div>
         <div class="board-preview md-layout-item" @click="showOverlay = !showOverlay">
-          <BoardDisplay></BoardDisplay>
+          <BoardDisplay v-if="this.boardId" v-bind:boardId="parseInt(this.boardId)"></BoardDisplay>
         </div>
         <div id="overlay" @click="showOverlay = !showOverlay"
               :class="{active : showOverlay, inactive : !showOverlay}">
           <div id="overlay-inner">
-            <BoardDisplay v-if="showOverlay" v-bind:boardId="this.boardId"></BoardDisplay>
+            <BoardDisplay v-if="showOverlay && this.boardId" v-bind:boardId="parseInt(this.boardId)"></BoardDisplay>
           </div>
         </div>
       </md-app-content>
@@ -137,20 +137,6 @@ export default {
       date: new Date(),
       active: true,
       displayTime: 10,
-       messages: [
-        {
-          id: 1,
-          content: "<p style=\"text-align: center;\">Das hier ist normale Schrift</p><h1 style=\"text-align: center;\">Heading 1</h1><p style=\"text-align: center;\"><span style=\"color: rgb(0, 138, 0);\">Geht </span><span style=\"color: rgb(0, 102, 204);\">auch </span><span style=\"color: rgb(240, 102, 102);\">bunt</span></p>",
-          duration: 5,
-          backgroundColor: '#008080',
-        },
-        {
-          id: 2,
-          content: "<p><span style=\"color: rgb(255, 255, 0);\">T</span><span style=\"color: rgb(230, 0, 0);\">E</span><span style=\"color: rgb(255, 255, 102);\">S</span><span style=\"color: rgb(240, 102, 102);\">T</span></p>",
-          duration: 5,
-          backgroundColor: '#000000',
-        },
-      ],
     };
   },
   methods: {
@@ -177,9 +163,6 @@ export default {
   computed: {},
   created() {
     this.boardId = this.$route.params.id;
-    console.log(this.board);
-    this.board = this.$store.getters.boards.find(board => board.id == this.boardId);
-    console.log(this.board);
   },
   mounted() {
   },

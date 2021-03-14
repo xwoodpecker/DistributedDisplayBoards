@@ -80,6 +80,9 @@ export const store = new Vuex.Store({
         boards: state => {
             return state.boards;
         },
+        messages: state => (boardId) => {
+            return state.boards.find(board => board.id == boardId).messages;
+        },
         userToEdit: state => {
             return state.userToEdit
         },

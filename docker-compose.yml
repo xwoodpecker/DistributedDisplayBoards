@@ -1,6 +1,9 @@
 version: "3.7"
 services:
 
+    # todo use docker volumes for persistence rather than local file system
+    # todo only enable needed ports (only 80? maybe 61613), comment others
+
     # MySQL Container
     db:
         image: mysql:5.7
@@ -11,8 +14,8 @@ services:
             MYSQL_USER: user
             MYSQL_PASSWORD: password
             MYSQL_RANDOM_ROOT_PASSWORD: '1'
-        volumes:
-            - ./docker/mysql:/var/lib/mysql
+        #volumes:
+            #- ./docker/mysql:/var/lib/mysql
         networks:
             - spring-cloud-network
 
@@ -31,53 +34,37 @@ services:
             - spring-cloud-network
 
     rabbitmq:
-        image: rabbitmq:3-management
+        build:
+            context: ./
+            dockerfile: docker/rabbitmq/Dockerfile
         ports:
             - 5672:5672
             - 15672:15672
-            - 61613:61613
-        environment: 
-            BROKER_HOST: localhost
-        volumes:
-            - ./docker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+            - 61613:61613           
+        #volumes:
+            #- ./docker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
         networks:
             - spring-cloud-network
 
-    app_backend:
+    distributed-boards:
         build:
             context: ./
-            dockerfile: docker/backend/Dockerfile
+            dockerfile: docker/distributed-boards/Dockerfile
         image: springboot-backend
-        container_name: backend
+        container_name: distributed-boards
         restart: unless-stopped
         depends_on:
             - db
             - rabbitmq
         ports:
-            - 8000:8000
+            - 80:80
         networks:
             - spring-cloud-network
         environment:
             SPRING_DATASOURCE_URL: jdbc:mysql://db_mysql:3306/testapp
             SPRING_DATASOURCE_USERNAME: user
             SPRING_DATASOURCE_PASSWORD: password
-
-    app_frontend:
-        build:
-            context: ./
-            dockerfile: docker/frontend/Dockerfile
-        image: vue-frontend
-        container_name: frontend
-        restart: unless-stopped
-        links:
-            -   "app_backend"
-        ports:
-            - 80:80
-        networks:
-            - spring-cloud-network
-        environment:
-            FRONTEND_SERVER: docker
-            
+            BROKER_HOST: rabbitmq
 networks:
     spring-cloud-network:
         driver: bridge
