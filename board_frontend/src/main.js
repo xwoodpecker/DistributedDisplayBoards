@@ -9,6 +9,7 @@ import VueAgile from 'vue-agile'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 import {ENV} from './environment'
+import BoardService from './services/boardService'
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -94,6 +95,7 @@ export const store = new Vuex.Store({
     }
 });
 
+Vue.prototype.$boardService = new BoardService();
 
 new Vue({
     render: h => h(App),
