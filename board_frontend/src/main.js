@@ -9,6 +9,11 @@ import VueAgile from 'vue-agile'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 import {ENV} from './environment'
+import 'toastr/toastr.scss'
+import Toastr from 'toastr'
+
+
+Vue.prototype.$toastr = Toastr;
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -17,7 +22,7 @@ Vue.use(VueMaterial)
 Vue.use(VueAgile)
 
 const router = new VueRouter({
-    mode: 'hash',
+    mode: 'history',
     base: process.env.BASE_URL,
     routes
 });
@@ -43,6 +48,7 @@ export const store = new Vuex.Store({
         user: null,
         authHeader: null,
         boards: [],
+        users: [],
         userToEdit: null
     },
     mutations: {
@@ -69,6 +75,9 @@ export const store = new Vuex.Store({
         setAuthHeader(state, auth) {
             state.authHeader = {'Authorization': 'Basic ' + window.btoa(auth.username + ':' + auth.password)};
             console.log("authHeader", state.authHeader)
+        },
+        setUsers(state, users) {
+            state.users = users;
         }
     },
     getters: {
@@ -90,6 +99,9 @@ export const store = new Vuex.Store({
         },
         getUser: state => {
             return state.user
+        },
+        getUsers: state => {
+            return state.users
         }
     }
 });
