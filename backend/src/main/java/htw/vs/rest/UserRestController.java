@@ -111,7 +111,7 @@ public class UserRestController {
      * @param isSupervisor the is supervisor
      * @return the response entity
      */
-    @CrossOrigin(origins = "http://localhost")
+    @CrossOrigin(origins = "*")
     @Operation(summary = "Add a new user")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
@@ -120,11 +120,11 @@ public class UserRestController {
         user.setUserName(request.userName);
         user.setPassword(passwordEncoder.encode(request.password));
         user.setEnabled(true);
-        user.setEmail(email);
+        user.setEmail(request.email);
         Role userRole = roleRepository.findByName(Const.USER_ROLE);
         user.getRoles().add(userRole);
         userRole.getUsers().add(user);
-        if(isSupervisor){
+        if(request.isSupervisor){
             Role superVisorRole = roleRepository.findByName(Const.SUPERVISOR_ROLE);
             user.getRoles().add(superVisorRole);
             superVisorRole.getUsers().add(user);
