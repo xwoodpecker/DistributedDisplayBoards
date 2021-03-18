@@ -77,21 +77,16 @@ public class GroupRestController {
     /**
      * Add group response entity.
      *
-     * @param groupName     the group name
-     * @param boardName     the board name
-     * @param location      the location
-     * @param coordinatorId the coordinator id
+     * @param group the group
      * @return the response entity
      */
     @Operation(summary = "Add a new group and a new board")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
-    public ResponseEntity addGroup(@RequestParam String groupName, @RequestParam String boardName, @RequestParam String location, @RequestParam Long coordinatorId) {
+    public ResponseEntity addGroup(@RequestBody Group group) {
         ResponseEntity response;
         Group g;
-
-
-        Optional<User> user = userRepository.findById(coordinatorId);
+        Optional<User> user = userRepository.findById(group.getCoordinator().getId());
         if(!user.isPresent())
         {
             response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
@@ -99,20 +94,20 @@ public class GroupRestController {
 
         else {
             Board newBoard = new Board();
-            newBoard.setBoardName(boardName);
-            newBoard.setLocation(location);
+            newBoard.setBoardName(group.getBoard().getBoardName());
+            newBoard.setLocation(group.getBoard().getLocation());
             newBoard = boardRepository.save(newBoard);
 
 
-            Group group = new Group();
-            group.setGroupName(groupName);
-            group.setBoard(newBoard);
-            group.setCoordinator(user.get());
-            group.getUsers().add(user.get());
+            Group newGgroup = new Group();
+            newGgroup.setGroupName(group.getGroupName());
+            newGgroup.setBoard(newBoard);
+            newGgroup.setCoordinator(user.get());
+            newGgroup.getUsers().add(user.get());
             Role userRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
             user.get().getRoles().add(userRole);
             userRole.getUsers().add(user.get());
-            g = groupRepository.save(group);
+            g = groupRepository.save(newGgroup);
             response = new ResponseEntity(g, HttpStatus.OK);
         }
         return response;
@@ -131,7 +126,7 @@ public class GroupRestController {
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
     @PreAuthorize("@securityService.hasPermissionGroup(authentication, #id)")
     @PostMapping("/user/{id}")
-    public ResponseEntity addUserToGroup(@RequestParam Long userId, @PathVariable Long id) {
+    public ResponseEntity addUserToGroup(@RequestBody Long userId, @PathVariable Long id) {
         ResponseEntity response;
         Optional<Group> group = groupRepository.findById(id);
         Group g;

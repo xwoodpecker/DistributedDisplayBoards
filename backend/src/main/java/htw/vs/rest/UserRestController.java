@@ -115,10 +115,10 @@ public class UserRestController {
     @Operation(summary = "Add a new user")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
-    public ResponseEntity addUser(@RequestParam String userName, @RequestParam String password, @RequestParam String email, @RequestParam boolean isSupervisor){
+    public ResponseEntity addUser(@RequestBody UserRequest request){
         User user = new User();
-        user.setUserName(userName);
-        user.setPassword(passwordEncoder.encode(password));
+        user.setUserName(request.userName);
+        user.setPassword(passwordEncoder.encode(request.password));
         user.setEnabled(true);
         user.setEmail(email);
         Role userRole = roleRepository.findByName(Const.USER_ROLE);

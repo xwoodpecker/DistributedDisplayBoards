@@ -72,7 +72,16 @@ public class BoardRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR" )
     public void testAddBoard() throws Exception {
-        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest").param("location", "newlocation")).andDo(print()).andExpect(status().isOk())
+        Board board = new Board();
+        board.setBoardName("addedBoardTest");
+        board.setLocation("newlocation");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(board);
+
+        this.mockMvc.perform(post("/boards/").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk())
         .andExpect(content().string(containsString("{\"id\":6,\"boardName\":\"addedBoardTest\",\"location\":\"newlocation\"}")));
     }
 
@@ -83,7 +92,16 @@ public class BoardRestControllerTest {
      */
     @Test
     public void testAddBoardWithoutRole() throws Exception {
-        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest").param("location", "newlocation")).andDo(print()).andExpect(status().isUnauthorized());
+        Board board = new Board();
+        board.setBoardName("addedBoardTest");
+        board.setLocation("newlocation");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(board);
+
+        this.mockMvc.perform(post("/boards/").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isUnauthorized());
     }
 
     /**
@@ -94,7 +112,16 @@ public class BoardRestControllerTest {
     @Test
     @WithMockUser(roles="USER")
     public void testAddBoardWithoutPermission() throws Exception {
-        this.mockMvc.perform(post("/boards/").param("boardName", "addedBoardTest").param("location", "newlocation")).andDo(print()).andExpect(status().isForbidden());
+        Board board = new Board();
+        board.setBoardName("addedBoardTest");
+        board.setLocation("newlocation");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(board);
+
+        this.mockMvc.perform(post("/boards/").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isForbidden());
     }
 
     /**
