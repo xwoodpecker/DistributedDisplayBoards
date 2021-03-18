@@ -22,6 +22,10 @@ public class Config {
      */
     public static final String CENTRAL_BOARD_NAME;
     /**
+     * The constant CENTRAL_GROUP_NAME.
+     */
+    public static final String CENTRAL_GROUP_NAME;
+    /**
      * The constant BROKER_HOST.
      */
     public static final String BROKER_HOST;
@@ -58,6 +62,7 @@ public class Config {
         BASIC_TOPIC = properties.getProperty("BASIC_TOPIC");
         DEFAULT_SUPERVISOR_PASSWORD = properties.getProperty("DEFAULT_SUPERVISOR_PASSWORD");
         CENTRAL_BOARD_NAME = properties.getProperty("CENTRAL_BOARD_NAME");
+        CENTRAL_GROUP_NAME = properties.getProperty("CENTRAL_GROUP_NAME");
         BROKER_HOST = properties.getProperty("BROKER_HOST");
         BROKER_PORT = Integer.parseInt(properties.getProperty("BROKER_PORT"));
         BROKER_LOGIN = properties.getProperty("BROKER_LOGIN");
