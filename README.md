@@ -1,5 +1,14 @@
 # PIB-VS_WS2020_Gruppe1
-//todo coole Einleitung
+Das Projekt kam im Rahmen der Vorlesung Verteilte Systeme auf. 
+Ziel des Projekts war es eine Verwaltung von verteilten Anzeigetafeln zum Verbreiten und Teilen von Informationen in einer Organisation bereitzustellen.
+Jede dieser Anzeigetafeln wird einer lokalen Nutzergruppe zugeordnet und jeder Nutzer innerhalb der Gruppe darf Nachrichten auf seine Gruppentafel publizieren.
+Jeder Nutzer darf seine eigenen Nachrichten auch modifizieren und löschen. Zu jeder Gruppe wird ein Koordinator definiert, der alle Nachrichten auf der Gruppentafel 
+manipulieren kann. Zusätzlich zu den Gruppentafeln existiert auch eine zentrale Tafel. 
+Die Koordinatoren der Gruppen haben die Möglichkeit eine Nachricht ihrer Gruppentafel auf der zentralen Anzeigetafel öffentlich zu machen.
+Die Software kann sowohl von Nutzern, als auch Koordinatoren genutzt werden, um Nachrichten publizieren. Zudem soll die Anzeige realisiert werden.
+Neben den beiden Rollen Nutzer und Koordinator soll es noch eine administrative Rolle (Supervisor) geben. 
+Supervisor können Stammdaten, wie Gruppen, Anzeigetafeln und Nutzer erstellen, löschen und modifizieren. 
+Im Rahmen des Projektes sollen sowohl das Frontend, als auch das Backend zu dieser Verwaltungssoftware programmiert werden.
 
 ![](markdown-images/architecture.png)
 
@@ -14,9 +23,11 @@ von Anzeigetafeln und deren Nachrichten zu ermöglichen. Es stellt Nutzern auch 
 jeweiligen Tafel bearbeiten und Supervisor den gesamten Datenbestand. Dazu können diverse Admin Panels genutzt werden.
 
 ## Architektur
-Wie oben beschrieben ist, handelt es sich um einen Microservice, der Teil des Backends ist. Der Aggregator Service ist in seiner Funktionalität abhänig vom MQTT Broker.
-Bei der Erarbeitung der Lösungsstrategie musste die Datenverarbeitung der Sensormesswerte festgelegt werden. Als separate Aspekte musste die Batch-Aggregation und
-die Datenbereitstellung konzipiert werden. Diese drei Kernfunktionen des Service konnten im Einzelnen konzipiert werden. Im Folgenden werden diese beschrieben.
+Wie oben beschrieben ist, sind zwei verschiedene Komponenten zu implementieren. Es muss das Backend implementiert werden, welches die Logik darstellt, 
+sowie das Frontend, welches im Wesentlichen die Anzeige realisiert.
+Bei der Erarbeitung der Lösungsstrategie mussten die internen Abläufe zur Anzeige und zum Senden der Nachrichten definiert werden. 
+Dabei konnte seitens des Backends die WebSocket- und die REST-Schnittstelle unabhängig voneinander ausgearbeitet werden.
+Im Folgenden wird auf die wesentlichen Schritte bis zur Fertigstellung eingegangen.
 
 #### User Stories und Use Cases
 * User Stories
@@ -38,8 +49,6 @@ die Datenbereitstellung konzipiert werden. Diese drei Kernfunktionen des Service
     * Verschiedene Anzeigemöglichkeiten von Nachrichten
     * Log aller Nachrichten
 
-
-
 #### Anforderungen
 
 ##### Must-Have-Anforderungen:
@@ -55,7 +64,6 @@ Koordinatoren:
 Supervisor:
  - Alle Nachrichten verwalten
  - Gruppen, Nutzer und Berechtigungen verwalten
-
 
 ###### Nichtfunktionale Anforderungen:
 - Containerisierung mit Docker
@@ -74,15 +82,11 @@ Supervisor:
 - Übersicht aktiver Nachrichten für Nutzer
 - Dauer der Anzeige für Nachrichten durch Koordinator einstellbar
 
-
-
 ##### Nice-To-Have-Anforderungen:
 
 ###### Funktionale Anforderungen:
 - Darstellung von Nachrichten bearbeitbar
 - Log aller Nachrichten für Supervisor
-
-
 
 #### Lösungsstrategie
 Die Lösung wurde in Java 11 implementiert. Das Spring Framework wurde eingesetzt, um
@@ -179,7 +183,7 @@ für einen Nutzer abgebildet werden.
 
 ##### API
 
-###### RabbmitMQ-Topics
+###### RabbitMQ-Topics
 * Topic-Präfix in Konfigurationsdatei festlegbar
 * Anzeigetafeln über Präfix gefolgt von eindeutiger Nummer unterscheidbar
 
@@ -261,6 +265,9 @@ Ein Board mit eindeutiger Nummer 1 würde in diesem Fall unter `/topic/boards.1`
 * [Docker](https://www.docker.com/) - Anwendung zur Containervirtualisierung
 * [Vue.js](https://vuejs.org/) - FrontEnd Implementierung
 * [SockJS](https://github.com/sockjs) - Kommunikation mit WebSockets in JS
+* [Vue Material](https://vuematerial.io/) - Material Design und Layout
+* [axios](https://github.com/axios/axios) - Kommunikation mit REST-API in JS
+* [Stomp](https://github.com/stomp-js/stompjs) - Stellt STOMP über Websocket für JS bereit
 
 
 ## License
