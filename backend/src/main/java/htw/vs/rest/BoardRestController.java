@@ -68,18 +68,14 @@ public class BoardRestController {
     /**
      * Add board response entity.
      *
-     * @param boardName the name of the new board
-     * @param location  the location
+     * @param board the board
      * @return the response entity
      */
     @Operation(summary = "Add a new board")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
-    public ResponseEntity addBoard(@RequestParam String boardName, @RequestParam String location) {
-        Board newBoard = new Board();
-        newBoard.setBoardName(boardName);
-        newBoard.setLocation(location);
-        return new ResponseEntity<>(boardRepository.save(newBoard), HttpStatus.OK);
+    public ResponseEntity addBoard(@RequestBody Board board) {
+        return new ResponseEntity<>(boardRepository.save(board), HttpStatus.OK);
     }
 
     /**
