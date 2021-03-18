@@ -128,7 +128,7 @@ public class GroupRestController {
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
     @PreAuthorize("@securityService.hasPermissionGroup(authentication, #id)")
     @PostMapping("/user/{id}")
-    public ResponseEntity addUserToGroup(@RequestBody Long userId, @PathVariable Long id) {
+    public ResponseEntity addUserToGroup(@RequestParam Long userId, @PathVariable Long id) {
         ResponseEntity response;
         Optional<Group> group = groupRepository.findById(id);
         Group g;
@@ -185,47 +185,6 @@ public class GroupRestController {
         }
         return response;
     }
-
-    /**
-     * Change coordinator response entity.
-     *
-     * @param newCoordinatorId the new coordinator id
-     * @param id               the id
-     * @return the response entity
-     */
-    @Operation(summary = "Change Coordinator")
-    @Secured("ROLE_SUPERVISOR")
-    @PostMapping("/coordinator/{id}")
-    public ResponseEntity changeCoordinator(@RequestParam Long newCoordinatorId, @PathVariable Long id){
-        ResponseEntity response;
-        Group g;
-
-        Optional<Group> group = groupRepository.findById(id);
-        Optional<User> user = userRepository.findById(newCoordinatorId);
-
-        if(!group.isPresent()) {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_GROUP_MSG);
-        }
-        else if(!user.isPresent()) {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
-        }
-
-        else {
-            Group temp = group.get();
-
-            if(!user.isPresent()){
-                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
-            }
-            else {
-                temp = changeCoordinatorRole(user.get(), temp);
-                g = groupRepository.save(temp);
-
-                response = new ResponseEntity(g, HttpStatus.OK);
-            }
-        }
-        return response;
-    }
-
 
     /**
      * Replace group response entity.
