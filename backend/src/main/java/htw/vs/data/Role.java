@@ -17,7 +17,10 @@ import java.util.Set;
 @JsonIgnoreProperties(value = "users")
 public class Role {
     @Id
-    @Column(name = "name")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+
+    @Column(name = "name",  unique = true, nullable = false)
     private String name;
 
     @ManyToMany(mappedBy = "roles", fetch=FetchType.LAZY)

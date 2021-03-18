@@ -181,11 +181,21 @@ public class UserRestController {
         User u;
         if(user.isPresent()){
             User temp = user.get();
-            temp.setUserName(newUser.getUserName());
-            temp.setPassword(passwordEncoder.encode(newUser.getPassword()));
-            temp.setEmail(newUser.getEmail());
+            if(newUser.getUserName() != null){
+                temp.setUserName(newUser.getUserName());
+            }
+            if( newUser.getPassword() != null){
+                temp.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            }
+            if( newUser.getEmail() != null){
+                temp.setEmail(newUser.getEmail());
+            }
+            if( !newUser.getRoles().isEmpty()){
+                temp.setRoles(newUser.getRoles());
+            }
+
             temp.setEnabled(newUser.isEnabled());
-            temp.setRoles(newUser.getRoles());
+
             u = userRepository.save(temp);
         }else{
             newUser.setId(id);

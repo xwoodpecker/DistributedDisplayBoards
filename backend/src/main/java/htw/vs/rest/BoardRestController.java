@@ -93,7 +93,6 @@ public class BoardRestController {
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/{id}")
     public ResponseEntity replaceBoard(@RequestBody Board newBoard, @PathVariable Long id) {
-        ResponseEntity response;
         Optional<Board> board = boardRepository.findById(id);
         Board b;
         if(board.isPresent()) {
