@@ -40,20 +40,20 @@ INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_t
 INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (7, 0, 'content of message 7', '2021-03-01 17:03:17.000000', 3, 7, 40, 'white');
 
 -- roles
-INSERT INTO roles(name) VALUES ('COORDINATOR');
-INSERT INTO roles(name) VALUES ('SUPERVISOR');
-INSERT INTO roles(name) VALUES ('USER');
+INSERT INTO roles(id, name) VALUES (1, 'SUPERVISOR');
+INSERT INTO roles(id, name) VALUES (2, 'COORDINATOR');
+INSERT INTO roles(id, name) VALUES (3, 'USER');
 
 -- users_roles
-INSERT INTO users_roles(roles_name, users_id) VALUES ('USER', 1);
-INSERT INTO users_roles(roles_name, users_id) VALUES ('USER', 2);
-INSERT INTO users_roles(roles_name, users_id) VALUES ('USER', 3);
-INSERT INTO users_roles(roles_name, users_id) VALUES ('USER', 4);
-INSERT INTO users_roles(roles_name, users_id) VALUES ('USER', 5);
-INSERT INTO users_roles(roles_name, users_id) VALUES ('USER', 6);
-INSERT INTO users_roles(roles_name, users_id) VALUES ('USER', 7);
-INSERT INTO users_roles(roles_name, users_id) VALUES ('USER', 8);
-INSERT INTO users_roles(roles_name, users_id) VALUES ('COORDINATOR', 4);
-INSERT INTO users_roles(roles_name, users_id) VALUES ('COORDINATOR', 5);
-INSERT INTO users_roles(roles_name, users_id) VALUES ('COORDINATOR', 7);
-INSERT INTO users_roles(roles_name, users_id) VALUES ('SUPERVISOR', 6);
+INSERT INTO users_roles(roles_id, users_id) VALUES ('3', 1);
+INSERT INTO users_roles(roles_id, users_id) VALUES ('3', 2);
+INSERT INTO users_roles(roles_id, users_id) VALUES ('3', 3);
+INSERT INTO users_roles(roles_id, users_id) VALUES ('3', 4);
+INSERT INTO users_roles(roles_id, users_id) VALUES ('3', 5);
+INSERT INTO users_roles(roles_id, users_id) VALUES ('3', 6);
+INSERT INTO users_roles(roles_id, users_id) VALUES ('3', 7);
+INSERT INTO users_roles(roles_id, users_id) VALUES ('3', 8);
+INSERT INTO users_roles(roles_id, users_id) VALUES ('2', 4);
+INSERT INTO users_roles(roles_id, users_id) VALUES ('2', 5);
+INSERT INTO users_roles(roles_id, users_id) VALUES ('2', 7);
+INSERT INTO users_roles(roles_id, users_id) VALUES ('1', 6);
