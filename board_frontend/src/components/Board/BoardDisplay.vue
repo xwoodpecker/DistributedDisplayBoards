@@ -1,6 +1,6 @@
 <template>
   <div ref="displayContainer" class="display-container">
-    <agile ref="carousel" v-if="messages" v-bind:options="carouselOptions">
+    <agile ref="carousel" v-bind:options="carouselOptions">
       <div v-for="message in messages" :key="message.id">
         <div
           :style="{
@@ -51,9 +51,11 @@ export default {
   },
   methods: {
     start() {
-      this.startAnimation(
-        this.messages[this.$refs.carousel.currentSlide].duration
-      );
+      if(this.messages > 1){
+        this.startAnimation(
+          this.messages[this.$refs.carousel.currentSlide].duration
+        );
+      }
     },
     play() {
       if (this.animation) this.animation.play();

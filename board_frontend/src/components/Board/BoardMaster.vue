@@ -11,7 +11,7 @@
       </md-card-header>
 
       <md-card-media class="media-container">
-        <BoardDisplay></BoardDisplay>
+        <BoardDisplay v-if="this.id" v-bind:boardId="parseInt(this.id)"></BoardDisplay>
       </md-card-media>
 
       <md-card-content v-if="messages">

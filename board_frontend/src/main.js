@@ -81,7 +81,8 @@ export const store = new Vuex.Store({
             return state.boards;
         },
         messages: state => (boardId) => {
-            return state.boards.find(board => board.id == boardId).messages;
+            let board = state.boards.find(board => board.id == boardId);
+            return board ? board.messages : undefined;
         },
         userToEdit: state => {
             return state.userToEdit
