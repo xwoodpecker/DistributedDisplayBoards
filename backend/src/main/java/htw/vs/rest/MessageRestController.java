@@ -240,24 +240,19 @@ public class MessageRestController {
     /**
      * Add message response entity.
      *
-     * @param active      the active
-     * @param boardId     the board id
-     * @param userId      the user id
-     * @param content     the content
-     * @param displayTime the display time
-     * @param endDate     the end date
+     * @param message the message
      * @return the response entity
      */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "create a new Message")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
-    public ResponseEntity addMessage(@RequestParam Boolean active, @RequestParam Long boardId, @RequestParam Long userId, @RequestParam String content, @RequestParam Integer displayTime, @RequestParam Timestamp endDate){
+    public ResponseEntity addMessage(@RequestBody Message message){
         ResponseEntity response;
         Message m;
 
-        Optional<Board> board = boardRepository.findById(boardId);
-        Optional<User> user = userRepository.findById(userId);
+        Optional<Board> board = boardRepository.findById(message.getBoard().getId());
+        Optional<User> user = userRepository.findById(message.getUser().getId());
         if(!board.isPresent()){
             response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Board not found");
         }
@@ -266,14 +261,14 @@ public class MessageRestController {
             response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
         else {
-            Message message = new Message();
-            message.setActive(active);
-            message.setBoard(board.get());
-            message.setUser(user.get());
-            message.setContent(content);
-            message.setDisplayTime(displayTime);
-            message.setEndDate(endDate);
-            m = messageRepository.save(message);
+            Message newMessage = new Message();
+            newMessage.setActive(message.isActive());
+            newMessage.setBoard(board.get());
+            newMessage.setUser(user.get());
+            newMessage.setContent(message.getContent());
+            newMessage.setDisplayTime(message.getDisplayTime());
+            newMessage.setEndDate(message.getEndDate());
+            m = messageRepository.save(newMessage);
             response = new ResponseEntity(m, HttpStatus.OK);
         }
 
