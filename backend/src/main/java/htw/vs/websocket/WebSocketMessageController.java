@@ -83,7 +83,8 @@ public class WebSocketMessageController {
 
         List<Message> messages = getAllByBoard(board);
 
-        sendToBoard(board.getId(),messages);
+        if(messages != null)
+            sendToBoard(board.getId(),messages);
 
         return true;
     }
@@ -112,7 +113,8 @@ public class WebSocketMessageController {
 
         List<Message> messages = addOrReplace(message);
 
-        sendToBoard(message.getBoard().getId(),messages);
+        if(messages != null)
+            sendToBoard(message.getBoard().getId(),messages);
 
         return true;
     }
@@ -139,7 +141,9 @@ public class WebSocketMessageController {
         verifyCoordinator(authentication, message.getBoard().getGroup().getCoordinator());
         List<Message> messages = addOrReplace(centralMsg);
 
-        sendToBoard(centralBoard.getId(),messages);
+
+        if(messages != null)
+            sendToBoard(centralBoard.getId(), messages);
 
         return true;
     }
