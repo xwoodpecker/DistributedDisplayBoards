@@ -1,10 +1,8 @@
 package htw.vs.security;
 
-import htw.vs.base.CONST;
-import htw.vs.data.Group;
-import htw.vs.data.GroupRepository;
-import htw.vs.data.User;
-import htw.vs.data.UserRepository;
+import htw.vs.base.Const;
+import htw.vs.data.*;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -20,16 +18,19 @@ public class SecurityService {
 
     private GroupRepository groupRepository;
     private UserRepository userRepository;
+    private BoardRepository boardRepository;
 
     /**
      * Instantiates a new Security service.
      *
      * @param groupRepository the group repository
      * @param userRepository  the user repository
+     * @param boardRepository the board repository
      */
-    public SecurityService(GroupRepository groupRepository, UserRepository userRepository) {
+    public SecurityService(GroupRepository groupRepository, UserRepository userRepository, BoardRepository boardRepository) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
+        this.boardRepository = boardRepository;
     }
 
     /**
@@ -39,7 +40,7 @@ public class SecurityService {
      * @param groupId        the group id
      * @return the boolean
      */
-    public boolean hasPermission(Authentication authentication, Long groupId) {
+    public boolean hasPermissionGroup(Authentication authentication, Long groupId) {
         Set<String> roles = authentication.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
 
@@ -49,12 +50,49 @@ public class SecurityService {
         Optional<Group> opt = groupRepository.findById(groupId);
         Group group;
 
-        if(user.getRoles().contains(CONST.SUPERVISOR_ROLE))
+        if(user == null){
+            return false;
+        }
+        if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 0)
         {
             return true;
         }
         else if(opt.isPresent()) {
             group = opt.get();
+        }else {
+            return  false;
+        }
+
+        if(group.getCoordinator().getId() == user.getId()) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Has permission board boolean.
+     *
+     * @param authentication the authentication
+     * @param boardId        the board id
+     * @return the boolean
+     */
+    public boolean hasPermissionBoard(Authentication authentication, Long boardId) {
+        Set<String> roles = authentication.getAuthorities().stream()
+                .map(r -> r.getAuthority()).collect(Collectors.toSet());
+
+        String currentUserName = authentication.getName();
+        User user = userRepository.findUserByUserName(currentUserName);
+
+        Optional<Board> opt = boardRepository.findById(boardId);
+        Group group;
+
+        if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 0)
+        {
+            return true;
+        }
+        else if(opt.isPresent()) {
+            group = opt.get().getGroup();
         }else {
             return  false;
         }

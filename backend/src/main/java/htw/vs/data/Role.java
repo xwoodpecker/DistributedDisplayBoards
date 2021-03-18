@@ -1,6 +1,9 @@
 package htw.vs.data;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,12 +16,19 @@ import java.util.Set;
 @Table(name = "roles")
 @JsonIgnoreProperties(value = "users")
 public class Role {
+    /**
+     * The Id.
+     */
     @Id
-    @Column(name = "name")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+
+    @Column(name = "name",  unique = true, nullable = false)
     private String name;
 
-    @ManyToMany
-    @JoinTable(name = "USERS_ROLES")
+    @ManyToMany(mappedBy = "roles", fetch=FetchType.LAZY)
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     private Set<User> users = new HashSet<>();
 
     /**
@@ -34,6 +44,17 @@ public class Role {
      */
     public Role(String name) {
         this.name = name;
+    }
+
+    /**
+     * Instantiates a new Role.
+     *
+     * @param name  the name
+     * @param users the users
+     */
+    public Role(String name, Set<User> users) {
+        this.name = name;
+        this.users = users;
     }
 
     /**

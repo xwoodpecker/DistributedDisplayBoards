@@ -30,17 +30,21 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     private final BoardRepository boardRepository;
 
+    private final GroupRepository groupRepository;
+
     /**
      * Instantiates a new Setup data loader.
      *
      * @param roleRepository  the role repository
      * @param userRepository  the user repository
      * @param boardRepository the board repository
+     * @param groupRepository the group repository
      */
-    public SetupDataLoader(RoleRepository roleRepository, UserRepository userRepository, BoardRepository boardRepository) {
+    public SetupDataLoader(RoleRepository roleRepository, UserRepository userRepository, BoardRepository boardRepository, GroupRepository groupRepository) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
+        this.groupRepository = groupRepository;
     }
 
     @Autowired
@@ -52,15 +56,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if(alreadySetup)
-            return;
-        createRoleIfNotFound(CONST.SUPERVISOR_ROLE);
-        createRoleIfNotFound(CONST.COORDINATOR_ROLE);
-        createRoleIfNotFound(CONST.USER_ROLE);
-        Role supervisorRole = roleRepository.findByName(CONST.SUPERVISOR_ROLE);
-        Role coordinatorRole = roleRepository.findByName(CONST.COORDINATOR_ROLE);
-        Role userRole = roleRepository.findByName(CONST.USER_ROLE);
-        createUserIfNotFound("supervisor", "", CONFIG.DEFAULT_SUPERVISOR_PASSWORD, new HashSet<>(Arrays.asList(supervisorRole, coordinatorRole, userRole)));
-        createBoardIfNotFound(CONFIG.CENTRAL_BOARD_NAME);
+        return;
+        createRoleIfNotFound(Const.SUPERVISOR_ROLE);
+        createRoleIfNotFound(Const.COORDINATOR_ROLE);
+        createRoleIfNotFound(Const.USER_ROLE);
+        Role supervisorRole = roleRepository.findByName(Const.SUPERVISOR_ROLE);
+        Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
+        Role userRole = roleRepository.findByName(Const.USER_ROLE);
+        createUserIfNotFound("supervisor", "", Config.DEFAULT_SUPERVISOR_PASSWORD, new HashSet<>(Arrays.asList(supervisorRole, coordinatorRole, userRole)));
+        createBoardIfNotFound(Config.CENTRAL_BOARD_NAME);
+        createGroupIfNotFound(Config.CENTRAL_GROUP_NAME, Config.CENTRAL_BOARD_NAME);
         alreadySetup = true;
     }
 
@@ -122,5 +127,27 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         }
         board = boardRepository.save(board);
         return board;
+    }
+
+    /**
+     * Create group if not found group.
+     *
+     * @param groupName the group name
+     * @param boardName the board name
+     * @return the group
+     */
+    @Transactional
+    Group createGroupIfNotFound(String groupName, String boardName){
+        Group group = groupRepository.findGroupByGroupName(groupName);
+        Board board = boardRepository.findBoardByBoardName(boardName);
+        User user = userRepository.findUserByUserName("supervisor");
+        if(group == null){
+            group = new Group();
+            group.setGroupName(groupName);
+            group.setBoard(board);
+            group.setCoordinator(user);
+        }
+        group = groupRepository.save(group);
+        return group;
     }
 }

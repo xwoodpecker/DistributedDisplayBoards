@@ -1,0 +1,70 @@
+version: "3.7"
+services:
+
+    # todo use docker volumes for persistence rather than local file system
+    # todo only enable needed ports (only 80? maybe 61613), comment others
+
+    # MySQL Container
+    db:
+        image: mysql:5.7
+        restart: always
+        container_name: db_mysql
+        environment:
+            MYSQL_DATABASE: testapp
+            MYSQL_USER: user
+            MYSQL_PASSWORD: password
+            MYSQL_RANDOM_ROOT_PASSWORD: '1'
+        #volumes:
+            #- ./docker/mysql:/var/lib/mysql
+        networks:
+            - spring-cloud-network
+
+    # DB Administration
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links:
+            - db:mysql
+        ports:
+            - 8181:80
+        environment:
+            PMA_HOST: db
+            MYSQL_USERNAME: user
+            MYSQL_ROOT_PASSWORD: password
+        networks:
+            - spring-cloud-network
+
+    rabbitmq:
+        build:
+            context: ./
+            dockerfile: docker/rabbitmq/Dockerfile
+        ports:
+            - 5672:5672
+            - 15672:15672
+            - 61613:61613           
+        #volumes:
+            #- ./docker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+        networks:
+            - spring-cloud-network
+
+    distributed-boards:
+        build:
+            context: ./
+            dockerfile: docker/distributed-boards/Dockerfile
+        image: springboot-backend
+        container_name: distributed-boards
+        restart: unless-stopped
+        depends_on:
+            - db
+            - rabbitmq
+        ports:
+            - 80:80
+        networks:
+            - spring-cloud-network
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:mysql://db_mysql:3306/testapp
+            SPRING_DATASOURCE_USERNAME: user
+            SPRING_DATASOURCE_PASSWORD: password
+            BROKER_HOST: rabbitmq
+networks:
+    spring-cloud-network:
+        driver: bridge

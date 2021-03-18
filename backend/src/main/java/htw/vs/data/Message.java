@@ -18,27 +18,29 @@ public class Message  {
     @Column(name = "content", columnDefinition="TEXT")
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "sender")
-    @JsonIgnoreProperties({"userName", "password", "enabled", "email", "roles", "groups" })
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     private User user;
 
-
-    @ManyToOne
-    @JoinColumn(name = "board")
-    @JsonIgnoreProperties({"boardName"})
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "board_id")
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     private Board board;
 
     @Column(name = "display_time")
     private Integer displayTime;
 
     @Column(name = "end_date")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Timestamp endDate;
 
     @Column(name = "active")
     private boolean active;
 
-    @Column(name ="bgColor")
+    @Column(name = "bg_color")
     private String bgColor;
 
     /**
@@ -60,6 +62,7 @@ public class Message  {
         this.board = other.board;
         this.endDate = other.endDate;
         this.active = other.active;
+        this.bgColor = other.bgColor;
     }
 
     /**
@@ -188,10 +191,20 @@ public class Message  {
         this.displayTime = displayTime;
     }
 
+    /**
+     * Gets bg color.
+     *
+     * @return the bg color
+     */
     public String getBgColor() {
         return bgColor;
     }
 
+    /**
+     * Sets bg color.
+     *
+     * @param bgColor the bg color
+     */
     public void setBgColor(String bgColor) {
         this.bgColor = bgColor;
     }

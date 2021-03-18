@@ -19,7 +19,7 @@ Vue.use(VueMaterial)
 Vue.use(VueAgile)
 
 const router = new VueRouter({
-    mode: 'history',
+    mode: 'hash',
     base: process.env.BASE_URL,
     routes
 });
@@ -59,6 +59,9 @@ export const store = new Vuex.Store({
         addBoards(state, boards) {
             state.boards = boards;
         },
+        setMessages(state, board) {
+            state.boards.find(oldBoard => board.id == oldBoard.id).messages = board.messages;
+        },
         editUser(state, user) {
             state.userToEdit = user;
         },
@@ -77,15 +80,18 @@ export const store = new Vuex.Store({
         boards: state => {
             return state.boards;
         },
+        messages: state => (boardId) => {
+            let board = state.boards.find(board => board.id == boardId);
+            return board ? board.messages : undefined;
+        },
         userToEdit: state => {
             return state.userToEdit
         },
         authHeader: state => {
-            const header = {
-                headers:
-                state.authHeader
-            }
-            return header;
+            return state.authHeader
+        },
+        getUser: state => {
+            return state.user
         }
     }
 });

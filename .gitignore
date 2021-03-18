@@ -4,6 +4,7 @@
 node_modules
 .idea/
 backend/.idea/
-backend/backend.iml
+*.iml
 backend/target
 backend/src/main/resources/public
+docker/mysql

@@ -1,6 +1,6 @@
 package htw.vs.rest;
 
-import htw.vs.base.CONST;
+import htw.vs.base.Const;
 import htw.vs.data.Board;
 import htw.vs.data.BoardRepository;
 import io.swagger.annotations.Api;
@@ -36,6 +36,7 @@ public class BoardRestController {
      *
      * @return the boards
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all boards")
     @GetMapping(path = "/")
     public ResponseEntity<List<Board>> getBoards() {
@@ -49,6 +50,7 @@ public class BoardRestController {
      * @param id the id
      * @return the board
      */
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get board by given id")
     @GetMapping("/{id}")
     public ResponseEntity getBoard(@PathVariable Long id) {
@@ -58,7 +60,7 @@ public class BoardRestController {
         if(board.isPresent())
             response = new ResponseEntity(board.get(), HttpStatus.OK);
         else
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(CONST.NO_BOARD_MSG);
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_BOARD_MSG);
 
         return response;
     }
@@ -66,13 +68,17 @@ public class BoardRestController {
     /**
      * Add board response entity.
      *
-     * @param newBoard the new board
+     * @param boardName the name of the new board
+     * @param location  the location
      * @return the response entity
      */
     @Operation(summary = "Add a new board")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
-    public ResponseEntity addBoard(@RequestBody Board newBoard) {
+    public ResponseEntity addBoard(@RequestParam String boardName, @RequestParam String location) {
+        Board newBoard = new Board();
+        newBoard.setBoardName(boardName);
+        newBoard.setLocation(location);
         return new ResponseEntity<>(boardRepository.save(newBoard), HttpStatus.OK);
     }
 
@@ -89,29 +95,20 @@ public class BoardRestController {
     public ResponseEntity replaceBoard(@RequestBody Board newBoard, @PathVariable Long id) {
         Optional<Board> board = boardRepository.findById(id);
         Board b;
-        if(board.isPresent()){
+        if(board.isPresent()) {
             Board temp = board.get();
-            temp.setBoardName(newBoard.getBoardName());
+            if(newBoard.getBoardName() != null){
+                temp.setBoardName(newBoard.getBoardName());
+            }
+            if(newBoard.getLocation() != null){
+                temp.setLocation(newBoard.getLocation());
+            }
             b = boardRepository.save(temp);
-        }else {
+        } else {
             newBoard.setId(id);
             b = boardRepository.save(newBoard);
         }
         return new ResponseEntity(b, HttpStatus.OK);
-    }
-
-    /**
-     * Delete board response entity.
-     *
-     * @param id the id
-     * @return the response entity
-     */
-    @Operation(summary = "Delete a board")
-    @Secured("USER_SUPERVISOR")
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteBoard(@PathVariable Long id) {
-        boardRepository.deleteById(id);
-        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
 }

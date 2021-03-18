@@ -8,7 +8,7 @@ import java.util.Properties;
 /**
  * The type Config.
  */
-public class CONFIG {
+public class Config {
     /**
      * The constant BASIC_TOPIC.
      */
@@ -21,6 +21,10 @@ public class CONFIG {
      * The constant CENTRAL_BOARD_NAME.
      */
     public static final String CENTRAL_BOARD_NAME;
+    /**
+     * The constant CENTRAL_GROUP_NAME.
+     */
+    public static final String CENTRAL_GROUP_NAME;
     /**
      * The constant BROKER_HOST.
      */
@@ -38,10 +42,10 @@ public class CONFIG {
      */
     public static final String BROKER_PASSCODE;
 
-    private CONFIG() { }
+    private Config() { }
 
     static {
-        URL root = CONFIG.class.getProtectionDomain().getCodeSource().getLocation();
+        URL root = Config.class.getProtectionDomain().getCodeSource().getLocation();
         URL propertiesFile = null;
         try {
             propertiesFile = new URL(root, "application.properties");
@@ -58,9 +62,13 @@ public class CONFIG {
         BASIC_TOPIC = properties.getProperty("BASIC_TOPIC");
         DEFAULT_SUPERVISOR_PASSWORD = properties.getProperty("DEFAULT_SUPERVISOR_PASSWORD");
         CENTRAL_BOARD_NAME = properties.getProperty("CENTRAL_BOARD_NAME");
+        CENTRAL_GROUP_NAME = properties.getProperty("CENTRAL_GROUP_NAME");
         BROKER_HOST = properties.getProperty("BROKER_HOST");
         BROKER_PORT = Integer.parseInt(properties.getProperty("BROKER_PORT"));
         BROKER_LOGIN = properties.getProperty("BROKER_LOGIN");
         BROKER_PASSCODE = properties.getProperty("BROKER_PASSCODE");
+
+        System.out.println("BROKER_HOST");
+        System.out.println(BROKER_HOST);
     }
 }
