@@ -25,6 +25,7 @@ public class SecurityService {
      *
      * @param groupRepository the group repository
      * @param userRepository  the user repository
+     * @param boardRepository the board repository
      */
     public SecurityService(GroupRepository groupRepository, UserRepository userRepository, BoardRepository boardRepository) {
         this.groupRepository = groupRepository;
@@ -69,6 +70,13 @@ public class SecurityService {
         }
     }
 
+    /**
+     * Has permission board boolean.
+     *
+     * @param authentication the authentication
+     * @param boardId        the board id
+     * @return the boolean
+     */
     public boolean hasPermissionBoard(Authentication authentication, Long boardId) {
         Set<String> roles = authentication.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());

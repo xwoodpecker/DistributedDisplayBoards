@@ -37,7 +37,15 @@ public class Group {
     private User coordinator;
 
 
-
+    /**
+     * Instantiates a new Group.
+     *
+     * @param id          the id
+     * @param groupName   the group name
+     * @param users       the users
+     * @param board       the board
+     * @param coordinator the coordinator
+     */
     public Group(Long id, String groupName, Set<User> users, Board board, User coordinator) {
         this.id = id;
         this.groupName = groupName;
@@ -46,6 +54,14 @@ public class Group {
         this.coordinator = coordinator;
     }
 
+    /**
+     * Instantiates a new Group.
+     *
+     * @param id          the id
+     * @param groupName   the group name
+     * @param board       the board
+     * @param coordinator the coordinator
+     */
     public Group(Long id, String groupName, Board board, User coordinator) {
         this.id = id;
         this.groupName = groupName;
@@ -53,6 +69,9 @@ public class Group {
         this.coordinator = coordinator;
     }
 
+    /**
+     * Instantiates a new Group.
+     */
     public Group() {
 
     }

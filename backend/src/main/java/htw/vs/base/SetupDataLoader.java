@@ -38,6 +38,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
      * @param roleRepository  the role repository
      * @param userRepository  the user repository
      * @param boardRepository the board repository
+     * @param groupRepository the group repository
      */
     public SetupDataLoader(RoleRepository roleRepository, UserRepository userRepository, BoardRepository boardRepository, GroupRepository groupRepository) {
         this.roleRepository = roleRepository;
@@ -128,6 +129,13 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         return board;
     }
 
+    /**
+     * Create group if not found group.
+     *
+     * @param groupName the group name
+     * @param boardName the board name
+     * @return the group
+     */
     @Transactional
     Group createGroupIfNotFound(String groupName, String boardName){
         Group group = groupRepository.findGroupByGroupName(groupName);

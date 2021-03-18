@@ -16,6 +16,9 @@ import java.util.Set;
 @Table(name = "roles")
 @JsonIgnoreProperties(value = "users")
 public class Role {
+    /**
+     * The Id.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
@@ -43,6 +46,12 @@ public class Role {
         this.name = name;
     }
 
+    /**
+     * Instantiates a new Role.
+     *
+     * @param name  the name
+     * @param users the users
+     */
     public Role(String name, Set<User> users) {
         this.name = name;
         this.users = users;

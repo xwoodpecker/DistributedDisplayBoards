@@ -15,6 +15,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 
+/**
+ * The type Group repository test.
+ */
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -27,6 +30,9 @@ public class GroupRepositoryTest {
     private UserRepository userRepository;
 
 
+    /**
+     * Test get coordinated groups.
+     */
     @Test
     public void testGetCoordinatedGroups() {
 

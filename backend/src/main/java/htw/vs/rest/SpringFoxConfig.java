@@ -27,6 +27,9 @@ public class SpringFoxConfig {
      */
     public static final String GROUP = "Groups";
 
+    /**
+     * The constant MESSAGES.
+     */
     public static final String MESSAGES = "Messages";
 
     /**

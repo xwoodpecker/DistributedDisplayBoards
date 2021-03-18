@@ -74,6 +74,15 @@ public class GroupRestController {
         return response;
     }
 
+    /**
+     * Add group response entity.
+     *
+     * @param groupName     the group name
+     * @param boardName     the board name
+     * @param location      the location
+     * @param coordinatorId the coordinator id
+     * @return the response entity
+     */
     @Operation(summary = "Add a new group and a new board")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
@@ -211,7 +220,7 @@ public class GroupRestController {
                 response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
             }
             else {
-                temp = coordinatorRole(user.get(), temp);
+                temp = changeCoordinatorRole(user.get(), temp);
                 g = groupRepository.save(temp);
 
                 response = new ResponseEntity(g, HttpStatus.OK);
@@ -221,6 +230,13 @@ public class GroupRestController {
     }
 
 
+    /**
+     * Replace group response entity.
+     *
+     * @param id       the id
+     * @param newGroup the new group
+     * @return the response entity
+     */
     @Operation
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/{id}")
@@ -257,7 +273,7 @@ public class GroupRestController {
                     response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
                 }
                 else {
-                    temp = coordinatorRole(coordidnator.get(), temp);
+                    temp = changeCoordinatorRole(coordidnator.get(), temp);
                     g = groupRepository.save(temp);
 
                     response = new ResponseEntity(g, HttpStatus.OK);
@@ -268,7 +284,7 @@ public class GroupRestController {
         }else {
             newGroup.setId(id);
             newGroup.setBoard(board.get());
-            newGroup = coordinatorRole(coordidnator.get(), newGroup);
+            newGroup = changeCoordinatorRole(coordidnator.get(), newGroup);
 
             g = groupRepository.save(newGroup);
             response = new ResponseEntity(g, HttpStatus.OK);
@@ -305,7 +321,7 @@ public class GroupRestController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    private Group coordinatorRole(User newCoordinator, Group group){
+    private Group changeCoordinatorRole(User newCoordinator, Group group){
         User oldCoordinator = group.getCoordinator();
         List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
         Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);

@@ -11,6 +11,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 
+/**
+ * The type Role repository test.
+ */
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -24,6 +27,9 @@ public class RoleRepositoryTest {
     private UserRepository userRepository;
 
 
+    /**
+     * Test find by name.
+     */
     @Test
     public void testFindByName() {
         User supervisor = userRepository.findById(DbEntries.Supervisor_Id).get();

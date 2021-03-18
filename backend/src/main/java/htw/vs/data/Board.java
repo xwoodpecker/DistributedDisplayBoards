@@ -70,6 +70,8 @@ public class Board {
      *
      * @param id        the id
      * @param boardName the board name
+     * @param group     the group
+     * @param messages  the messages
      */
     public Board(Long id, String boardName, Group group, Set<Message> messages) {
         this.id = id;
@@ -141,18 +143,38 @@ public class Board {
                 '}';
     }
 
+    /**
+     * Gets location.
+     *
+     * @return the location
+     */
     public String getLocation() {
         return location;
     }
 
+    /**
+     * Sets location.
+     *
+     * @param location the location
+     */
     public void setLocation(String location) {
         this.location = location;
     }
 
+    /**
+     * Gets messages.
+     *
+     * @return the messages
+     */
     public Set<Message> getMessages() {
         return messages;
     }
 
+    /**
+     * Sets messages.
+     *
+     * @param messages the messages
+     */
     public void setMessages(Set<Message> messages) {
         this.messages = messages;
     }

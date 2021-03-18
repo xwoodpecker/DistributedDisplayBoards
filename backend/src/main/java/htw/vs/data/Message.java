@@ -191,10 +191,20 @@ public class Message  {
         this.displayTime = displayTime;
     }
 
+    /**
+     * Gets bg color.
+     *
+     * @return the bg color
+     */
     public String getBgColor() {
         return bgColor;
     }
 
+    /**
+     * Sets bg color.
+     *
+     * @param bgColor the bg color
+     */
     public void setBgColor(String bgColor) {
         this.bgColor = bgColor;
     }

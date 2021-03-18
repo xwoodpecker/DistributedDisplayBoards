@@ -22,5 +22,11 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query(value = "SELECT g from Group g WHERE g.coordinator = :user")
     List<Group> getCoordinatedGroups(@Param("user")User user);
 
+    /**
+     * Find group by group name group.
+     *
+     * @param groupName the group name
+     * @return the group
+     */
     Group findGroupByGroupName(String groupName);
 }

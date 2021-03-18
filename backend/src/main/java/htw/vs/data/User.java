@@ -70,6 +70,7 @@ public class User {
      * @param email    the email
      * @param roles    the roles
      * @param groups   the groups
+     * @param messages the messages
      */
     public User(Long id, String userName, String password, boolean enabled, String email, Set<Role> roles, Set<Group> groups, Set<Message> messages) {
         this.id = id;
@@ -216,10 +217,20 @@ public class User {
                 '}';
     }
 
+    /**
+     * Gets messages.
+     *
+     * @return the messages
+     */
     public Set<Message> getMessages() {
         return messages;
     }
 
+    /**
+     * Sets messages.
+     *
+     * @param messages the messages
+     */
     public void setMessages(Set<Message> messages) {
         this.messages = messages;
     }

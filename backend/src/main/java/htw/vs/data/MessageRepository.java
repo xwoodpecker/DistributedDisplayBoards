@@ -19,12 +19,40 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      *
      * @return the list
      */
-    @Query(value = "SELECT m from Message m WHERE m.active = true AND m.endDate < CURRENT_TIMESTAMP")
+    @Query(value = "SELECT m from Message m WHERE m.active = TRUE AND m.endDate > CURRENT_TIMESTAMP")
     List<Message> findMessagesToDisplay();
+
+    /**
+     * Find messages by board list.
+     *
+     * @param board the board
+     * @return the list
+     */
     List<Message> findMessagesByBoard(Board board);
+
+    /**
+     * Find messages by user list.
+     *
+     * @param user the user
+     * @return the list
+     */
     List<Message> findMessagesByUser(User user);
-    @Query(value = "SELECT m from Message m WHERE m.active = true AND m.endDate > CURRENT_TIMESTAMP AND m.user = :user")
+
+    /**
+     * Find active messages by user list.
+     *
+     * @param user the user
+     * @return the list
+     */
+    @Query(value = "SELECT m from Message m WHERE m.active = TRUE AND m.endDate > CURRENT_TIMESTAMP AND m.user = :user")
     List<Message> findActiveMessagesByUser(@Param("user")User user);
-    @Query(value = "SELECT m from Message m WHERE m.active = true AND m.endDate > CURRENT_TIMESTAMP AND m.board = :board")
+
+    /**
+     * Find active messages by board list.
+     *
+     * @param board the board
+     * @return the list
+     */
+    @Query(value = "SELECT m from Message m WHERE m.active = TRUE AND m.endDate > CURRENT_TIMESTAMP AND m.board = :board")
     List<Message> findActiveMessagesByBoard(@Param("board")Board board);
 }
