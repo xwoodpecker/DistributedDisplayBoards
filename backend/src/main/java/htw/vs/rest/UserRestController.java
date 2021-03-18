@@ -111,7 +111,7 @@ public class UserRestController {
      * @param isSupervisor the is supervisor
      * @return the response entity
      */
-    @CrossOrigin(origins = "http://localhost")
+    @CrossOrigin(origins = "*")
     @Operation(summary = "Add a new user")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
@@ -120,11 +120,11 @@ public class UserRestController {
         user.setUserName(request.userName);
         user.setPassword(passwordEncoder.encode(request.password));
         user.setEnabled(true);
-        user.setEmail(email);
+        user.setEmail(request.email);
         Role userRole = roleRepository.findByName(Const.USER_ROLE);
         user.getRoles().add(userRole);
         userRole.getUsers().add(user);
-        if(isSupervisor){
+        if(request.isSupervisor){
             Role superVisorRole = roleRepository.findByName(Const.SUPERVISOR_ROLE);
             user.getRoles().add(superVisorRole);
             superVisorRole.getUsers().add(user);
@@ -142,28 +142,9 @@ public class UserRestController {
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Change the password of a user")
     @PostMapping("/password/own")
-    public ResponseEntity changeOwnPassword(UsernamePasswordAuthenticationToken principal, @RequestParam String newPassword){
+    public ResponseEntity changeOwnPassword(UsernamePasswordAuthenticationToken principal, @RequestBody String newPassword){
         UserDetails userDetails = (UserDetails) principal.getPrincipal();
         User user = userRepository.findUserByUserName(userDetails.getUsername());
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-        return new ResponseEntity<>(null, HttpStatus.OK);
-    }
-
-
-    /**
-     * Change someones password response entity.
-     *
-     * @param username    the username
-     * @param newPassword the new password
-     * @return the response entity
-     */
-    @CrossOrigin(origins = "http://localhost")
-    @Operation(summary = "Change password of a specified user. Supervisor only")
-    @Secured("ROLE_SUPERVISOR")
-    @PostMapping("/password/other")
-    public ResponseEntity changeSomeonesPassword(@RequestParam String username, @RequestParam String newPassword){
-        User user = userRepository.findUserByUserName(username);
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         return new ResponseEntity<>(null, HttpStatus.OK);
