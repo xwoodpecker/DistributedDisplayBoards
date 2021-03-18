@@ -220,7 +220,7 @@ public class GroupRestController {
                 response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
             }
             else {
-                temp = coordinatorRole(user.get(), temp);
+                temp = changeCoordinatorRole(user.get(), temp);
                 g = groupRepository.save(temp);
 
                 response = new ResponseEntity(g, HttpStatus.OK);
@@ -273,7 +273,7 @@ public class GroupRestController {
                     response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
                 }
                 else {
-                    temp = coordinatorRole(coordidnator.get(), temp);
+                    temp = changeCoordinatorRole(coordidnator.get(), temp);
                     g = groupRepository.save(temp);
 
                     response = new ResponseEntity(g, HttpStatus.OK);
@@ -284,7 +284,7 @@ public class GroupRestController {
         }else {
             newGroup.setId(id);
             newGroup.setBoard(board.get());
-            newGroup = coordinatorRole(coordidnator.get(), newGroup);
+            newGroup = changeCoordinatorRole(coordidnator.get(), newGroup);
 
             g = groupRepository.save(newGroup);
             response = new ResponseEntity(g, HttpStatus.OK);
@@ -321,7 +321,7 @@ public class GroupRestController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    private Group coordinatorRole(User newCoordinator, Group group){
+    private Group changeCoordinatorRole(User newCoordinator, Group group){
         User oldCoordinator = group.getCoordinator();
         List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
         Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);

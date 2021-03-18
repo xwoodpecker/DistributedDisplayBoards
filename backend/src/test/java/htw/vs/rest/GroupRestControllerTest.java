@@ -22,6 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * The type Group rest controller test.
+ */
 @SpringBootTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @AutoConfigureMockMvc
@@ -32,6 +35,11 @@ public class GroupRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * Test get groups.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(1)
     public void testGetGroups() throws Exception {
@@ -40,6 +48,11 @@ public class GroupRestControllerTest {
                         "\"id\":1,\"groupName\":\"testgroup1\"", "\"id\":2,\"groupName\":\"testgroup2\"", "\"id\":3,\"groupName\":\"testgroup3\"")));
     }
 
+    /**
+     * Test get group.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(2)
     public void testGetGroup() throws Exception {
@@ -47,6 +60,11 @@ public class GroupRestControllerTest {
                 .andExpect(content().string(containsString("\"id\":1,\"groupName\":\"testgroup1\"")));
     }
 
+    /**
+     * Test add group.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(3)
     @WithMockUser(roles="SUPERVISOR")
@@ -58,12 +76,22 @@ public class GroupRestControllerTest {
     }
 
 
+    /**
+     * Test add group without role.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void testAddGroupWithoutRole() throws Exception {
         this.mockMvc.perform(post("/groups/").param("coordinatorId","1").param("groupName","testgroup4")
                 .param("boardName", "testboard5").param("location", "location5")).andDo(print()).andExpect(status().isUnauthorized());
     }
 
+    /**
+     * Test add group without permission.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="USER")
     public void testAddGroupWithoutPermission() throws Exception {
@@ -71,6 +99,11 @@ public class GroupRestControllerTest {
                 .param("boardName", "testboard5").param("location", "location5")).andDo(print()).andExpect(status().isForbidden());
     }
 
+    /**
+     * Test add group board name not unique.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testAddGroupBoardNameNotUnique() throws Exception {
@@ -78,6 +111,11 @@ public class GroupRestControllerTest {
                 .param("boardName", "testboard2").param("location", "location5")).andDo(print()).andExpect(status().isInternalServerError());
     }
 
+    /**
+     * Test add group user not found.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testAddGroupUserNotFound() throws Exception {
@@ -85,6 +123,11 @@ public class GroupRestControllerTest {
                 .param("boardName", "testboard5").param("location", "location5")).andDo(print()).andExpect(status().isNotFound());
     }
 
+    /**
+     * Test replace group.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(4)
     @WithMockUser(roles="SUPERVISOR")
@@ -111,6 +154,11 @@ public class GroupRestControllerTest {
         assert(stringResult.contains("\"COORDINATOR\""));
     }
 
+    /**
+     * Test replace group without role.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void testReplaceGroupWithoutRole() throws Exception {
         String requestJson = "{\n" +
@@ -130,6 +178,11 @@ public class GroupRestControllerTest {
         this.mockMvc.perform(post("/groups/2").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isUnauthorized());
     }
 
+    /**
+     * Test replace group without permission.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="USER")
     public void testReplaceGroupWithoutPermission() throws Exception {
@@ -150,6 +203,11 @@ public class GroupRestControllerTest {
         this.mockMvc.perform(post("/groups/2").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isForbidden());
     }
 
+    /**
+     * Test replace group group not found with new coordinator.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceGroupGroupNotFoundWithNewCoordinator() throws Exception {
@@ -174,6 +232,11 @@ public class GroupRestControllerTest {
         assert(stringResult.contains("\"COORDINATOR\""));
     }
 
+    /**
+     * Test replace group group not found with coordinator.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceGroupGroupNotFoundWithCoordinator() throws Exception {
@@ -198,6 +261,11 @@ public class GroupRestControllerTest {
         assert(stringResult.contains("\"COORDINATOR\""));
     }
 
+    /**
+     * Test replace group change coordinator.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceGroupChangeCoordinator() throws Exception {
@@ -225,6 +293,11 @@ public class GroupRestControllerTest {
         assert(!stringResult2.contains("\"COORDINATOR\""));
     }
 
+    /**
+     * Test replace group change board.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceGroupChangeBoard() throws Exception {
@@ -246,6 +319,11 @@ public class GroupRestControllerTest {
                 .string(containsString("\"board\":{\"id\":4,\"boardName\":\"testboard4\",\"location\":\"location4\"},\"coordinator\":8}")));
     }
 
+    /**
+     * Test replace group name not unique.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceGroupNameNotUnique() throws Exception {
@@ -270,6 +348,11 @@ public class GroupRestControllerTest {
         assert (stringResult.contains("\"COORDINATOR\""));
     }
 
+    /**
+     * Test delete group.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(3)
     @WithMockUser(roles="SUPERVISOR")
@@ -284,6 +367,11 @@ public class GroupRestControllerTest {
     }
 
 
+    /**
+     * Test add user to group.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR",username="Admin")
     public void testAddUserToGroup() throws Exception {
@@ -294,12 +382,22 @@ public class GroupRestControllerTest {
         assert (stringResult.contains("\"id\":1,\"groupName\":"));
     }
 
+    /**
+     * Test add user to group without role.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void testAddUserToGroupWithoutRole() throws Exception {
         this.mockMvc.perform(post("/groups/user/1").param("userId","3")
         ).andDo(print()).andExpect(status().isUnauthorized());
     }
 
+    /**
+     * Test add user to group without permission.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="USER",username="User1")
     public void testAddUserToGroupWithoutPermission() throws Exception {
@@ -307,6 +405,11 @@ public class GroupRestControllerTest {
         ).andDo(print()).andExpect(status().isForbidden());
     }
 
+    /**
+     * Test add user to group as coordinator.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="COORDINATOR",username="Coordinator1")
     public void testAddUserToGroupAsCoordinator() throws Exception {
@@ -317,6 +420,11 @@ public class GroupRestControllerTest {
         assert (stringResult.contains("\"id\":1,\"groupName\":"));
     }
 
+    /**
+     * Test add user to group differnet coordinator.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="COORDINATOR",username="Coordinator2")
     public void testAddUserToGroupDiffernetCoordinator() throws Exception {
@@ -324,6 +432,11 @@ public class GroupRestControllerTest {
         ).andDo(print()).andExpect(status().isForbidden());
     }
 
+    /**
+     * Test add user to group user not found.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR",username="Admin")
     public void testAddUserToGroupUserNotFound() throws Exception {
@@ -331,6 +444,11 @@ public class GroupRestControllerTest {
         ).andDo(print()).andExpect(status().isNotFound());
     }
 
+    /**
+     * Test add user to group group not found.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR",username="Admin")
     public void testAddUserToGroupGroupNotFound() throws Exception {

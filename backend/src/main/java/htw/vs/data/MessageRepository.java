@@ -44,7 +44,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      * @param user the user
      * @return the list
      */
-    @Query(value = "SELECT m from Message m WHERE m.active = true AND m.endDate > CURRENT_TIMESTAMP AND m.user = :user")
+    @Query(value = "SELECT m from Message m WHERE m.active = TRUE AND m.endDate > CURRENT_TIMESTAMP AND m.user = :user")
     List<Message> findActiveMessagesByUser(@Param("user")User user);
 
     /**
@@ -53,6 +53,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      * @param board the board
      * @return the list
      */
-    @Query(value = "SELECT m from Message m WHERE m.active = true AND m.endDate > CURRENT_TIMESTAMP AND m.board = :board")
+    @Query(value = "SELECT m from Message m WHERE m.active = TRUE AND m.endDate > CURRENT_TIMESTAMP AND m.board = :board")
     List<Message> findActiveMessagesByBoard(@Param("board")Board board);
 }

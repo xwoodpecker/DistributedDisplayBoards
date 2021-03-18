@@ -94,8 +94,9 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
                         accessor.setUser(user);
                     }
                 }
-
-                accessor.setLeaveMutable(true);
+                if(accessor.isMutable()){
+                    accessor.setLeaveMutable(true);
+                }
                 return message;
             }
         });

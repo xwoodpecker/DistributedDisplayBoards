@@ -35,6 +35,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The type User rest controller test.
+ */
 @SpringBootTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @AutoConfigureMockMvc
@@ -49,6 +52,11 @@ public class UserRestControllerTest {
     @Autowired
     private RoleRepository roleRepository;
 
+    /**
+     * Test get users.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(1)
     public void testGetUsers() throws Exception {
@@ -63,6 +71,11 @@ public class UserRestControllerTest {
                                     "\"id\":7,\"userName\":\"User4\",\"password\":\"123456\",\"enabled\":true,\"email\":\"User4@mail\"")));
     }
 
+    /**
+     * Test get user.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(2)
     public void testGetUser() throws Exception {
@@ -71,6 +84,11 @@ public class UserRestControllerTest {
                         "\"id\":1,\"userName\":\"User1\",\"password\":\"123456\",\"enabled\":true,\"email\":\"User1@mail\"")));
     }
 
+    /**
+     * Test get user by login credentials.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(3)
     @WithMockUser(username = "User1", password = "123456", roles="USER")
@@ -80,6 +98,11 @@ public class UserRestControllerTest {
                         "\"id\":1,\"userName\":\"User1\",\"password\":\"123456\",\"enabled\":true,\"email\":\"User1@mail\"")));
     }
 
+    /**
+     * Test add user.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(4)
     @WithMockUser(roles="SUPERVISOR")
@@ -89,12 +112,22 @@ public class UserRestControllerTest {
                 .andExpect(content().string(containsString("\"id\":10,\"userName\":\"User10\"")));
     }
 
+    /**
+     * Test add user without role.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void testAddUserWithoutRole() throws Exception {
         this.mockMvc.perform(post("/users/").param("userName","User10").param("password","123456").param("email","User10@mail").param("isSupervisor", "false"))
                 .andDo(print()).andExpect(status().isUnauthorized());
     }
 
+    /**
+     * Test add user without permission.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="USER")
     public void testAddUserWithoutPermission() throws Exception {
@@ -102,6 +135,11 @@ public class UserRestControllerTest {
                 .andDo(print()).andExpect(status().isForbidden());
     }
 
+    /**
+     * Test add user user same name.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testAddUserUserSameName() throws Exception {
@@ -109,6 +147,11 @@ public class UserRestControllerTest {
                 .andDo(print()).andExpect(status().isInternalServerError());
     }
 
+    /**
+     * Test add user user same email.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testAddUserUserSameEmail() throws Exception {
@@ -116,6 +159,11 @@ public class UserRestControllerTest {
                 .andDo(print()).andExpect(status().isInternalServerError());
     }
 
+    /**
+     * Test add user user as supervisor.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(7)
     @WithMockUser(roles="SUPERVISOR")
@@ -128,6 +176,11 @@ public class UserRestControllerTest {
 
     }
 
+    /**
+     * Test add user long name.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testAddUserLongName() throws Exception {
@@ -136,6 +189,11 @@ public class UserRestControllerTest {
                 .andDo(print()).andExpect(status().isInternalServerError());
     }
 
+    /**
+     * Test change own password.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(5)
     @WithMockUser(username = "User1", password = "123456", roles="USER")
@@ -152,6 +210,11 @@ public class UserRestControllerTest {
     }
 
 
+    /**
+     * Test change other password.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(6)
     @WithMockUser(roles="SUPERVISOR")
@@ -168,6 +231,11 @@ public class UserRestControllerTest {
     }
 
 
+    /**
+     * Test replace user.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(8)
     @WithMockUser(roles="SUPERVISOR")
@@ -196,6 +264,11 @@ public class UserRestControllerTest {
         assert(stringResult.contains("\"enabled\":false,\"email\":\"User90@mail\",\"roles\":[{\"id\":3,\"name\":\"USER\"}]"));
     }
 
+    /**
+     * Test replace user only name.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceUserOnlyName() throws Exception {
@@ -216,6 +289,11 @@ public class UserRestControllerTest {
         assert(stringResult.contains("\"enabled\":false,\"email\":\"User90@mail\",\"roles\":[{\"id\":3,\"name\":\"USER\"}]"));
     }
 
+    /**
+     * Test replace user without role.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void testReplaceUserWithoutRole() throws Exception {
 
@@ -231,6 +309,11 @@ public class UserRestControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    /**
+     * Test replace user without permission.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="USER")
     public void testReplaceUserWithoutPermission() throws Exception {
@@ -247,6 +330,11 @@ public class UserRestControllerTest {
                 .andExpect(status().isForbidden());
     }
 
+    /**
+     * Test replace user new user.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(9)
     @WithMockUser(roles="SUPERVISOR")
@@ -276,6 +364,11 @@ public class UserRestControllerTest {
         assert(stringResult.contains("\"enabled\":true,\"email\":\"User80@mail\",\"roles\":[{\"id\":3,\"name\":\"USER\"}]"));
     }
 
+    /**
+     * Test delete user.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(3)
     @WithMockUser(roles="SUPERVISOR")
@@ -287,6 +380,11 @@ public class UserRestControllerTest {
     }
 
 
+    /**
+     * Test delete user coordinator.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @Order(4)
     @WithMockUser(roles="SUPERVISOR")
@@ -294,6 +392,11 @@ public class UserRestControllerTest {
         this.mockMvc.perform(delete("/users/8").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isInternalServerError());
     }
 
+    /**
+     * Test get groups of user.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void testGetGroupsOfUser() throws Exception {
         this.mockMvc.perform(get("/users/1/groups")).andDo(print()).andExpect(status().isOk())
@@ -302,6 +405,11 @@ public class UserRestControllerTest {
 
     }
 
+    /**
+     * Test get groups of user as supervisor.
+     *
+     * @throws Exception the exception
+     */
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testGetGroupsOfUserAsSupervisor() throws Exception {

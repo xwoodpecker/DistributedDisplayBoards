@@ -9,10 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class SpringBootApplicationTests {
 
-	/**
-	 * Context loads.
-	 */
-	@Test
+    /**
+     * Context loads.
+     */
+    @Test
 	void contextLoads() {
 	}
 

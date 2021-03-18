@@ -13,6 +13,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.assertEquals;
 
 
+/**
+ * The type User repository test.
+ */
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -27,6 +30,9 @@ public class UserRepositoryTest {
     private RoleRepository roleRepository;
 
 
+    /**
+     * Test find user by user name.
+     */
     @Test
     public void testFindUserByUserName() {
         User user1  = userRepository.findById(DbEntries.User1_Id).get();

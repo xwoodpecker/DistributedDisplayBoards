@@ -12,6 +12,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.*;
 
 
+/**
+ * The type Board repository test.
+ */
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -21,6 +24,9 @@ public class BoardRepositoryTest {
     private BoardRepository boardRepository;
 
 
+    /**
+     * Test find board by board name.
+     */
     @Test
     public void testFindBoardByBoardName() {
         Board board1  = boardRepository.findById(DbEntries.Board1_Id).get();

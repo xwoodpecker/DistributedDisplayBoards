@@ -67,5 +67,8 @@ public class Config {
         BROKER_PORT = Integer.parseInt(properties.getProperty("BROKER_PORT"));
         BROKER_LOGIN = properties.getProperty("BROKER_LOGIN");
         BROKER_PASSCODE = properties.getProperty("BROKER_PASSCODE");
+
+        System.out.println("BROKER_HOST");
+        System.out.println(BROKER_HOST);
     }
 }
