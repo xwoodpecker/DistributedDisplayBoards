@@ -168,7 +168,13 @@ für einen Nutzer abgebildet werden.
 ![](markdown-images/pizza.png)
 
 ##### Klassendiagramm
-![](markdown-images/classdia0.png)
+###### Backend
+![](markdown-images/KDB.png)
+
+###### Frontend
+//todo
+![](markdown-images/KDF.png)
+
 
 
 ##### API
