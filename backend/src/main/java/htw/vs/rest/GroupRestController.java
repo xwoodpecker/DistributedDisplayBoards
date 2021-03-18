@@ -86,8 +86,6 @@ public class GroupRestController {
     public ResponseEntity addGroup(@RequestBody Group group) {
         ResponseEntity response;
         Group g;
-
-
         Optional<User> user = userRepository.findById(group.getCoordinator().getId());
         if(!user.isPresent())
         {
