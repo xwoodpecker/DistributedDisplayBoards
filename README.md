@@ -112,7 +112,7 @@ Anschließend sendet das Backend die Nachricht auf dem Topic der
 jeweiligen Anzeigetafel. Dadurch erhalten alle Tafeln und Nutzer, die diesem Topic folgen ebenso 
 die Nachricht und können diese anzeigen.  
 
-###### RabbitMQ als Message Broker
+###### Message Broker und Security
 RabbitMQ ist ein weitverbreiteter Open Source Message Broker. Man spricht auch von
 Message Oriented Middleware (MOM). RabbitMQ kann verschiedene Protokolle verwenden.
 Dazu zählen unter anderem Advanced Message Queuing Protocol (AMQP), Streaming Text Oriented Messaging Protocol (STOMP),
@@ -121,7 +121,7 @@ eingesetzt werden. Dieser muss auf einem Server installiert und konfiguriert wer
 Die Verbindung wird mittels Spring Security gesichert. Spring Security wird als Standard zur Gewährleistung
 von kryptografischer Sicherheit bei Spring-basierten Anwendungen angesehen. Gemäß dem CIA-Prinzip
 sind Bedrohungen festgelegt als Verlust von Vertraulichkeit, Integrität und
-Verfügbarkeit.  Spring ermöglicht  eine Authentifizierung per Username und Passwort. Diese Authentifizierung wird 
+Verfügbarkeit. Spring ermöglicht  eine Authentifizierung per Username und Passwort. Diese Authentifizierung wird 
 automatisch über HTTP-Header realisiert und muss lediglich in Spring Security richtig konfiguriert werden. 
 Des Weiteren wird die Vergabe von Rollen an Nutzer ermöglicht. Über diese Rollen können die Endpunkte der REST-API,
 sowie der Websockets auf bestimmte Nutzergruppen eingeschränkt werden. Möchte ein Client eine
@@ -132,21 +132,15 @@ zum Kodieren von Passwörtern und deren sichere Übermittlung bereit. Dazu wird 
 eingesetzt. Dieser zeigt insbesondere gegen Brute Force Angriffe eine große Widerstandsfähigkeit, da
 er absichtlich langsam arbeitet. 
 
-
-###### some more Backend stuff
-// todo: explain some more Backend stuff
-
-###### Bereitstellung für das FrontEnd
-Die eingehenden Nachrichten werden von den FrontEnds empfangen. Neue Nachrichten können versendet werden, indem mit dem Backend
-kommuniziert wird. 
-//todo: add some FrontEnd gebrabbel
-
 ###### Administrative Verwaltung
-Man kann über die REST-Schnittstelle sämtliche Stammdaten verwalten. Bei der Verbindung mit der REST-Schnittstelle wird der Nutzer authentifiziert.
-Es stehen Funktionen zur Anlage von Anzeigetafeln und deren Gruppen bereit. Ebenso können Nutzer angelegt und modifiziert werden. Alte Nachrichten können ausgelesen
-und ggf. reaktiviert werden. Diese Funktionen stehen im FrontEnd in den Admin Panels bereit. Je nachdem welche Rolle ein angemeldeter Nutzer hat,
+Man kann über die REST-Schnittstelle sämtliche Stammdaten verwalten. Bei der Verbindung mit der REST-Schnittstelle wird 
+der Nutzer authentifiziert.
+Die REST-API wird gleichermaßen wie die WebSocket-Endpunkte über Spring Security abgesichert.
+Die Schnittstelle stellt Funktionen zur Anlage von Anzeigetafeln und deren Gruppen bereit. Ebenso können Nutzer angelegt
+und modifiziert werden. Alte Nachrichten können ausgelesen
+und ggf. reaktiviert werden. Diese Funktionen stehen im FrontEnd in den Admin Panels bereit. Je nachdem welche Rolle ein
+angemeldeter Nutzer hat,
 sieht er mehr Stammdaten und ihm stehen mehr Möglichkeiten bereit diese zu bearbeiten.
-
 
 ###### Fehlerbehandlung
 Im Falle eines Fehlers bei Verbindung oder Zugriff auf die Endpunkte werden entsprechende Fehlercodes
@@ -154,6 +148,16 @@ zurückgegeben. Zusätzlich werden aussagekräftige Fehlermeldungen mitgeliefert
 die gegebenenfalls Aufschluss geben können. Häufig auftretende Fehler wie falsche Eingaben oder Verstöße
 gegen Datenbank-Constraints werden im FrontEnd abgefangen und direkt verarbeitet. Dadurch wird eine gute
 User Experience sichergestellt.
+
+
+###### FrontEnd
+Die eingehenden Nachrichten werden von den FrontEnds empfangen. Neue Nachrichten können versendet werden, indem mit dem 
+Backend kommuniziert wird. 
+//todo: add some FrontEnd gebrabbel
+
+
+
+
 
 #### Statisches Modell
 ##### ERM-Modell
@@ -168,7 +172,6 @@ Im Folgenden ist eine grafische Darstellung der Systembausteine und die eingeset
 Das Backend, FrontEnd, die Datenbank und der RabbitMQ Message Broker laufen in separaten Containern auf derselben Maschine.
 Das FrontEnd kann über eine URL aufgerufen werden und je nach Konfiguration kann so eine Anzeigetafel oder eine Anwendung
 für einen Nutzer abgebildet werden. 
-
 ![](markdown-images/pizza.png)
 
 ##### Klassendiagramm
@@ -200,10 +203,13 @@ Die JSON-basierte OpenAPI-Spezifikation steht unter `/v3/api-docs` bereit.
 
 #### Dynamisches Modell
 ###### Allgemeiner Ablauf
-![](markdown-images/seq1.png)
+Nach erfolgtem Login findet die Assoziation von Nutzer und Boards statt. Es werden die aktiven Nachrichten der jeweiligen
+Anzeigetafeln geladen und die Anzeige erfolgt. Anschließend wird das Senden von Nachrichten möglich.
+Der Koordinator kann zudem Nachrichten auswählen und auf der definierten zentralen Anzeigetafel publizieren.
+Die Abläufe dieser Prozesse wird im nachfolgenden Sequenzdiagramm abgebildet. 
 
-###### one more pls
-![](markdown-images/sequenz2.png)
+![](markdown-images/seq0.png)
+
 
 
 ## Getting Started
@@ -216,11 +222,12 @@ Anschließend kann das Projekt in einer beliebigen IDE bearbeitet werden.
 
 Der Build-Prozess ist mit Maven realisiert. Wichtige Phasen:
 - `mvn package`: Kompiliert das Projekt, erstellt eine ausführbare `.jar` mit allen benötigten Dependencies
-- `mvn install`: Erstellt ein Docker-Image, welches eine JRE sowie die ausführbare `.jar` als Entry-Point enthält. Wird im lokalen Docker Repository abgelegt. 
+- `mvn install`: Erstellt ein Docker-Image, welches eine JRE sowie die ausführbare `.jar` als Entry-Point enthält. 
+Wird im lokalen Docker Repository abgelegt. 
 Ein Docker-Agent muss lokal verfügbar sein, um diese Phase auszuführen.
 - `mvn deploy`: Das generierte Docker-Image wird zu der in der `pom.xml` definierten Docker-Registry gepusht.
 
-#### Vorraussetzungen
+#### Voraussetzungen
 //todo
 Es müssen folgende Abhängigkeiten auf dem Rechner installiert sein:
 - [JDK 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
@@ -240,7 +247,7 @@ Es empfiehlt sich, dem Datenbank-Container explizit einen Namen zu geben, denn d
 Sämtliche Konfigurationseigenschaften können entweder in `src/main/resources/application.properties` eingetragen oder beim Erstellen des Containers als Umgebungsvariablen übergeben werden. 
 Die wichtigsten Konfigurationseigenschaften sind:
 * `spring.datasource.url`: Url zur Datenbank. Bei der Ausführung der Datenbank als Container im selben Docker-Netzwerk kann anstelle einer IP oder eines 
-Hostnamens der Name des entsprechenden Docker-Containers eingetragen werden.
+Host-Namens der Name des entsprechenden Docker-Containers eingetragen werden.
 * `spring.datasource.username`: Username zur Authentifizierung gegenüber der Datenbank 
 * `spring.datasource.password`: Password zur Authentifizierung gegenüber der Datenbank
 * `server.port`: Server Port der Backend-Anwendung
@@ -256,7 +263,7 @@ Ein Board mit eindeutiger Nummer 1 würde in diesem Fall unter `/topic/boards.1`
 ## Built With
 * [Spring Boot](https://spring.io/projects/spring-boot) - Das allmächtige Framework
 * [Swagger](https://swagger.io/) / [springdoc](https://springdoc.org/) - OpenAPI-Konforme Schnittstellenspezifikation
-* [Maven](https://maven.apache.org/) - Abhängigkeitenverwaltung, Build-Prozess
+* [Maven](https://maven.apache.org/) - Verwaltung von Abhängigkeiten, Build-Prozess
 * [Hibernate](https://hibernate.org/orm/) - Object-Relationales Mapping
 * [Spring Data JPA](https://spring.io/projects/spring-data-jpa) - Library zur Datenabfrage  
 * [MySQL](https://www.mysql.com/) - Datenbanksystem

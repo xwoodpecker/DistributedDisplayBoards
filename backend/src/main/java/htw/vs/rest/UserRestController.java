@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -235,8 +236,10 @@ public class UserRestController {
     @GetMapping("/{id}/groups")
     public ResponseEntity getGroupsOfUser(@PathVariable Long id, Authentication authentication){
         User user = userRepository.findById(id).orElseThrow(() -> new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION));
-        if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 1)
+        if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() >= 1)
             return new ResponseEntity<>(groupRepository.findAll(), HttpStatus.OK);
+
+        List<Group> groups = userRepository.findById(id).get().getGroups().stream().collect(Collectors.toList());
 
         return new ResponseEntity<>(userRepository.findById(id).get().getGroups(), HttpStatus.OK);
     }
