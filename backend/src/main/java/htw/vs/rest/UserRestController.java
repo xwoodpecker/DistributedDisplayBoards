@@ -221,7 +221,7 @@ public class UserRestController {
     @GetMapping("/{id}/groups")
     public ResponseEntity getGroupsOfUser(@PathVariable Long id, Authentication authentication){
         User user = userRepository.findById(id).orElseThrow(() -> new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION));
-        if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() >= 1)
+        if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 0)
             return new ResponseEntity<>(groupRepository.findAll(), HttpStatus.OK);
 
         Group central = groupRepository.findGroupByGroupName(Config.CENTRAL_GROUP_NAME);

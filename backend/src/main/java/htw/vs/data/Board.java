@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -177,5 +178,14 @@ public class Board {
      */
     public void setMessages(Set<Message> messages) {
         this.messages = messages;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Board b = (Board) o;
+        return Objects.equals(id, b.id);
     }
 }

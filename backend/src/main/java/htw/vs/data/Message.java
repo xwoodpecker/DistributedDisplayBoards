@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 /**
  * The type Message.
@@ -207,5 +208,13 @@ public class Message  {
      */
     public void setBgColor(String bgColor) {
         this.bgColor = bgColor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message msg = (Message) o;
+        return Objects.equals(id, msg.id);
     }
 }
