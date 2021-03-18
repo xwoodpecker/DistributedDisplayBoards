@@ -302,4 +302,12 @@ public class UserRestControllerTest {
 
     }
 
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testGetGroupsOfUserAsSupervisor() throws Exception {
+        this.mockMvc.perform(get("/users/6/groups")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("")));
+
+    }
+
 }

@@ -33,6 +33,6 @@ public class DbEntries {
     public static final String BoardGroup2_GroupName = "testgroup2";
 
     //messages
-    public static final Integer MessagesToDisplay = 2;
+    public static final Integer MessagesToDisplay = 3;
 
 }

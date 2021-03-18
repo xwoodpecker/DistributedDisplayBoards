@@ -1,5 +1,6 @@
 package htw.vs.rest;
 
+import htw.vs.base.Config;
 import htw.vs.base.Const;
 import htw.vs.data.*;
 import io.swagger.annotations.Api;
@@ -239,8 +240,10 @@ public class UserRestController {
         if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() >= 1)
             return new ResponseEntity<>(groupRepository.findAll(), HttpStatus.OK);
 
+        Group central = groupRepository.findGroupByGroupName(Config.CENTRAL_GROUP_NAME);
         List<Group> groups = userRepository.findById(id).get().getGroups().stream().collect(Collectors.toList());
+        groups.add(central);
 
-        return new ResponseEntity<>(userRepository.findById(id).get().getGroups(), HttpStatus.OK);
+        return new ResponseEntity<>(groups, HttpStatus.OK);
     }
 }

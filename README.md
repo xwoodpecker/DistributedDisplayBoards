@@ -15,10 +15,10 @@ Im Rahmen des Projektes sollen sowohl das Frontend, als auch das Backend zu dies
 Der Kern des Systems ist das Backend, über das die gesamte Kommunikation abläuft. Hierbei handelt es sich um einen auf Spring Boot basierten Service.
 Das Backend stellt eine REST-API bereit über die  eine administrative Verwaltung durchgeführt werden kann. Zudem stellt sie diverse Funktionen zur Abfrage von Stammdaten bereit.
 Dazu wird eine Vielzahl von Endpunkten bereitgestellt, mit denen alle Daten abgefragt, verändert oder erzeugt werden können.
-Ebenso realisiert das Backend eine Verbindung zu dem RabbmitMQ Message Broker über die Websocket-Technologie. 
+Ebenso realisiert das Backend eine Verbindung zu dem RabbitMQ Message Broker über die Websocket-Technologie. 
 Dazu werden STOMP-Endpunkte bereitgestellt. Über diese werden Funktionen zum Senden und Erhalten von aktiven Nachrichten auf den Anzeigetafeln zur Verfügung gestellt.
 
-Eine weitere Komponente ist das Frontend. Das FrontEnd kommuniziert mit der REST-Schnittstelle und den Websocket-Endpunkten. Es fragt die relevanten Daten ab, um eine Anzeige
+Eine weitere Komponente ist das Frontend. Das Frontend kommuniziert mit der REST-Schnittstelle und den Websocket-Endpunkten. Es fragt die relevanten Daten ab, um eine Anzeige
 von Anzeigetafeln und deren Nachrichten zu ermöglichen. Es stellt Nutzern auch eine Möglichkeit bereit eigene Daten zu verwalten. Koordinatoren können die Stammdaten ihrer
 jeweiligen Tafel bearbeiten und Supervisor den gesamten Datenbestand. Dazu können diverse Admin Panels genutzt werden.
 
@@ -92,25 +92,25 @@ Supervisor:
 Die Lösung wurde in Java 11 implementiert. Das Spring Framework wurde eingesetzt, um
 die Web Sockets und damit auch die Kommunikation mit dem Message Broker abzubilden. 
 Die Bibliothek stellt Logik für Clients bereit. Sie ermöglicht das Senden von Nachrichten auf 
-selbst definierten Topics. Im FrontEnd wird dann SockJS genutzt, um die Topics zu abonnieren.
+selbst definierten Topics. Im Frontend wird dann SockJS genutzt, um die Topics zu abonnieren.
 Das Abonnement macht es dann möglich Nachrichten von Nutzern zu empfangen.
-Im Folgenden wird die Methodik der Umsetzung beschrieben. Die FrontEnd-Clients authentifizieren einen 
+Im Folgenden wird die Methodik der Umsetzung beschrieben. Die Frontend-Clients authentifizieren einen 
 Nutzer und fragen dessen Stammdaten über die REST-API an. 
 Die Stammdatenhaltung erfolgt in einer MySQL-Datenbank. Zur Abbildung der Datenbank-Entitäten
 in Java wurde JPA (Java Persistence API) und Hibernate eingesetzt. Bei Hibernate handelt es sich um ein ORM-Tool. 
 ORM steht für Object-relational mapping, was eine Technik zur Umwandlung von Daten in Objekte ist.
 JPA erleichtert die Arbeit mit den Objekten, indem es Standardfunktionen, wie Speichern, Aktualisieren und Löschen 
 bereitstellt. Zudem ermöglicht es eine schnelle Implementierung von neuen Funktionen, da es automatisch Queries
-auf Basis von Namenskonventionen erzeugt ohne, dass man diese selbst definieren muss. Für komplexere Abfragen
+auf Basis von Namenskonventionen erzeugt, ohne dass man diese selbst definieren muss. Für komplexere Abfragen
 kann JPQL (Java Persistence Query language) verwendet werden. Hier muss dann lediglich die Abfrage angegeben werden, 
 alles weitere realisiert JPA. Nach erfolgreichem Login und der damit
-einhergehende Assoziation zu Gruppen, bzw. Anzeigetafeln stehen dem Nutzer Funktionen bereit.
+einhergehende Assoziation zu Gruppen, bzw. Anzeigetafeln stehen dem Nutzer folgende Funktionen bereit.
 Er kann auf den Tafeln die aktiven Nachrichten einsehen oder neue Nachrichten senden. 
 Dazu findet eine Subscription zu den Topics der ihm zugehörigen Anzeigetafeln statt. Sendet er eine Nachricht, 
 so wird ein Web Socket Endpunkt vom Backend aufgerufen. Dieser verifiziert die Daten und speichert die Nachricht.
 Anschließend sendet das Backend die Nachricht auf dem Topic der 
 jeweiligen Anzeigetafel. Dadurch erhalten alle Tafeln und Nutzer, die diesem Topic folgen ebenso 
-die Nachricht und können diese anzeigen.  
+die Nachricht und können sich diese anzeigen lassen.  
 
 ###### Message Broker und Security
 RabbitMQ ist ein weitverbreiteter Open Source Message Broker. Man spricht auch von
@@ -121,10 +121,10 @@ eingesetzt werden. Dieser muss auf einem Server installiert und konfiguriert wer
 Die Verbindung wird mittels Spring Security gesichert. Spring Security wird als Standard zur Gewährleistung
 von kryptografischer Sicherheit bei Spring-basierten Anwendungen angesehen. Gemäß dem CIA-Prinzip
 sind Bedrohungen festgelegt als Verlust von Vertraulichkeit, Integrität und
-Verfügbarkeit. Spring ermöglicht  eine Authentifizierung per Username und Passwort. Diese Authentifizierung wird 
+Verfügbarkeit. Spring ermöglicht eine Authentifizierung per Username und Passwort. Diese Authentifizierung wird 
 automatisch über HTTP-Header realisiert und muss lediglich in Spring Security richtig konfiguriert werden. 
 Des Weiteren wird die Vergabe von Rollen an Nutzer ermöglicht. Über diese Rollen können die Endpunkte der REST-API,
-sowie der Websockets auf bestimmte Nutzergruppen eingeschränkt werden. Möchte ein Client eine
+sowie der WebSockets auf bestimmte Nutzergruppen eingeschränkt werden. Möchte ein Client eine
 Verbindung aufbauen, so authentifiziert er sich. Anschließend wird geprüft, ob der Zugriff erlaubt wird.
 Über die jeweiligen HTTP Statuscodes kann dem Nutzer dann ggf. mitgeteilt werden, dass seine Privilegien
 für den Zugriff auf den jeweiligen Endpunkt nicht ausreichen. Spring stellt ebenso eine gute Möglichkeit
@@ -138,20 +138,20 @@ der Nutzer authentifiziert.
 Die REST-API wird gleichermaßen wie die WebSocket-Endpunkte über Spring Security abgesichert.
 Die Schnittstelle stellt Funktionen zur Anlage von Anzeigetafeln und deren Gruppen bereit. Ebenso können Nutzer angelegt
 und modifiziert werden. Alte Nachrichten können ausgelesen
-und ggf. reaktiviert werden. Diese Funktionen stehen im FrontEnd in den Admin Panels bereit. Je nachdem welche Rolle ein
+und ggf. reaktiviert werden. Diese Funktionen stehen im Frontend in den Admin Panels bereit. Je nachdem welche Rolle ein
 angemeldeter Nutzer hat,
 sieht er mehr Stammdaten und ihm stehen mehr Möglichkeiten bereit diese zu bearbeiten.
 
 ###### Fehlerbehandlung
 Im Falle eines Fehlers bei Verbindung oder Zugriff auf die Endpunkte werden entsprechende Fehlercodes
 zurückgegeben. Zusätzlich werden aussagekräftige Fehlermeldungen mitgeliefert, sowie weitere Details, 
-die gegebenenfalls Aufschluss geben können. Häufig auftretende Fehler wie falsche Eingaben oder Verstöße
-gegen Datenbank-Constraints werden im FrontEnd abgefangen und direkt verarbeitet. Dadurch wird eine gute
+die gegebenenfalls Aufschluss geben können. Häufig auftretende Fehler, wie falsche Eingaben oder Verstöße
+gegen Datenbank-Constraints werden im Frontend abgefangen und direkt verarbeitet. Dadurch wird eine gute
 User Experience sichergestellt.
 
 
 ###### FrontEnd
-Die eingehenden Nachrichten werden von den FrontEnds empfangen. Neue Nachrichten können versendet werden, indem mit dem 
+Die eingehenden Nachrichten werden von den Frontends empfangen. Neue Nachrichten können versendet werden, indem mit dem 
 Backend kommuniziert wird. 
 //todo: add some FrontEnd gebrabbel
 
@@ -169,8 +169,8 @@ Im Folgenden ist eine grafische Darstellung der Systembausteine und die eingeset
 ![](markdown-images/lego.png)
 
 ##### Verteilungssicht
-Das Backend, FrontEnd, die Datenbank und der RabbitMQ Message Broker laufen in separaten Containern auf derselben Maschine.
-Das FrontEnd kann über eine URL aufgerufen werden und je nach Konfiguration kann so eine Anzeigetafel oder eine Anwendung
+Das Backend, Frontend, die Datenbank und der RabbitMQ Message Broker laufen in separaten Containern auf der selben Maschine.
+Das Frontend kann über eine URL aufgerufen werden und je nach Konfiguration kann so eine Anzeigetafel oder eine Anwendung
 für einen Nutzer abgebildet werden. 
 ![](markdown-images/pizza.png)
 
@@ -284,7 +284,7 @@ This project is licensed under the GNU General Public License v3.0
 * [Prof. Dr. Markus Esch](https://www.htwsaar.de/htw/ingwi/fakultaet/personen/profile/markus-esch) - Projektbetreuung
 * [Baeldung](https://www.baeldung.com/) - Große Auswahl an Spring Boot-fokussierten Guides
 * [Sprint Data JPA - Reference Documentation](https://docs.spring.io/spring-data/jpa/docs/1.5.0.RELEASE/reference/html/index.html) - Dokumentation über Spring Data JPA
-* [RabbitMQ](https://www.rabbitmq.com/) - RabbmitMQ Dokumentation, Guides für Server und Client Konfiguration und Deployment
+* [RabbitMQ](https://www.rabbitmq.com/) - RabbitMQ Dokumentation, Guides für Server und Client Konfiguration und Deployment
 * [phpMyAdmin](https://www.phpmyadmin.net/) - Bereitstellung von MySQL-Datenbanken
 * [Rameez Shaikh](https://medium.com/@rameez.s.shaikh/build-a-chat-application-using-spring-boot-websocket-rabbitmq-2b82c142f85a) - Chat Application Beispiel mit guter Erklärung
 * [Stackoverflow](https://stackoverflow.com/) - :ok_man:
