@@ -40,7 +40,7 @@
           </template>
         </div>
         <div class="board-preview md-layout-item">
-          <UserCreation :user="currentUser"></UserCreation>
+          <UserCreation @user-updated="userUpdated" :user="currentUser"></UserCreation>
         </div>
       </md-app-content>
     </md-app>
@@ -60,6 +60,7 @@ import BoardDisplay from "@/components/Board/BoardDisplay";
 import UserCreation from "@/components/Forms/UserCreation";
 import SingleUser from "@/components/Forms/SingleUser";
 import userapi from "@/http/userapi";
+import {store} from "@/main";
 
 
 let SizeStyle = Quill.import('attributors/style/size');
@@ -84,26 +85,41 @@ export default {
   props: {},
   data() {
     return {
-      users: [],
       menuVisible: false,
       currentUser: null
     };
   },
   methods: {
     deleteUser(user) {
-      console.log("headers", )
       userapi.deleteUser(user.id).then(res => {
         if (res) {
-          this.users = res;
+          console.log(res);
+          this.refreshUsers();
+          this.$toastr.success(user.userName + " erfolgreich gelöscht")
+        }
+      });
+    },
+    userUpdated(user){
+      this.$toastr.success(user.userName + " erfolgreich erstellt")
+      this.refreshUsers();
+    },
+    refreshUsers() {
+      userapi.getUsers().then(res => {
+        if (res) {
+          this.$store.commit('setUsers', res)
         }
       });
     }
   },
-  computed: {},
+  computed: {
+    users() {
+      return this.$store.getters.getUsers
+    }
+  },
   created() {
     userapi.getUsers().then(res => {
       if (res) {
-        this.users = res;
+        this.$store.commit('setUsers', res)
       }
     });
     userapi.getUser(1).then(res => {
@@ -136,11 +152,7 @@ export default {
   }
 
   &-preview {
-    width: 50%;
-    margin-top: -16px;
-    margin-right: -16px;
-    margin-bottom: -16px;
-    cursor: pointer;
+    margin: 60px 0px 0px 0px;
   }
 
   &-form {

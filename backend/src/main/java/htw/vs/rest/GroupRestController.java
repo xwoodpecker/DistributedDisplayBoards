@@ -126,7 +126,7 @@ public class GroupRestController {
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
     @PreAuthorize("@securityService.hasPermissionGroup(authentication, #id)")
     @PostMapping("/user/{id}")
-    public ResponseEntity addUserToGroup(@RequestParam Long userId, @PathVariable Long id) {
+    public ResponseEntity addUserToGroup(@RequestBody Long userId, @PathVariable Long id) {
         ResponseEntity response;
         Optional<Group> group = groupRepository.findById(id);
         Group g;

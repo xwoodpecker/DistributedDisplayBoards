@@ -51,7 +51,7 @@ public class UserRestController {
      *
      * @return the response entity
      */
-    @CrossOrigin(origins = "http://localhost:8080")
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all users")
     @GetMapping("/")
     public ResponseEntity getUsers(){
