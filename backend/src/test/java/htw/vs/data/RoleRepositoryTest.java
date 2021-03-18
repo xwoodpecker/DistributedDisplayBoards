@@ -43,11 +43,11 @@ public class RoleRepositoryTest {
         Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
         assert coordinatorRole.getUsers().stream().anyMatch(u -> u.getId() == coordinator1.getId());
         assert coordinatorRole.getUsers().stream().anyMatch(u -> u.getId() == coordinator2.getId());
-        assert coordinatorRole.getUsers().size() == 2;
+        assert coordinatorRole.getUsers().size() == 3;
 
 
         Role userRole = roleRepository.findByName(Const.USER_ROLE);
-        assert userRole.getUsers().size() == 3;
+        assert userRole.getUsers().size() == 8;
 
 
     }

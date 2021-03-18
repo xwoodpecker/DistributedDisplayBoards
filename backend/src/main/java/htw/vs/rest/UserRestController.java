@@ -249,5 +249,4 @@ public class UserRestController {
 
         return new ResponseEntity<>(groups, HttpStatus.OK);
     }
-
 }

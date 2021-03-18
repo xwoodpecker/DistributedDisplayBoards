@@ -67,16 +67,15 @@ public class WebSocketMessageController {
      * Gets active messages.
      *
      * @param authentication the authentication
-     * @param user           the user
      * @param board          the board
      * @return the active messages
      */
     @MessageMapping("/getActiveMessages")
-    public boolean getActiveMessages(Authentication authentication, @Payload User user, @Payload Board board) {
+    public boolean getActiveMessages(Authentication authentication, @Payload Board board) {
 
         //todo: check if findbyId works as well
         board = this.boardRepository.findBoardByIdEagerGroup(board.getId());
-        user = this.userRepository.findById(user.getId()).orElseThrow(() -> new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION));
+        User user = this.userRepository.findUserByUserName(authentication.getName());
 
         verifyUserBoard(authentication, user, board);
 

@@ -79,12 +79,12 @@
           <MessageManagement v-if="this.messageManagementActive"></MessageManagement>
         </div>
         <div class="board-preview md-layout-item" @click="showOverlay = !showOverlay">
-          <BoardDisplay></BoardDisplay>
+          <BoardDisplay v-if="this.boardId" v-bind:boardId="parseInt(this.boardId)"></BoardDisplay>
         </div>
         <div id="overlay" @click="showOverlay = !showOverlay"
               :class="{active : showOverlay, inactive : !showOverlay}">
           <div id="overlay-inner">
-            <BoardDisplay v-if="showOverlay"></BoardDisplay>
+            <BoardDisplay v-if="showOverlay && this.boardId" v-bind:boardId="parseInt(this.boardId)"></BoardDisplay>
           </div>
         </div>
       </md-app-content>
@@ -156,26 +156,13 @@ export default {
       }
     },
     sendMessage(){
-      const message = {
-        content: this.content,
-        bgColor: this.colors.hex,
-        //endDate: this.date,
-        //yyyy-mm-dd hh:mm:ss[.fffffffff]]
-        //while it seems to fit format 'yyyy-MM-dd'T'HH:mm:ss.SSSX', parsing fails (leniency? null))
-        endDate: "2024-03-01 17:03:17",
-        active: this.active,
-        displayTime: this.displayTime
-      }
       this.sending = true;
-      this.$boardService.send(message)
-
-      console.log(message);
+      this.$boardService.addMessage(this.content, this.boardId, this.displayTime, this.date, this.colors.hex, this.active)
     }
   },
   computed: {},
   created() {
     this.boardId = this.$route.params.id;
-    //hier das passende Board anhand ID aus dem store holen und socket aufbauen für master
   },
   mounted() {
   },
