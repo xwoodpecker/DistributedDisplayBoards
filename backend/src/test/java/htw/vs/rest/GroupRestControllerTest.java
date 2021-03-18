@@ -53,8 +53,8 @@ public class GroupRestControllerTest {
     public void testAddGroup() throws Exception {
         this.mockMvc.perform(post("/groups/").param("coordinatorId","1").param("groupName","testgroup4")
                 .param("boardName", "testboard5").param("location", "location5")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(anyOf(containsString("{\"id\":4,\"groupName\":\"testgroup4\",\"users\":[1],\"board\":{\"id\":6,\"boardName\":\"testboard5\",\"location\":\"location5\"},\"coordinator\":1}")
-                        ,containsString("{\"id\":4,\"groupName\":\"testgroup4\",\"users\":[1],\"board\":{\"id\":7,\"boardName\":\"testboard5\",\"location\":\"location5\"},\"coordinator\":1}"))));
+                .andExpect(content().string(anyOf(containsString("{\"id\":5,\"groupName\":\"testgroup4\",\"users\":[1],\"board\":{\"id\":6,\"boardName\":\"testboard5\",\"location\":\"location5\"},\"coordinator\":1}")
+                        ,containsString("{\"id\":5,\"groupName\":\"testgroup4\",\"users\":[1],\"board\":{\"id\":7,\"boardName\":\"testboard5\",\"location\":\"location5\"},\"coordinator\":1}"))));
     }
 
 
