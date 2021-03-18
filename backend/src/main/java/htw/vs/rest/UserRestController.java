@@ -142,28 +142,9 @@ public class UserRestController {
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Change the password of a user")
     @PostMapping("/password/own")
-    public ResponseEntity changeOwnPassword(UsernamePasswordAuthenticationToken principal, @RequestParam String newPassword){
+    public ResponseEntity changeOwnPassword(UsernamePasswordAuthenticationToken principal, @RequestBody String newPassword){
         UserDetails userDetails = (UserDetails) principal.getPrincipal();
         User user = userRepository.findUserByUserName(userDetails.getUsername());
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-        return new ResponseEntity<>(null, HttpStatus.OK);
-    }
-
-
-    /**
-     * Change someones password response entity.
-     *
-     * @param username    the username
-     * @param newPassword the new password
-     * @return the response entity
-     */
-    @CrossOrigin(origins = "http://localhost")
-    @Operation(summary = "Change password of a specified user. Supervisor only")
-    @Secured("ROLE_SUPERVISOR")
-    @PostMapping("/password/other")
-    public ResponseEntity changeSomeonesPassword(@RequestParam String username, @RequestParam String newPassword){
-        User user = userRepository.findUserByUserName(username);
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         return new ResponseEntity<>(null, HttpStatus.OK);
@@ -240,7 +221,7 @@ public class UserRestController {
     @GetMapping("/{id}/groups")
     public ResponseEntity getGroupsOfUser(@PathVariable Long id, Authentication authentication){
         User user = userRepository.findById(id).orElseThrow(() -> new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION));
-        if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() >= 1)
+        if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 0)
             return new ResponseEntity<>(groupRepository.findAll(), HttpStatus.OK);
 
         Group central = groupRepository.findGroupByGroupName(Config.CENTRAL_GROUP_NAME);

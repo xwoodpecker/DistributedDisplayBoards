@@ -11,9 +11,7 @@ import 'vue-material/dist/theme/default.css'
 import {ENV} from './environment'
 import 'toastr/toastr.scss'
 import Toastr from 'toastr'
-
-
-Vue.prototype.$toastr = Toastr;
+import BoardService from './services/boardService'
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -106,6 +104,7 @@ export const store = new Vuex.Store({
     }
 });
 
+Vue.prototype.$boardService = new BoardService();
 
 new Vue({
     render: h => h(App),

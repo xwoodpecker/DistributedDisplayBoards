@@ -185,47 +185,6 @@ public class GroupRestController {
     }
 
     /**
-     * Change coordinator response entity.
-     *
-     * @param newCoordinatorId the new coordinator id
-     * @param id               the id
-     * @return the response entity
-     */
-    @Operation(summary = "Change Coordinator")
-    @Secured("ROLE_SUPERVISOR")
-    @PostMapping("/coordinator/{id}")
-    public ResponseEntity changeCoordinator(@RequestParam Long newCoordinatorId, @PathVariable Long id){
-        ResponseEntity response;
-        Group g;
-
-        Optional<Group> group = groupRepository.findById(id);
-        Optional<User> user = userRepository.findById(newCoordinatorId);
-
-        if(!group.isPresent()) {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_GROUP_MSG);
-        }
-        else if(!user.isPresent()) {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
-        }
-
-        else {
-            Group temp = group.get();
-
-            if(!user.isPresent()){
-                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
-            }
-            else {
-                temp = changeCoordinatorRole(user.get(), temp);
-                g = groupRepository.save(temp);
-
-                response = new ResponseEntity(g, HttpStatus.OK);
-            }
-        }
-        return response;
-    }
-
-
-    /**
      * Replace group response entity.
      *
      * @param id       the id
@@ -321,8 +280,8 @@ public class GroupRestController {
         List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
         Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
         if(groups.size() < 2) {
-            oldCoordinator.getRoles().remove(coordinatorRole);
-            coordinatorRole.getUsers().remove(oldCoordinator);
+            oldCoordinator.getRoles().removeIf(r -> r.getName() == Const.COORDINATOR_ROLE);
+            coordinatorRole.getUsers().removeIf(u -> u.getId() == oldCoordinator.getId());
         }
         newCoordinator.getRoles().add(coordinatorRole);
         coordinatorRole.getUsers().add(newCoordinator);

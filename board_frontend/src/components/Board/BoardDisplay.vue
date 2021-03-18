@@ -51,9 +51,9 @@ export default {
   },
   methods: {
     start() {
-      if(this.messages > 1){
+      if(this.messages){
         this.startAnimation(
-          this.messages[this.$refs.carousel.currentSlide].duration
+          this.messages[this.$refs.carousel.currentSlide].displayTime
         );
       }
     },
@@ -68,7 +68,7 @@ export default {
     next() {
       this.$refs.carousel.goToNext();
     },
-    startAnimation(duration) {
+    startAnimation(displayTime) {
       if (this.animation) this.animation.kill();
       this.amount = 0;
       this.animation = gsap.fromTo(
@@ -76,7 +76,7 @@ export default {
         { amount: 0 },
         {
           ease: "none",
-          duration: duration,
+          duration: displayTime,
           amount: 100,
         }
       );
@@ -104,7 +104,7 @@ export default {
     });
     this.$watch("$refs.carousel.currentSlide", (new_value) => {
       this.currentSlide = new_value;
-      this.startAnimation(this.messages[new_value].duration);
+      this.startAnimation(this.messages[new_value].displayTime);
     });
     if (this.autoStart) this.start();
   },
