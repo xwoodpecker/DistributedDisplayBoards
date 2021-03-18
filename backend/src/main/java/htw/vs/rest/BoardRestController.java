@@ -97,12 +97,15 @@ public class BoardRestController {
         Board b;
         if(board.isPresent()) {
             Board temp = board.get();
-            temp.setBoardName(newBoard.getBoardName());
-            temp.setLocation(newBoard.getLocation());
+            if(newBoard.getBoardName() != null){
+                temp.setBoardName(newBoard.getBoardName());
+            }
+            if(newBoard.getLocation() != null){
+                temp.setLocation(newBoard.getLocation());
+            }
             b = boardRepository.save(temp);
         } else {
             newBoard.setId(id);
-            //todo
             b = boardRepository.save(newBoard);
         }
         return new ResponseEntity(b, HttpStatus.OK);

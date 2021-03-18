@@ -278,6 +278,9 @@ public class GroupRestControllerTest {
         MvcResult result = this.mockMvc.perform(get("/groups/")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         assert(!stringResult.contains("\"id\":3,\"groupName\":\"testgroup3\""));
+        MvcResult result2 = this.mockMvc.perform(get("/users/8")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult2 = result2.getResponse().getContentAsString();
+        assert(!stringResult2.contains("\"COORDINATOR\""));
     }
 
 
