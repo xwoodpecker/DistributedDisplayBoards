@@ -147,7 +147,6 @@ public class UserRestController {
     }
 
 
-    //todo: test
     /**
      * Change someones password response entity.
      *
@@ -159,7 +158,7 @@ public class UserRestController {
     @Operation(summary = "Change password of a specified user. Supervisor only")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/password/other")
-    public ResponseEntity changeSomeonesPassword(String username, String newPassword){
+    public ResponseEntity changeSomeonesPassword(@RequestParam String username, @RequestParam String newPassword){
         User user = userRepository.findUserByUserName(username);
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
@@ -182,11 +181,21 @@ public class UserRestController {
         User u;
         if(user.isPresent()){
             User temp = user.get();
-            temp.setUserName(newUser.getUserName());
-            temp.setPassword(passwordEncoder.encode(newUser.getPassword()));
-            temp.setEmail(newUser.getEmail());
+            if(newUser.getUserName() != null){
+                temp.setUserName(newUser.getUserName());
+            }
+            if( newUser.getPassword() != null){
+                temp.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            }
+            if( newUser.getEmail() != null){
+                temp.setEmail(newUser.getEmail());
+            }
+            if( !newUser.getRoles().isEmpty()){
+                temp.setRoles(newUser.getRoles());
+            }
+
             temp.setEnabled(newUser.isEnabled());
-            temp.setRoles(newUser.getRoles());
+
             u = userRepository.save(temp);
         }else{
             newUser.setId(id);
@@ -223,7 +232,6 @@ public class UserRestController {
      */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get Groups of a user")
-    @Secured("ROLE_USER")
     @GetMapping("/{id}/groups")
     public ResponseEntity getGroupsOfUser(@PathVariable Long id, Authentication authentication){
         User user = userRepository.findById(id).orElseThrow(() -> new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION));
