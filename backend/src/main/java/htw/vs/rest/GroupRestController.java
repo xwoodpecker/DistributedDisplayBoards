@@ -206,28 +206,16 @@ public class GroupRestController {
 
         else {
             Group temp = group.get();
-            User oldCoordinator = temp.getCoordinator();
-            List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
 
-            Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
-
-            //todo test
-            if(groups.size() < 2) {
-                oldCoordinator.getRoles().remove(coordinatorRole);
-                coordinatorRole.getUsers().remove(oldCoordinator);
+            if(!user.isPresent()){
+                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
             }
+            else {
+                temp = coordinatorRole(user.get(), temp);
+                g = groupRepository.save(temp);
 
-            User newCoordinator = user.get();
-            //todo test duplicate ?
-            newCoordinator.getRoles().add(coordinatorRole);
-            coordinatorRole.getUsers().add(newCoordinator);
-            temp.setCoordinator(newCoordinator);
-
-            group.get().getUsers().add(user.get());
-
-            g = groupRepository.save(temp);
-
-            response = new ResponseEntity(g, HttpStatus.OK);
+                response = new ResponseEntity(g, HttpStatus.OK);
+            }
         }
         return response;
     }
@@ -300,7 +288,6 @@ public class GroupRestController {
     @Secured("ROLE_SUPERVISOR")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteGroup(@PathVariable Long id) {
-        //todo: test if coordinator rights get removed
         Optional<Group> group = groupRepository.findById(id);
         User coordinator = group.get().getCoordinator();
         List<Group> coordinatedGroups = groupRepository.getCoordinatedGroups(coordinator);
@@ -322,7 +309,6 @@ public class GroupRestController {
         User oldCoordinator = group.getCoordinator();
         List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
         Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
-        //todo test
         if(groups.size() < 2) {
             oldCoordinator.getRoles().remove(coordinatorRole);
             coordinatorRole.getUsers().remove(oldCoordinator);
