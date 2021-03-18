@@ -33,10 +33,11 @@ public class UserRestController {
 
     /**
      * Instantiates a new User rest controller.
-     *  @param userRepository  the user repository
+     *
+     * @param userRepository  the user repository
      * @param passwordEncoder the password encoder
      * @param roleRepository  the role repository
-     * @param groupRepository
+     * @param groupRepository the group repository
      */
     public UserRestController(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, GroupRepository groupRepository) {
         this.userRepository = userRepository;
@@ -81,6 +82,7 @@ public class UserRestController {
     /**
      * Gets authenticated user (HTTP authentication)
      *
+     * @param principal the principal
      * @return the user
      */
     @CrossOrigin(origins = "http://localhost")
@@ -229,7 +231,8 @@ public class UserRestController {
     /**
      * Get groups of user response entity.
      *
-     * @param id the id
+     * @param id             the id
+     * @param authentication the authentication
      * @return the response entity
      */
     @CrossOrigin(origins = "http://localhost")

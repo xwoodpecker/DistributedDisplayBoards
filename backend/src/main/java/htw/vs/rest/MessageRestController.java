@@ -14,6 +14,9 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Message rest controller.
+ */
 @Api(tags = {SpringFoxConfig.MESSAGES})
 @RestController
 @RequestMapping(path = "/messages")
@@ -23,6 +26,14 @@ public class MessageRestController {
     private GroupRepository groupRepository;
     private BoardRepository boardRepository;
 
+    /**
+     * Instantiates a new Message rest controller.
+     *
+     * @param userRepository    the user repository
+     * @param messageRepository the message repository
+     * @param groupRepository   the group repository
+     * @param boardRepository   the board repository
+     */
     public MessageRestController(UserRepository userRepository, MessageRepository messageRepository, GroupRepository groupRepository, BoardRepository boardRepository) {
         this.userRepository = userRepository;
         this.messageRepository = messageRepository;
@@ -30,6 +41,11 @@ public class MessageRestController {
         this.boardRepository = boardRepository;
     }
 
+    /**
+     * Get messages response entity.
+     *
+     * @return the response entity
+     */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all messages")
     @Secured("ROLE_SUPERVISOR")
@@ -39,6 +55,12 @@ public class MessageRestController {
     }
 
 
+    /**
+     * Gets message.
+     *
+     * @param id the id
+     * @return the message
+     */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get messsage by given id")
     @GetMapping("/{id}")
@@ -55,6 +77,12 @@ public class MessageRestController {
     }
 
 
+    /**
+     * Get messages of group response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all messages of a group")
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
@@ -81,6 +109,12 @@ public class MessageRestController {
         return response;
     }
 
+    /**
+     * Get messages of board response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all messages of a board")
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
@@ -100,6 +134,12 @@ public class MessageRestController {
         return response;
     }
 
+    /**
+     * Get active messages of group response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all active messages of a group")
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
@@ -126,6 +166,12 @@ public class MessageRestController {
         return response;
     }
 
+    /**
+     * Get active messages of board response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all active messages of a board")
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
@@ -145,6 +191,12 @@ public class MessageRestController {
         return response;
     }
 
+    /**
+     * Get messages of user response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all messages of a User")
     @GetMapping(path = "/user/{id}")
@@ -161,6 +213,13 @@ public class MessageRestController {
 
         return response;
     }
+
+    /**
+     * Get active message of user response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all active messages of a User")
     @GetMapping(path = "/active/user/{id}")
@@ -178,6 +237,17 @@ public class MessageRestController {
         return response;
     }
 
+    /**
+     * Add message response entity.
+     *
+     * @param active      the active
+     * @param boardId     the board id
+     * @param userId      the user id
+     * @param content     the content
+     * @param displayTime the display time
+     * @param endDate     the end date
+     * @return the response entity
+     */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "create a new Message")
     @Secured("ROLE_SUPERVISOR")
@@ -210,6 +280,12 @@ public class MessageRestController {
         return response;
     }
 
+    /**
+     * Delete message response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Delete a Message")
     @Secured("ROLE_SUPERVISOR")

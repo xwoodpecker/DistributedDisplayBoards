@@ -22,7 +22,6 @@ import java.util.stream.Collector;
 /**
  * The type Web socket message controller.
  */
-
 @Controller
 public class WebSocketMessageController {
 

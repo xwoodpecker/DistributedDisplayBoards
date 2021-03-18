@@ -19,6 +19,12 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Board findBoardByBoardName(String boardName);
 
 
+    /**
+     * Find board by id eager group board.
+     *
+     * @param id the id
+     * @return the board
+     */
     @Query("select b from Board b join fetch b.group where b.id = ?1")
     Board findBoardByIdEagerGroup(Long id);
 }

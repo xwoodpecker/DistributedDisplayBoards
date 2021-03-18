@@ -74,6 +74,15 @@ public class GroupRestController {
         return response;
     }
 
+    /**
+     * Add group response entity.
+     *
+     * @param groupName     the group name
+     * @param boardName     the board name
+     * @param location      the location
+     * @param coordinatorId the coordinator id
+     * @return the response entity
+     */
     @Operation(summary = "Add a new group and a new board")
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/")
@@ -221,6 +230,13 @@ public class GroupRestController {
     }
 
 
+    /**
+     * Replace group response entity.
+     *
+     * @param id       the id
+     * @param newGroup the new group
+     * @return the response entity
+     */
     @Operation
     @Secured("ROLE_SUPERVISOR")
     @PostMapping("/{id}")
