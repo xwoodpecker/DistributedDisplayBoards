@@ -153,9 +153,8 @@ public class WebSocketMessageController {
         if(coordinator == null)
             throw new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION);
 
-        Role supervisor = roleRepository.findByName(Const.SUPERVISOR_ROLE);
         User authenticatedUser = userRepository.findUserByUserName(authentication.getName());
-        if(authenticatedUser.getRoles().contains(supervisor))
+        if(authenticatedUser.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 0)
             return;
 
         if (!coordinator.getUserName().equals(authentication.getName()))
@@ -167,14 +166,13 @@ public class WebSocketMessageController {
         if(user == null)
             throw new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION);
 
-        Role supervisor = roleRepository.findByName(Const.SUPERVISOR_ROLE);
         User authenticatedUser = userRepository.findUserByUserName(authentication.getName());
-        if(!(authenticatedUser.getRoles().contains(supervisor)) && !(authenticatedUser.getId() == board.getGroup().getCoordinator().getId()))
+        if(!(authenticatedUser.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 0) && !(authenticatedUser.getId() == board.getGroup().getCoordinator().getId()))
             if(!user.getUserName().equals(authentication.getName()))
                 throw new AccessDeniedException(Const.VERIFY_USER_EXCEPTION);
 
 
-        if(!(authenticatedUser.getRoles().contains(supervisor)) && !user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent())
+        if(!(authenticatedUser.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 0) && !user.getGroups().stream().filter(g -> g.getBoard().getId() == board.getId()).findAny().isPresent())
             throw new AccessDeniedException(Const.USER_BOARD_EXCEPTION);
     }
 
