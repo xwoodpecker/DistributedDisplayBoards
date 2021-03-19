@@ -47,6 +47,7 @@ export const store = new Vuex.Store({
         authHeader: null,
         boards: [],
         users: [],
+        groups: [],
         userToEdit: null
     },
     mutations: {
@@ -64,6 +65,9 @@ export const store = new Vuex.Store({
                     state.boards.push(board);
                 }
             }
+        },
+        setGroups(state, groups) {
+            state.groups = groups;
         },
         setMessages(state, board) {
             state.boards.find(oldBoard => board.id == oldBoard.id).messages = board.messages;
@@ -108,6 +112,18 @@ export const store = new Vuex.Store({
         isSupervisor: state => {
             let isSupervisor = false;
             return state.user.roles.find( role => role.name === 'SUPERVISOR')
+        },
+        isCoordinator: state => (groupId) => {
+            return state.groups.find(group => group.id == groupId && group.coordinator == state.user.id);
+        },
+        getCoordinatorBoards: state => {
+            let boards = [];
+            for(let group of state.groups){
+                if(group.coordinator = state.user.id){
+                    boards.push(group.board);
+                }
+            }
+            return boards;
         }
     }
 });

@@ -74,6 +74,9 @@ export default {
             boards.push(group.board);
           }
         }
+        console.log("GROUPS")
+        console.log(groups)
+        this.$store.commit('setGroups', groups);
         this.$store.commit('addBoards', boards)
       }
     });

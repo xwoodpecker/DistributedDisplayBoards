@@ -133,6 +133,7 @@ export default {
 <style>
 .display-container {
   height: 100%;
+  pointer-events: none;
 }
 
 .message-container {
