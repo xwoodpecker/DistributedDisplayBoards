@@ -183,7 +183,7 @@ export default {
       else {
         console.log("boardid", this.board.id);
         console.log(this.coordinator);
-        const boartToUpdate = {
+        const boardToUpdate = {
           'id': this.board.id,
           'board': {
             'id' : this.board.board.id,
@@ -195,9 +195,10 @@ export default {
             'id': this.coordinator.id
           }
         }
-        boardsapi.updateBoard(boartToUpdate, this.board.id).then(res => {
+        console.log(boardToUpdate)
+        boardsapi.updateBoard(boardToUpdate, this.board.id).then(res => {
           if (res) {
-            this.$emit('board-updated', boartToUpdate)
+            this.$emit('board-updated', boardToUpdate)
             this.sending = false
             this.clearForm()
           }
