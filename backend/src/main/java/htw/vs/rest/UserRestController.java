@@ -105,10 +105,7 @@ public class UserRestController {
     /**
      * Add user response entity.
      *
-     * @param userName     the user name
-     * @param password     the password
-     * @param email        the email
-     * @param isSupervisor the is supervisor
+     * @param request the request
      * @return the response entity
      */
     @CrossOrigin(origins = "*")

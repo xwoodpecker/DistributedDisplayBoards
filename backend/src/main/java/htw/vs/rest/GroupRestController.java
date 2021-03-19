@@ -99,15 +99,15 @@ public class GroupRestController {
             newBoard = boardRepository.save(newBoard);
 
 
-            Group newGgroup = new Group();
-            newGgroup.setGroupName(group.getGroupName());
-            newGgroup.setBoard(newBoard);
-            newGgroup.setCoordinator(user.get());
-            newGgroup.getUsers().add(user.get());
+            Group newGroup = new Group();
+            newGroup.setGroupName(group.getGroupName());
+            newGroup.setBoard(newBoard);
+            newGroup.setCoordinator(user.get());
+            newGroup.getUsers().add(user.get());
             Role userRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
             user.get().getRoles().add(userRole);
             userRole.getUsers().add(user.get());
-            g = groupRepository.save(newGgroup);
+            g = groupRepository.save(newGroup);
             response = new ResponseEntity(g, HttpStatus.OK);
         }
         return response;
