@@ -10,7 +10,7 @@
           <div class="md-layout md-gutter">
             <div class="md-layout-item md-small-size-100">
               <md-field :class="getValidationClass('username')">
-                <label for="username">Nutzername</label>
+                <label>Nutzername</label>
                 <md-input name="username" id="username" autocomplete="given-name" v-model="form.username" :disabled="sending" />
                 <span class="md-error" v-if="!$v.form.username.required">The first name is required</span>
               </md-field>
@@ -18,19 +18,19 @@
           </div>
 
           <md-field :class="getValidationClass('email')">
-            <label for="email">Email</label>
+            <label>Email</label>
             <md-input type="email" name="email" id="email" autocomplete="email" v-model="form.email" :disabled="sending" />
             <span class="md-error" v-if="!$v.form.email.required">The email is required</span>
           </md-field>
 
           <md-field :class="getValidationClass('password')">
-            <label for="password">Passwort</label>
+            <label>Passwort</label>
             <md-input type="password" name="password" id="password" autocomplete="password" v-model="form.password" :disabled="sending" />
             <span class="md-error" v-if="!$v.form.password.required">Password is required</span>
           </md-field>
 
           <md-field :class="getValidationClass('isSupervisor')">
-            <label for="email">Supervisor</label>
+            <label>Supervisor</label>
             <md-input type="checkbox" name="isSupervisor" id="isSupervisor" autocomplete="isSupervisor" v-model="form.isSupervisor" :disabled="sending" />
             <span class="md-error" v-if="!$v.form.isSupervisor.required">Role is required</span>
           </md-field>
@@ -146,22 +146,22 @@ export default {
       }
       if (this.action === 'create'){
         userapi.addUser(userToCreate).then( res => {
-          if (res.status === 200) {
-            console.log(res);
+          if (res) {
+            this.$emit('user-created',userToCreate)
+            this.sending = false
+            this.clearForm()
           }
         })
       }//update user
       else {
-
+        userapi.updateUser(userToCreate, this.$props.user.id).then( res => {
+          if (res) {
+            this.$emit('user-updated',userToCreate)
+            this.sending = false
+            this.clearForm()
+          }
+        })
       }
-      //hier nutzer speichern
-      // Instead of this timeout, here you can call your API
-      window.setTimeout(() => {
-        this.lastUser = `${this.form.username}`
-        this.userSaved = true
-        this.sending = false
-        this.clearForm()
-      }, 1500)
     },
     validateUser () {
       console.log(this.form)

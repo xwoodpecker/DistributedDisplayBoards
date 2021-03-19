@@ -126,7 +126,7 @@ public class GroupRestController {
     @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
     @PreAuthorize("@securityService.hasPermissionGroup(authentication, #id)")
     @PostMapping("/user/{id}")
-    public ResponseEntity addUserToGroup(@RequestParam Long userId, @PathVariable Long id) {
+    public ResponseEntity addUserToGroup(@RequestBody Long userId, @PathVariable Long id) {
         ResponseEntity response;
         Optional<Group> group = groupRepository.findById(id);
         Group g;
@@ -280,8 +280,8 @@ public class GroupRestController {
         List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
         Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
         if(groups.size() < 2) {
-            oldCoordinator.getRoles().remove(coordinatorRole);
-            coordinatorRole.getUsers().remove(oldCoordinator);
+            oldCoordinator.getRoles().removeIf(r -> r.getName() == Const.COORDINATOR_ROLE);
+            coordinatorRole.getUsers().removeIf(u -> u.getId() == oldCoordinator.getId());
         }
         newCoordinator.getRoles().add(coordinatorRole);
         coordinatorRole.getUsers().add(newCoordinator);

@@ -19,7 +19,7 @@ export function getUsers(){
     })
 }
 
-export async function getUser(userId){
+export function getUser(userId){
     return axios.get(ENV.baseUrl+"users/"+userId).then( response => {
         if (response) {
             return response.data
@@ -28,14 +28,17 @@ export async function getUser(userId){
 }
 
 
-export async function addUser(user){
-    return await axios.post(ENV.baseUrl + "users/", null, {
-        headers : store.getters.authHeader.headers,
-        params: {
+export function addUser(user){
+    const auth = store.getters.authHeader.Authorization;
+    return axios.post(ENV.baseUrl + "users/",{
             'userName' : user.userName,
             'password' : user.password,
             'isSupervisor' : user.isSupervisor,
             'email' : user.email,
+    }, {
+        headers : {
+            'Content-type' : 'application/json',
+            'Authorization': auth
         }
     }).then(response => {
         if (response) {
@@ -44,16 +47,28 @@ export async function addUser(user){
     })
 }
 
-export async function deleteUser(userId){
-    return await axios.delete(ENV.baseUrl + "users/"+userId, store.getters.authHeader).then(response => {
+export function deleteUser(userId){
+    const auth = store.getters.authHeader.Authorization;
+
+    return axios.delete(ENV.baseUrl + "users/"+userId,{
+        headers : {
+            'Authorization': auth
+        }
+    }).then(response => {
         if (response) {
-            return response.data
+            return response;
         }
     })
 }
 
-export async function updateUser(user){
-    return (await axios.put("/users/"+user.id),user).then(response => {
+export function updateUser(user, id){
+    const auth = store.getters.authHeader.Authorization;
+    return axios.post(ENV.baseUrl + "users/" + id,user, {
+        headers : {
+            'Content-type' : 'application/json',
+            'Authorization': auth
+        }
+    }).then(response => {
         if (response) {
             return response.data
         }
