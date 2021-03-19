@@ -1,10 +1,8 @@
 <template>
   <div>
-
-
   <md-list>
     <md-list-item @click='$router.push({ name: "dashboard" })'>
-      <md-icon>move_to_inbox</md-icon>
+      <md-icon>dashboard</md-icon>
       <span class="md-list-item-text">Dashboard</span>
     </md-list-item>
 
@@ -14,12 +12,11 @@
     </md-list-item>
 
     <md-list-item v-if="$store.getters.isSupervisor || $store.getters.hasRoleCoordinator" @click='$router.push({ name: "boardmanagement" })'>
-      <md-icon>menu</md-icon>
+      <md-icon>filter_frames</md-icon>
       <span class="md-list-item-text">Boardverwaltung</span>
     </md-list-item>
-
   </md-list>
-    <md-button @click="logout" class="md-raised md-accent">Logout</md-button>
+  <md-button @click="logout" class="md-raised md-accent">Logout</md-button>
   </div>
 </template>
 
