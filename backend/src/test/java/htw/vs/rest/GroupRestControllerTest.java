@@ -67,7 +67,7 @@ public class GroupRestControllerTest {
      */
     @Test
     @Order(3)
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testAddGroup() throws Exception {
         String requestJson = "{\n" +
                 "  \"id\" : 5,\n" +
@@ -147,7 +147,7 @@ public class GroupRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testAddGroupBoardNameNotUnique() throws Exception {
         String requestJson = "{\n" +
                 "  \"id\" : 5,\n" +
@@ -173,7 +173,7 @@ public class GroupRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testAddGroupUserNotFound() throws Exception {
         String requestJson = "{\n" +
                 "  \"id\" : 5,\n" +
@@ -200,7 +200,7 @@ public class GroupRestControllerTest {
      */
     @Test
     @Order(4)
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceGroup() throws Exception {
 
         String requestJson = "{\n" +
@@ -279,7 +279,7 @@ public class GroupRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceGroupGroupNotFoundWithNewCoordinator() throws Exception {
         String requestJson = "{\n" +
                 "  \"id\" : 4,\n" +
@@ -308,7 +308,7 @@ public class GroupRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceGroupGroupNotFoundWithCoordinator() throws Exception {
         String requestJson = "{\n" +
                 "  \"id\" : 4,\n" +
@@ -337,7 +337,7 @@ public class GroupRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceGroupChangeCoordinator() throws Exception {
         String requestJson = "{\n" +
                 "  \"id\" : 1,\n" +
@@ -369,7 +369,7 @@ public class GroupRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceGroupChangeBoard() throws Exception {
         String requestJson = "{\n" +
                 "  \"id\" : 3,\n" +
@@ -395,7 +395,7 @@ public class GroupRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceGroupNameNotUnique() throws Exception {
 
         String requestJson = "{\n" +
@@ -425,7 +425,7 @@ public class GroupRestControllerTest {
      */
     @Test
     @Order(3)
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testDeleteGroup() throws Exception {
         this.mockMvc.perform(delete("/groups/3").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isOk());
         MvcResult result = this.mockMvc.perform(get("/groups/")).andDo(print()).andExpect(status().isOk()).andReturn();

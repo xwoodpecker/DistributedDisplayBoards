@@ -7,7 +7,7 @@
             <md-icon>menu</md-icon>
           </md-button>
 
-          <span class="md-title">Boardverwatung</span>
+          <span class="md-title">Boardverwaltung</span>
         </div>
       </md-app-toolbar>
 
@@ -23,10 +23,10 @@
           <md-button class="md-icon-button md-raised md-primary">
             <md-icon>person</md-icon>
           </md-button>
-          <template v-if="boards.length">
+          <template v-if="groups.length">
             <md-list>
-              <div class="singleUser" v-for="board in boards">
-                <SingleBoard :board="board"></SingleBoard>
+              <div class="singleBoard" v-for="board in groups">
+                <SingleBoard :group="board"></SingleBoard>
                 <div class="controls">
                   <md-button @click="currentBoard = board" class="md-icon-button md-list-action">
                     <md-icon class="md-primary">edit</md-icon>
@@ -82,7 +82,7 @@ export default {
     return {
       menuVisible: false,
       currentBoard: null,
-      boards: [],
+      groups: [],
     };
   },
   methods: {
@@ -105,7 +105,7 @@ export default {
     refreshBoards() {
       boardsapi.getBoards().then(res => {
         if (res) {
-          this.boards = res;
+          this.groups = res;
         }
       });
     }
@@ -115,7 +115,7 @@ export default {
   created() {
     boardsapi.getBoards().then(res => {
       if (res) {
-        this.boards = res;
+        this.groups = res;
       }
     });
   },
@@ -252,9 +252,13 @@ export default {
   }
 }
 
-.singleUser {
+.singleBoard {
   display: flex;
   justify-content: space-between;
+  margin: 25px 0 25px 0;
+  background-color: #ebebeb;
+  border-radius: 5px;
+  padding: 5px;
 }
 
 

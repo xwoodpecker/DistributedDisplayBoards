@@ -17,6 +17,17 @@
             </div>
           </div>
 
+          <div class="md-layout md-gutter">
+            <div class="md-layout-item md-small-size-100">
+              <md-field :class="getValidationClass('boardName')">
+                <label>Boardname</label>
+                <md-input name="boardname" id="boardname" autocomplete="given-name" v-model="form.boardName" :disabled="sending" />
+                <span class="md-error" v-if="!$v.form.boardName.required">The boardname is required</span>
+              </md-field>
+            </div>
+          </div>
+
+
           <md-field :class="getValidationClass('location')">
             <label>Location</label>
             <md-input type="location" name="location" id="location" autocomplete="location" v-model="form.location" :disabled="sending" />
