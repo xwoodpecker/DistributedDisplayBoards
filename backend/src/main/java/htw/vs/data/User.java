@@ -37,7 +37,7 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "users", fetch=FetchType.EAGER)
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id", scope=Group.class)
     @JsonIdentityReference(alwaysAsId=true)
     private Set<Group> groups  = new HashSet<>();
 

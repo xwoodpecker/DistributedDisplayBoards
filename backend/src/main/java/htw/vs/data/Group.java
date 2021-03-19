@@ -23,7 +23,7 @@ public class Group {
 
     @JoinTable(name = "GROUPS_USERS")
     @ManyToMany(fetch = FetchType.EAGER)
-    @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope=User.class)
     @JsonIdentityReference(alwaysAsId=true)
     private Set<User> users = new HashSet<>();
 
@@ -33,7 +33,7 @@ public class Group {
     private Board board;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id", scope=User.class)
     @JsonIdentityReference(alwaysAsId=true)
     private User coordinator;
 
