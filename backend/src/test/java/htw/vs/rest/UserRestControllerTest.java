@@ -290,7 +290,7 @@ public class UserRestControllerTest {
      */
     @Test
     @Order(8)
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceUser() throws Exception {
         Role userRole = roleRepository.findByName("USER");
         Set<Role> roleSet = new HashSet<>();
@@ -322,7 +322,7 @@ public class UserRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceUserOnlyName() throws Exception {
 
         User user = new User();
@@ -367,7 +367,7 @@ public class UserRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="USER")
+    @WithMockUser(roles="USER", username = "User5")
     public void testReplaceUserWithoutPermission() throws Exception {
 
         User user = new User();
@@ -389,7 +389,7 @@ public class UserRestControllerTest {
      */
     @Test
     @Order(9)
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceUserNewUser() throws Exception {
 
         Role userRole = roleRepository.findByName("USER");
@@ -417,7 +417,7 @@ public class UserRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceUserChangePassword() throws Exception {
 
         User user = new User();
@@ -485,7 +485,7 @@ public class UserRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testGetGroupsOfUserAsSupervisor() throws Exception {
         this.mockMvc.perform(get("/users/6/groups")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("")));

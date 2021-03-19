@@ -3,6 +3,7 @@ package htw.vs.data;
 import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
+import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -16,6 +17,7 @@ public class Message  {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob()
     @Column(name = "content", columnDefinition="TEXT")
     private String content;
 
