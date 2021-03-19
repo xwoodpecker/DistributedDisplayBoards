@@ -1,8 +1,6 @@
 <template>
   <div>
-  <md-toolbar class="md-transparent" md-elevation="0">
-    Menü
-  </md-toolbar>
+
 
   <md-list>
     <md-list-item @click='$router.push({ name: "dashboard" })'>
@@ -15,7 +13,7 @@
       <span class="md-list-item-text">Benutzerverwaltung</span>
     </md-list-item>
 
-    <md-list-item @click='$router.push({ name: "boardmanagement" })'>
+    <md-list-item v-if="$store.getters.isSupervisor || $store.getters.hasRoleCoordinator" @click='$router.push({ name: "boardmanagement" })'>
       <md-icon>menu</md-icon>
       <span class="md-list-item-text">Boardverwaltung</span>
     </md-list-item>

@@ -130,7 +130,7 @@ public class BoardRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceBoard() throws Exception {
         Board board = new Board(1l);
         board.setBoardName("replacedBoardName1");
@@ -151,7 +151,7 @@ public class BoardRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceBoardIdNotFound() throws Exception {
         Board board = new Board(5l);
         board.setBoardName("replacedBoardName2");
@@ -191,7 +191,7 @@ public class BoardRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="USER")
+    @WithMockUser(roles="USER", username = "User1")
     public void testReplaceBoardWithoutPermission() throws Exception {
         Board board = new Board(1l);
         board.setBoardName("replacedBoardName3");
@@ -211,7 +211,7 @@ public class BoardRestControllerTest {
      * @throws Exception the exception
      */
     @Test
-    @WithMockUser(roles="SUPERVISOR")
+    @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testReplaceBoardExistingName() throws Exception {
         Board board = new Board(1l);
         board.setBoardName("testboard2");

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -86,7 +87,8 @@ public class BoardRestController {
      * @return the response entity
      */
     @Operation(summary = "Change board name")
-    @Secured("ROLE_SUPERVISOR")
+    @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
+    @PreAuthorize("@securityService.hasPermissionBoard(authentication, #id)")
     @PostMapping("/{id}")
     public ResponseEntity replaceBoard(@RequestBody Board newBoard, @PathVariable Long id) {
         Optional<Board> board = boardRepository.findById(id);
@@ -106,24 +108,4 @@ public class BoardRestController {
         }
         return new ResponseEntity(b, HttpStatus.OK);
     }
-
-       /**
-        * Delete board response entity.
-        *
-        * @param id the id
-        * @return the response entity
-        */
-       @CrossOrigin(origins = "*")
-       @Operation(summary = "Delete a board")
-       @Secured("ROLE_SUPERVISOR")
-       @DeleteMapping("/{id}")
-       public ResponseEntity deleteBoard(@PathVariable Long id) {
-           Optional<Board> board = boardRepository.findById(id);
-           if(board.isPresent()) {
-               boardRepository.deleteById(id);
-           }
-           return new ResponseEntity<>(null, HttpStatus.OK);
-       }
-
-
 }

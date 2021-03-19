@@ -1,11 +1,16 @@
 <template>
   <div ref="displayContainer" class="display-container">
-    <agile ref="carousel" v-bind:options="carouselOptions">
+    <agile
+      ref="carousel"
+      v-bind:options="carouselOptions"
+      :key="messages.length"
+      @after-change="handleNextSlide($event.currentSlide)"
+    >
       <div v-for="message in messages" :key="message.id">
         <div
           :style="{
             height: height,
-            'background-color': message.backgroundColor,
+            'background-color': message.bgColor,
           }"
           class="message-container"
         >
@@ -47,11 +52,12 @@ export default {
       amount: 0,
       currentSlide: 0,
       animation: undefined,
+      messages: this.$store.getters.messages(this.boardId),
     };
   },
   methods: {
     start() {
-      if(this.messages){
+      if (this.messages) {
         this.startAnimation(
           this.messages[this.$refs.carousel.currentSlide].displayTime
         );
@@ -80,20 +86,25 @@ export default {
           amount: 100,
         }
       );
+
       this.animation.then(() => {
         this.next();
       });
     },
+    handleNextSlide(slide){
+      console.log(slide);
+      this.currentSlide = slide;
+      this.startAnimation(this.messages[slide].displayTime);
+    }
   },
   computed: {
     animatedAmount: function () {
       return this.tweenedNumber.toFixed(0);
     },
-    messages: function () {
-      return this.$store.getters.messages(this.boardId);
-    }
   },
-  created() {
+  created() {},
+  beforeDestroy() {
+    if (this.animation) this.animation.kill();
   },
   mounted() {
     //make sure to fill available height. necessary due to limitations with vue-agile
@@ -102,9 +113,15 @@ export default {
     this.$watch("$refs.displayContainer.clientHeight", (new_value) => {
       this.height = new_value - 5 + "px";
     });
-    this.$watch("$refs.carousel.currentSlide", (new_value) => {
-      this.currentSlide = new_value;
-      this.startAnimation(this.messages[new_value].displayTime);
+
+    //force update if state changes
+    this.$store.subscribe((mutation, state) => {
+      if (mutation.type === "setMessages") {
+        this.animation.kill();
+        this.messages = this.$store.getters.messages(this.boardId);
+        this.currentSlide = 0;
+        this.start();
+      }
     });
     if (this.autoStart) this.start();
   },
@@ -126,5 +143,8 @@ export default {
 }
 .message-content {
   width: 100%;
+  overflow-wrap: break-word;
+
+  padding: 10%;
 }
 </style>

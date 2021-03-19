@@ -19,13 +19,13 @@ export default class BoardService {
     this._connect();
 
     store.subscribe((mutation, state) => {
-      console.log("state changed");
-      console.log(state.boards)
       if(mutation.type === "addBoards" || mutation.type === "clearBoards"){
         if(state.boards){
           this.boards = state.boards;
-
+          console.log("checking");
           if(this._hasBoardStateChanged(state.boards)){
+            console.log("state changed");
+            console.log(state.boards)
             this._reconnect();
           }
         } else {
@@ -68,6 +68,7 @@ export default class BoardService {
 
   addMessage(content, boardId, displayTime, endDate, bgColor, active){
     let userId = store.getters.getUser.id;
+    //content = JSON.stringify(content);
     endDate = this._formatDate(endDate);
     //very javascript, much cool
     const msg = {content, user: {id: userId}, board: {id: boardId}, displayTime, endDate, bgColor, active}
@@ -77,6 +78,7 @@ export default class BoardService {
 
   updateMessage(messageId, content, boardId, displayTime, endDate, bgColor, active){
     let userId = store.getters.getUser.id;
+    //content = JSON.stringify(content);
     endDate = this._formatDate(endDate);
 
     const msg = {messageId, content, userId, board: {id: boardId}, displayTime, endDate, active, bgColor}

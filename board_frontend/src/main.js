@@ -59,7 +59,11 @@ export const store = new Vuex.Store({
             state.authHeader = null;
         },
         addBoards(state, boards) {
-            state.boards = boards;
+            for(let board of boards){
+                if(!state.boards.find(oldBoard => board.id == oldBoard.id)){
+                    state.boards.push(board);
+                }
+            }
         },
         setMessages(state, board) {
             state.boards.find(oldBoard => board.id == oldBoard.id).messages = board.messages;
@@ -100,6 +104,12 @@ export const store = new Vuex.Store({
         },
         getUsers: state => {
             return state.users
+        },
+        isSupervisor: state => {
+            return state.user.roles.find( role => role.name === 'SUPERVISOR')
+        },
+        hasRoleCoordinator: state => {
+            return state.user.roles.find( role => role.name === 'COORDINATOR')
         }
     }
 });

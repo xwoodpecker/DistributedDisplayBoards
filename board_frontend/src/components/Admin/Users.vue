@@ -91,7 +91,9 @@ export default {
   },
   methods: {
     deleteUser(user) {
-      userapi.deleteUser(user.id).then(res => {
+      userapi.deleteUser(user.id).catch( error => {
+        this.$toastr.error("Fehler beim Löschen des Benutzers");
+      }).then(res => {
         if (res) {
           console.log(res);
           this.refreshUsers();
@@ -121,17 +123,19 @@ export default {
     }
   },
   created() {
-    userapi.getUsers().then(res => {
-      if (res) {
-        this.$store.commit('setUsers', res)
-      }
-    });
-    userapi.getUser(1).then(res => {
-      if (res) {
-        console.log(res);
-        //this.users = res;
-      }
-    });
+    if (this.$store.getters.isSupervisor){
+      userapi.getUsers().then(res => {
+        if (res) {
+          this.$store.commit('setUsers', res)
+        }
+      });
+    } else {
+      userapi.getUser(this.$store.getters.getUser.id).then(res => {
+        if (res) {
+          this.$store.commit('setUsers', res)
+        }
+      });
+    }
     //hier das passende Board anhand ID aus dem store holen und socket aufbauen für master
   },
   mounted() {
