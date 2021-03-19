@@ -3,7 +3,6 @@ package htw.vs.data;
 import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
-import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -17,19 +16,19 @@ public class Message  {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob()
-    @Column(name = "content", columnDefinition="TEXT")
+    @Lob
+    @Column(name = "content", columnDefinition="MEDIUMBLOB")
     private String content;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id", scope = User.class)
     @JsonIdentityReference(alwaysAsId=true)
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "board_id")
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id", scope = Board.class)
     @JsonIdentityReference(alwaysAsId=true)
     private Board board;
 

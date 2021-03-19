@@ -57,7 +57,9 @@
                           'password': this.password,
                           'username': this.username,
                     };
-                    await authenticationService.login(credentials).then( (res) => {
+                    await authenticationService.login(credentials).catch( e => {
+                      this.$toastr.warning('Login fehlgeschlagen. Bitte überprüfen sie ihre Zugangsadaten');
+                    }).then( (res) => {
                       if (res) {
                         this.$store.commit('login', res);
                         this.$store.commit('setAuthHeader', credentials);
