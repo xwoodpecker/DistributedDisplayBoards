@@ -207,7 +207,7 @@ public class GroupRestController {
             board = null;
         }
         if(newGroup.getCoordinator() != null){
-           coordidnator = userRepository.findById(newGroup.getCoordinator().getId());
+            coordidnator = userRepository.findById(newGroup.getCoordinator().getId());
         } else {
             coordidnator = null;
         }
@@ -217,23 +217,22 @@ public class GroupRestController {
                 temp.setGroupName(newGroup.getGroupName());
             }
 
-            if(!board.isPresent()){
-                response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_BOARD_MSG);
-            }
-            else {
-                temp.setBoard(board.get());
-
-                if(!coordidnator.isPresent()){
-                    response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
-                }
-                else {
-                    temp = changeCoordinatorRole(coordidnator.get(), temp);
-                    g = groupRepository.save(temp);
-
-                    response = new ResponseEntity(g, HttpStatus.OK);
+            if(board.isPresent()) {
+                Optional<Board> optionalBoard = boardRepository.findById(board.get().getId());
+                if (optionalBoard.isPresent()) {
+                    Board b = optionalBoard.get();
+                    b.setBoardName(board.get().getBoardName());
+                    b.setLocation(board.get().getBoardName());
+                    b.setGroup(temp);
+                    boardRepository.save(b);
                 }
             }
 
+            if(coordidnator.isPresent()) {
+                temp = changeCoordinatorRole(coordidnator.get(), temp);
+            }
+            g = groupRepository.save(temp);
+            response = new ResponseEntity(g, HttpStatus.OK);
 
         }else {
             newGroup.setId(id);
