@@ -42,7 +42,7 @@ export function addUser(user){
         }
     }).then(response => {
         if (response) {
-            return response.data
+            return response
         }
     })
 }

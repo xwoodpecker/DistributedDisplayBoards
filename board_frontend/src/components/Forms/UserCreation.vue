@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form novalidate class="md-layout" @submit.prevent="validateUser">
+    <form novalidate class="md-layout" @submit.prevent="validateUser" v-if="$store.getters.isSupervisor || user">
       <md-card class="md-layout-item md-size-50 md-small-size-100">
         <md-card-header>
           <div class="md-title">Benutzer</div>
@@ -47,7 +47,7 @@
           </md-card-actions>
         </div>
 
-        <md-card-actions v-if="!user">
+        <md-card-actions v-if="!user && $store.getters.isSupervisor">
           <md-button type="submit" class="md-primary" @click="action = 'create'" :disabled="sending">Nutzer erstellen</md-button>
         </md-card-actions>
       </md-card>
@@ -145,7 +145,12 @@ export default {
         'isSupervisor' : this.form.isSupervisor
       }
       if (this.action === 'create'){
-        userapi.addUser(userToCreate).then( res => {
+        userapi.addUser(userToCreate).catch( error => {
+          this.$toastr.error("Fehler beim Anlegen des Benutzers");
+          this.$toastr.success("Fehler beim Anlegen des Benutzers");
+          this.sending = false;
+          this.clearForm();
+        }).then( res => {
           if (res) {
             this.$emit('user-created',userToCreate)
             this.sending = false
@@ -154,7 +159,11 @@ export default {
         })
       }//update user
       else {
-        userapi.updateUser(userToCreate, this.$props.user.id).then( res => {
+        userapi.updateUser(userToCreate, this.$props.user.id).catch( error => {
+          this.$toastr.error("Fehler beim Aktualisieren des Benutzers");
+          this.sending = false;
+          this.clearForm();
+        }).then( res => {
           if (res) {
             this.$emit('user-updated',userToCreate)
             this.sending = false
