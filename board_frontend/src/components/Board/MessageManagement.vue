@@ -3,21 +3,18 @@
     <h2>Nachrichtenarchiv</h2>
     <md-list class="md-double-line userlist">
       <md-list-item v-for="message in messages" :key="message.id">
-        <md-avatar>
-          <img src="https://placeimg.com/40/40/people/1" alt="People" />
-        </md-avatar>
+        <md-avatar :style="'background-color: ' + message.bgColor"> </md-avatar>
 
         <div class="md-list-item-text">
-          <span>{{message.content}}</span>
-          <span>{{message.active}}</span>
+          <span>Aktiv bis: {{ new Date(message.endDate).toDateString() }}</span>
           <p>
-            I'll be in your neighborhood doing errands this week. Do you want to
-            meet?
+            {{ message.content }}
           </p>
         </div>
         <md-button
           class="md-icon-button md-list-action"
           @click="onClickEdit(message.id)"
+          v-if="canEdit(message.id)"
         >
           <md-icon class="md-primary">edit</md-icon>
         </md-button>
@@ -61,24 +58,44 @@ export default {
     };
   },
   methods: {
-    canEdit(messageId){
-      return this.$store.getters.isSupervisor || this.messages.find(message => message.id === messageId).user == this.$store.getters.getUser
+    canEdit(messageId) {
+      return (
+        this.$store.getters.isSupervisor ||
+        this.messages.find((message) => message.id === messageId).user ==
+          this.$store.getters.getUser
+      );
     },
     onClickEdit(messageId) {
       console.log(messageId);
       this.$emit("editClicked", messageId);
     },
     onClickDelete(messageId) {
-      let message = this.messages.find(message => message.id == messageId);
-      this.$boardService.updateMessage(message.id, message.content, message.board, message.displayTime, message.endDate, message.bgColor, false);
+      let message = this.messages.find((message) => message.id == messageId);
+      this.$boardService.updateMessage(
+        message.id,
+        message.content,
+        message.board,
+        message.displayTime,
+        message.endDate,
+        message.bgColor,
+        false
+      );
+      messageapi.getMessagesOfBoard(this.boardId).then((messages) => {
+        this.messages = messages;
+        if(!messages.find((message) => message.id == messageId && message.active)){
+          this.$toastr.success("Nachricht erfolgreich deaktiviert!");
+        } else {
+          this.$toastr.error("Beim Deaktivieren der Nachricht ist ein Fehler aufgetreten.")
+        }
+      });
     },
   },
   computed: {},
   created() {},
   mounted() {
     messageapi.getMessagesOfBoard(this.boardId).then((messages) => {
-        this.messages = messages;
-      });
+      this.messages = messages;
+    });
   },
 };
 </script>

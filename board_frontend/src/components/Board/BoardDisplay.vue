@@ -4,6 +4,7 @@
       ref="carousel"
       v-bind:options="carouselOptions"
       :key="messages.length"
+      v-if="messages"
       @after-change="handleNextSlide($event.currentSlide)"
     >
       <div v-for="message in messages" :key="message.id">
@@ -117,7 +118,7 @@ export default {
     //force update if state changes
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === "setMessages") {
-        this.animation.kill();
+        if(this.animation) this.animation.kill();
         this.messages = this.$store.getters.messages(this.boardId);
         this.currentSlide = 0;
         this.start();

@@ -176,8 +176,10 @@ export default {
         this.$boardService.addMessage(this.content, this.boardId, this.displayTime, this.date, this.colors.hex, this.active);
       }
       setTimeout(() => {
+        this.$toastr.success("Nachricht gesendet!");
         this.clearMessage();
         this.sending = false;
+        this.setActiveTab('messages')
       }, 250);
       
     },
@@ -190,7 +192,7 @@ export default {
         console.log(message.endDate);
         this.date = new Date(message.endDate);
         console.log(this.date);
-        //this.colors = message.color;
+        this.colors.h = message.bgColor;
         this.active = message.active;
       })
     },
