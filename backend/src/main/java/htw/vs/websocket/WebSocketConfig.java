@@ -105,9 +105,9 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration webSocketTransportRegistration){
-        webSocketTransportRegistration.setMessageSizeLimit(8 * 64 * 1024);
-        webSocketTransportRegistration.setSendTimeLimit(10 * 10000);
-        webSocketTransportRegistration.setSendBufferSizeLimit(8 * 512 * 1024);
+        webSocketTransportRegistration.setMessageSizeLimit(100 * 1024 * 1024);
+        webSocketTransportRegistration.setSendTimeLimit(100 * 10000);
+        webSocketTransportRegistration.setSendBufferSizeLimit(1024 * 1024 * 1024);
     }
 
     @Override
