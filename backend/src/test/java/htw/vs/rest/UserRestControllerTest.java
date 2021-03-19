@@ -107,7 +107,17 @@ public class UserRestControllerTest {
     @Order(4)
     @WithMockUser(roles="SUPERVISOR")
     public void testAddUser() throws Exception {
-        this.mockMvc.perform(post("/users/").param("userName","User10").param("password","123456").param("email","User10@mail").param("isSupervisor", "false"))
+        User user = new User();
+        user.setUserName("User10");
+        user.setPassword("123456");
+        user.setEmail("User10@mail");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(user);
+
+        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"id\":10,\"userName\":\"User10\"")));
     }
@@ -119,7 +129,17 @@ public class UserRestControllerTest {
      */
     @Test
     public void testAddUserWithoutRole() throws Exception {
-        this.mockMvc.perform(post("/users/").param("userName","User10").param("password","123456").param("email","User10@mail").param("isSupervisor", "false"))
+       User user = new User();
+        user.setUserName("User10");
+        user.setPassword("123456");
+        user.setEmail("User10@mail");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(user);
+
+        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isUnauthorized());
     }
 
@@ -131,8 +151,17 @@ public class UserRestControllerTest {
     @Test
     @WithMockUser(roles="USER")
     public void testAddUserWithoutPermission() throws Exception {
-        this.mockMvc.perform(post("/users/").param("userName","User10").param("password","123456").param("email","User10@mail").param("isSupervisor", "false"))
-                .andDo(print()).andExpect(status().isForbidden());
+        User user = new User();
+        user.setUserName("User10");
+        user.setPassword("123456");
+        user.setEmail("User10@mail");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(user);
+
+        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))                .andDo(print()).andExpect(status().isForbidden());
     }
 
     /**
@@ -143,7 +172,17 @@ public class UserRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testAddUserUserSameName() throws Exception {
-        this.mockMvc.perform(post("/users/").param("userName","User1").param("password","123456").param("email","User11@mail").param("isSupervisor", "false"))
+        User user = new User();
+        user.setUserName("User1");
+        user.setPassword("123456");
+        user.setEmail("User11@mail");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(user);
+
+        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isInternalServerError());
     }
 
@@ -155,7 +194,17 @@ public class UserRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testAddUserUserSameEmail() throws Exception {
-        this.mockMvc.perform(post("/users/").param("userName","User11").param("password","123456").param("email","User1@mail").param("isSupervisor", "false"))
+        User user = new User();
+        user.setUserName("User11");
+        user.setPassword("123456");
+        user.setEmail("User1@mail");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(user);
+
+        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isInternalServerError());
     }
 
@@ -168,7 +217,15 @@ public class UserRestControllerTest {
     @Order(7)
     @WithMockUser(roles="SUPERVISOR")
     public void testAddUserUserAsSupervisor() throws Exception {
-        this.mockMvc.perform(post("/users/").param("userName","User11").param("password","123456").param("email","User11@mail").param("isSupervisor", "true"))
+        String requestJson="{\n" +
+                "  \"id\" : null,\n" +
+                "  \"userName\" : \"User11\",\n" +
+                "  \"password\" : \"123456\",\n" +
+                "  \"email\" : \"User11@mail\",\n" +
+                "  \"isSupervisor\" : true\n" +
+                "}";
+
+        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("\"id\":11,\"userName\":\"User11\"")));
         MvcResult result = this.mockMvc.perform(get("/users/11")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
@@ -184,8 +241,23 @@ public class UserRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR")
     public void testAddUserLongName() throws Exception {
-        this.mockMvc.perform(post("/users/").param("userName","User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11")
-                .param("password","123456").param("email","User1@mail").param("isSupervisor", "false"))
+        Role userRole = roleRepository.findByName("USER");
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(userRole);
+
+        User user = new User();
+        user.setUserName("User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11User11");
+        user.setPassword("123456");
+        user.setEmail("User90@mail");
+        user.setEnabled(true);
+        user.setRoles(roleSet);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(user);
+
+        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isInternalServerError());
     }
 
@@ -198,7 +270,9 @@ public class UserRestControllerTest {
     @Order(5)
     @WithMockUser(username = "User1", password = "123456", roles="USER")
     public void testChangeOwnPassword() throws Exception {
-        this.mockMvc.perform(post("/users/password/own").param("newPassword","qwerasdf")).andDo(print()).andExpect(status().isOk());
+        String request = "qwerasdf";
+
+        this.mockMvc.perform(post("/users/password/own").contentType(MediaType.APPLICATION_JSON).content(request)).andDo(print()).andExpect(status().isOk());
 
         MvcResult result = this.mockMvc.perform(get("/users/1")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
@@ -208,28 +282,6 @@ public class UserRestControllerTest {
         String textValue = passwordNode.textValue();
         assert(passwordEncoder.matches("qwerasdf", textValue));
     }
-
-
-    /**
-     * Test change other password.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    @Order(6)
-    @WithMockUser(roles="SUPERVISOR")
-    public void testChangeOtherPassword() throws Exception {
-        this.mockMvc.perform(post("/users/password/other").param("username", "User1").param("newPassword","asdfqwer")).andDo(print()).andExpect(status().isOk());
-
-        MvcResult result = this.mockMvc.perform(get("/users/1")).andDo(print()).andExpect(status().isOk()).andReturn();
-        String stringResult = result.getResponse().getContentAsString();
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode rootNode = mapper.readTree(stringResult);
-        JsonNode passwordNode = rootNode.get("password");
-        String textValue = passwordNode.textValue();
-        assert(passwordEncoder.matches("asdfqwer", textValue));
-    }
-
 
     /**
      * Test replace user.
@@ -244,7 +296,7 @@ public class UserRestControllerTest {
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(userRole);
 
-        User user = new User(3l);
+        User user = new User();
         user.setUserName("User90");
         user.setPassword("123456");
         user.setEmail("User90@mail");
@@ -273,7 +325,7 @@ public class UserRestControllerTest {
     @WithMockUser(roles="SUPERVISOR")
     public void testReplaceUserOnlyName() throws Exception {
 
-        User user = new User(3l);
+        User user = new User();
         user.setUserName("User77");
 
         ObjectMapper mapper = new ObjectMapper();
@@ -297,7 +349,7 @@ public class UserRestControllerTest {
     @Test
     public void testReplaceUserWithoutRole() throws Exception {
 
-        User user = new User(3l);
+        User user = new User();
         user.setUserName("User77");
 
         ObjectMapper mapper = new ObjectMapper();
@@ -318,7 +370,7 @@ public class UserRestControllerTest {
     @WithMockUser(roles="USER")
     public void testReplaceUserWithoutPermission() throws Exception {
 
-        User user = new User(3l);
+        User user = new User();
         user.setUserName("User77");
 
         ObjectMapper mapper = new ObjectMapper();
@@ -344,7 +396,7 @@ public class UserRestControllerTest {
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(userRole);
 
-        User user = new User(80l);
+        User user = new User();
         user.setUserName("User80");
         user.setPassword("123456");
         user.setEmail("User80@mail");
@@ -362,6 +414,28 @@ public class UserRestControllerTest {
         String stringResult = result.getResponse().getContentAsString();
         assert(stringResult.contains("\"id\":12,\"userName\":\"User80\""));
         assert(stringResult.contains("\"enabled\":true,\"email\":\"User80@mail\",\"roles\":[{\"id\":3,\"name\":\"USER\"}]"));
+    }
+
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testReplaceUserChangePassword() throws Exception {
+
+        User user = new User();
+        user.setPassword("qwerasdf");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(user);
+
+        this.mockMvc.perform(post("/users/3").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
+                .andExpect(status().isOk()).andExpect(content().string(containsString("")));
+        MvcResult result = this.mockMvc.perform(get("/users/3")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        JsonNode rootNode = mapper.readTree(stringResult);
+        JsonNode passwordNode = rootNode.get("password");
+        String textValue = passwordNode.textValue();
+        assert(passwordEncoder.matches("qwerasdf", textValue));
     }
 
     /**
