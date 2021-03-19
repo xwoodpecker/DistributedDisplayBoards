@@ -118,7 +118,7 @@ export const store = new Vuex.Store({
         getCoordinatorBoards: state => {
             let boards = [];
             for(let group of state.groups){
-                if(group.coordinator = state.user.id){
+                if(group.coordinator == state.user.id){
                     boards.push(group.board);
                 }
             }

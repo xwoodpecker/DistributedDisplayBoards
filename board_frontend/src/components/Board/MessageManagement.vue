@@ -59,8 +59,10 @@ export default {
   },
   methods: {
     canEdit(messageId) {
+      let boards = this.$store.getters.getCoordinatorBoards;
+      let isCoordinator = boards.find(board => board.id == this.boardId);
       return (
-        this.$store.getters.isSupervisor ||
+        this.$store.getters.isSupervisor || isCoordinator ||
         this.messages.find((message) => message.id === messageId).user ==
           this.$store.getters.getUser
       );
