@@ -74,45 +74,6 @@ public class GroupRestController {
         return response;
     }
 
-    /**
-     * Add group response entity.
-     *
-     * @param group the group
-     * @return the response entity
-     */
-    @Operation(summary = "Add a new group and a new board")
-    @Secured("ROLE_SUPERVISOR")
-    @PostMapping("/")
-    public ResponseEntity addGroup(@RequestBody Group group) {
-        ResponseEntity response;
-        Group g;
-        Optional<User> user = userRepository.findById(group.getCoordinator().getId());
-        if(!user.isPresent())
-        {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
-        }
-
-        else {
-            Board newBoard = new Board();
-            newBoard.setBoardName(group.getBoard().getBoardName());
-            newBoard.setLocation(group.getBoard().getLocation());
-            newBoard = boardRepository.save(newBoard);
-
-
-            Group newGgroup = new Group();
-            newGgroup.setGroupName(group.getGroupName());
-            newGgroup.setBoard(newBoard);
-            newGgroup.setCoordinator(user.get());
-            newGgroup.getUsers().add(user.get());
-            Role userRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
-            user.get().getRoles().add(userRole);
-            userRole.getUsers().add(user.get());
-            g = groupRepository.save(newGgroup);
-            response = new ResponseEntity(g, HttpStatus.OK);
-        }
-        return response;
-    }
-
 
     /**
      * Add user to group response entity.
@@ -185,6 +146,44 @@ public class GroupRestController {
     }
 
     /**
+     * Add group response entity.
+     *
+     * @param group the group
+     * @return the response entity
+     */
+    @Operation(summary = "Add a new group and a new board")
+    @Secured("ROLE_SUPERVISOR")
+    @PostMapping("/")
+    public ResponseEntity addGroup(@RequestBody Group group) {
+        ResponseEntity response;
+        Group g;
+        Optional<User> user = userRepository.findById(group.getCoordinator().getId());
+        if(!user.isPresent())
+        {
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.USER_NOT_FOUND_MSG);
+        }
+        else {
+            Board newBoard = new Board();
+            newBoard.setBoardName(group.getBoard().getBoardName());
+            newBoard.setLocation(group.getBoard().getLocation());
+            newBoard = boardRepository.save(newBoard);
+
+
+            Group newGroup = new Group();
+            newGroup.setGroupName(group.getGroupName());
+            newGroup.setBoard(newBoard);
+            newGroup.setCoordinator(user.get());
+            newGroup.getUsers().add(user.get());
+            Role userRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
+            user.get().getRoles().add(userRole);
+            userRole.getUsers().add(user.get());
+            g = groupRepository.save(newGroup);
+            response = new ResponseEntity(g, HttpStatus.OK);
+        }
+        return response;
+    }
+
+    /**
      * Replace group response entity.
      *
      * @param id       the id
@@ -192,13 +191,14 @@ public class GroupRestController {
      * @return the response entity
      */
     @Operation
-    @Secured("ROLE_SUPERVISOR")
+    @Secured({"ROLE_SUPERVISOR", "ROLE_COORDINATOR"})
+    @PreAuthorize("@securityService.hasPermissionGroup(authentication, #id)")
     @PostMapping("/{id}")
     public ResponseEntity replaceGroup(@PathVariable Long id, @RequestBody Group newGroup){
         ResponseEntity response;
         Group g;
         Optional<Board> board;
-        Optional<User>  coordidnator;
+        Optional<User> coordidnator;
 
         Optional<Group> group = groupRepository.findById(id);
         if(newGroup.getBoard() != null){
@@ -270,7 +270,6 @@ public class GroupRestController {
         group.get().setUsers(null);
         group.get().setBoard(null);
 
-
         groupRepository.deleteById(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
@@ -280,8 +279,8 @@ public class GroupRestController {
         List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
         Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
         if(groups.size() < 2) {
-            oldCoordinator.getRoles().removeIf(r -> r.getName() == Const.COORDINATOR_ROLE);
-            coordinatorRole.getUsers().removeIf(u -> u.getId() == oldCoordinator.getId());
+            oldCoordinator.getRoles().removeIf(r -> r.getName().equals(Const.COORDINATOR_ROLE));
+            coordinatorRole.getUsers().removeIf(u -> u.getId().longValue() == oldCoordinator.getId());
         }
         newCoordinator.getRoles().add(coordinatorRole);
         coordinatorRole.getUsers().add(newCoordinator);

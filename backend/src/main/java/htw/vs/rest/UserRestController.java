@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -105,10 +107,7 @@ public class UserRestController {
     /**
      * Add user response entity.
      *
-     * @param userName     the user name
-     * @param password     the password
-     * @param email        the email
-     * @param isSupervisor the is supervisor
+     * @param request the request
      * @return the response entity
      */
     @CrossOrigin(origins = "*")
@@ -159,9 +158,9 @@ public class UserRestController {
      */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Replace a user with a new user")
-    @Secured("ROLE_SUPERVISOR")
+    @PostAuthorize("@securityService.hasPermissionUser(authentication, #id)")
     @PostMapping("/{id}")
-    public ResponseEntity replaceUser(@RequestBody User newUser, @PathVariable Long id) {
+    public ResponseEntity replaceUser(Authentication authentication, @RequestBody User newUser, @PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
         User u;
         if(user.isPresent()){
@@ -213,13 +212,12 @@ public class UserRestController {
      * Get groups of user response entity.
      *
      * @param id             the id
-     * @param authentication the authentication
      * @return the response entity
      */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get Groups of a user")
     @GetMapping("/{id}/groups")
-    public ResponseEntity getGroupsOfUser(@PathVariable Long id, Authentication authentication){
+    public ResponseEntity getGroupsOfUser(@PathVariable Long id){
         User user = userRepository.findById(id).orElseThrow(() -> new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION));
         if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 0)
             return new ResponseEntity<>(groupRepository.findAll(), HttpStatus.OK);

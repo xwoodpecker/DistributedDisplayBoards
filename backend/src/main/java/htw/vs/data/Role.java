@@ -28,7 +28,7 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles", fetch=FetchType.LAZY)
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id", scope=User.class)
     @JsonIdentityReference(alwaysAsId=true)
     private Set<User> users = new HashSet<>();
 

@@ -41,8 +41,6 @@ public class SecurityService {
      * @return the boolean
      */
     public boolean hasPermissionGroup(Authentication authentication, Long groupId) {
-        Set<String> roles = authentication.getAuthorities().stream()
-                .map(r -> r.getAuthority()).collect(Collectors.toSet());
 
         String currentUserName = authentication.getName();
         User user = userRepository.findUserByUserName(currentUserName);
@@ -53,6 +51,7 @@ public class SecurityService {
         if(user == null){
             return false;
         }
+
         if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 0)
         {
             return true;
@@ -78,14 +77,15 @@ public class SecurityService {
      * @return the boolean
      */
     public boolean hasPermissionBoard(Authentication authentication, Long boardId) {
-        Set<String> roles = authentication.getAuthorities().stream()
-                .map(r -> r.getAuthority()).collect(Collectors.toSet());
 
         String currentUserName = authentication.getName();
         User user = userRepository.findUserByUserName(currentUserName);
 
         Optional<Board> opt = boardRepository.findById(boardId);
         Group group;
+
+        if(user == null)
+            return false;
 
         if(user.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 0)
         {
@@ -102,5 +102,25 @@ public class SecurityService {
         }else{
             return false;
         }
+    }
+
+    public boolean hasPermissionUser(Authentication authentication, Long userId) {
+
+        String currentUserName = authentication.getName();
+        User authenticatedUser = userRepository.findUserByUserName(currentUserName);
+        Optional<User> user = userRepository.findById(userId);
+
+        if(authenticatedUser == null)
+            return false;
+
+        if(authenticatedUser.getRoles().stream().filter(r -> r.getName().equals(Const.SUPERVISOR_ROLE)).count() > 0)
+            return true;
+
+        if(!user.isPresent())
+            return false;
+
+
+        return authenticatedUser.getUserName().equals(user.get().getUserName());
+
     }
 }

@@ -28,6 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.server.authentication.ServerHttpBasicAuthenticationConverter;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 import java.util.Base64;
 
@@ -100,6 +101,13 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
                 return message;
             }
         });
+    }
+
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration webSocketTransportRegistration){
+        webSocketTransportRegistration.setMessageSizeLimit(100 * 1024 * 1024);
+        webSocketTransportRegistration.setSendTimeLimit(100 * 10000);
+        webSocketTransportRegistration.setSendBufferSizeLimit(1024 * 1024 * 1024);
     }
 
     @Override
