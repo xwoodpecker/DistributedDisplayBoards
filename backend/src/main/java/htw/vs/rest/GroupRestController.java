@@ -217,14 +217,12 @@ public class GroupRestController {
             }
 
             if(board.isPresent()) {
-                Optional<Board> optionalBoard = boardRepository.findById(board.get().getId());
-                if (optionalBoard.isPresent()) {
-                    Board b = optionalBoard.get();
-                    b.setBoardName(board.get().getBoardName());
-                    b.setLocation(board.get().getBoardName());
+                    Board b = board.get();
+                    b.setBoardName(newGroup.getBoard().getBoardName());
+                    b.setLocation(newGroup.getBoard().getLocation());
                     b.setGroup(temp);
                     boardRepository.save(b);
-                }
+                    temp.setBoard(b);
             }
 
             if(coordidnator.isPresent()) {
