@@ -7,7 +7,7 @@
             <md-icon>menu</md-icon>
           </md-button>
 
-          <span class="md-title">Nutzerverwaltung</span>
+          <span class="md-title">Boardverwatung</span>
         </div>
       </md-app-toolbar>
 
@@ -23,15 +23,15 @@
           <md-button class="md-icon-button md-raised md-primary">
             <md-icon>person</md-icon>
           </md-button>
-          <template v-if="users.length">
+          <template v-if="boards.length">
             <md-list>
-              <div class="singleUser" v-for="user in users">
-                <SingleUser :user="user"></SingleUser>
+              <div class="singleUser" v-for="board in boards">
+                <SingleBoard :board="board"></SingleBoard>
                 <div class="controls">
-                  <md-button @click="currentUser = user" class="md-icon-button md-list-action">
+                  <md-button @click="currentBoard = board" class="md-icon-button md-list-action">
                     <md-icon class="md-primary">edit</md-icon>
                   </md-button>
-                  <md-button @click="deleteUser(user)" class="md-icon-button md-list-action">
+                  <md-button @click="deleteBoard(board)" class="md-icon-button md-list-action">
                     <md-icon class="md-primary">delete</md-icon>
                   </md-button>
                 </div>
@@ -40,7 +40,7 @@
           </template>
         </div>
         <div class="board-preview md-layout-item">
-          <UserCreation @user-updated="userUpdated" @user-created="userCreated" :user="currentUser"></UserCreation>
+          <BoardCreation v-on:board-updated="boardUpdated" v-on:board-created="boardCreated"  :board="currentBoard"></BoardCreation>
         </div>
       </md-app-content>
     </md-app>
@@ -53,14 +53,11 @@ import Sidebar from "@/components/Layout/Sidebar";
 import {VueEditor, Quill} from "vue2-editor";
 import Chrome from "vue-color/src/components/Chrome"
 import Datepicker from 'vuejs-datepicker';
-import UserManagement from "@/components/Board/UserManagement";
 import MessageManagement from "@/components/Board/MessageManagement";
-import boardservice from "@/services/boardService";
 import BoardDisplay from "@/components/Board/BoardDisplay";
-import UserCreation from "@/components/Forms/UserCreation";
-import SingleUser from "@/components/Forms/SingleUser";
-import userapi from "@/http/userapi";
-import {store} from "@/main";
+import SingleBoard from "@/components/Forms/SingleBoard";
+import BoardCreation from "@/components/Forms/BoardCreation";
+import boardsapi from "@/http/boardsapi";
 
 
 let SizeStyle = Quill.import('attributors/style/size');
@@ -71,68 +68,56 @@ Quill.register(AlignStyle, true);
 export default {
   name: "Users",
   components: {
-    SingleUser,
-    //BoardDetailForm,
+    SingleBoard,
     Sidebar,
     VueEditor,
     Chrome,
     Datepicker,
-    UserManagement,
     MessageManagement,
     BoardDisplay,
-    UserCreation
+    BoardCreation
   },
   props: {},
   data() {
     return {
       menuVisible: false,
-      currentUser: null
+      currentBoard: null,
+      boards: [],
     };
   },
   methods: {
-    deleteUser(user) {
-      userapi.deleteUser(user.id).then(res => {
+    deleteBoard(board) {
+      boardsapi.deleteBoard(board.id).then(res => {
         if (res) {
-          console.log(res);
-          this.refreshUsers();
-          this.$toastr.success(user.userName + " erfolgreich gelöscht")
+          this.refreshBoards();
+          this.$toastr.success(board.boardName + " erfolgreich gelöscht")
         }
       });
     },
-    userUpdated(user){
-      this.$toastr.success(user.userName + " erfolgreich aktualisiert")
-      this.refreshUsers();
+    boardUpdated(board){
+      this.$toastr.success(board.boardName + " erfolgreich aktualisiert")
+      this.refreshBoards();
     },
-    userCreated(user){
-      this.$toastr.success(user.userName + " erfolgreich erstellt")
-      this.refreshUsers();
+    boardCreated(board){
+      this.$toastr.success(board.boardName + " erfolgreich erstellt")
+      this.refreshBoards();
     },
-    refreshUsers() {
-      userapi.getUsers().then(res => {
+    refreshBoards() {
+      boardsapi.getBoards().then(res => {
         if (res) {
-          this.$store.commit('setUsers', res)
+          this.boards = res;
         }
       });
     }
   },
   computed: {
-    users() {
-      return this.$store.getters.getUsers
-    }
   },
   created() {
-    userapi.getUsers().then(res => {
+    boardsapi.getBoards().then(res => {
       if (res) {
-        this.$store.commit('setUsers', res)
+        this.boards = res;
       }
     });
-    userapi.getUser(1).then(res => {
-      if (res) {
-        console.log(res);
-        //this.users = res;
-      }
-    });
-    //hier das passende Board anhand ID aus dem store holen und socket aufbauen für master
   },
   mounted() {
   },

@@ -51,7 +51,7 @@ public class UserRestController {
      *
      * @return the response entity
      */
-    @CrossOrigin(origins = "http://localhost:8080")
+    @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Get all users")
     @GetMapping("/")
     public ResponseEntity getUsers(){
@@ -105,10 +105,7 @@ public class UserRestController {
     /**
      * Add user response entity.
      *
-     * @param userName     the user name
-     * @param password     the password
-     * @param email        the email
-     * @param isSupervisor the is supervisor
+     * @param request the request
      * @return the response entity
      */
     @CrossOrigin(origins = "*")
@@ -196,7 +193,7 @@ public class UserRestController {
      * @param id the id
      * @return the response entity
      */
-    @CrossOrigin(origins = "http://localhost")
+    @CrossOrigin(origins = "*")
     @Operation(summary = "Delete a user")
     @Secured("ROLE_SUPERVISOR")
     @DeleteMapping("/{id}")

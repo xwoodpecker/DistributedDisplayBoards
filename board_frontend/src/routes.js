@@ -30,4 +30,12 @@ export const routes = [
             requiresAuth: true
         }
     },
+    {
+        path: '/boards',
+        name: 'boardmanagement',
+        component: () => import('./components/Admin/Boards.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
 ];

@@ -9,6 +9,7 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -140,8 +141,23 @@ public class MessageRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR" )
     public void testAddMessage() throws Exception {
-        this.mockMvc.perform(post("/messages/").param("active","true").param("boardId","1")
-                .param("userId","2").param("content", "Test Message Blubba Dubba").param("displayTime","120").param("endDate", "2024-03-01 16:03:17"))
+        String requestJson = "{\n" +
+                "\"id\" : 90,\n" +
+                "  \"content\" : \"Test Message Blubba Dubba\",\n" +
+                "  \"user\" : {\n" +
+                "   \"id\" : 2\n" +
+                "   },\n" +
+                "  \"board\" : {\n" +
+                "   \"id\" : 1\n" +
+                "   },\n" +
+                "  \"displayTime\" : 120,\n" +
+                "  \"endDate\" : \"2024-03-01 15:03:17\",\n" +
+                "  \"active\" : true,\n" +
+                "  \"bgColor\" : null \n" +
+                "}";
+
+
+        this.mockMvc.perform(post("/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("\"content\":\"Test Message Blubba Dubba\",\"user\":2,\"board\":1,\"displayTime\":120,\"endDate\":\"2024-03-01 15:03:17\",\"active\":true,")));
         MvcResult result = this.mockMvc.perform(get("/messages/user/2")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
@@ -156,8 +172,21 @@ public class MessageRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR" )
     public void testAddMessageBoardNotFound() throws Exception {
-        this.mockMvc.perform(post("/messages/").param("active","true").param("boardId","90")
-                .param("userId","2").param("content", "Test Message Blubba Dubba").param("displayTime","120").param("endDate", "2024-03-01 16:03:17"))
+        String requestJson = "{\n" +
+                "\"id\" : 90,\n" +
+                "  \"content\" : \"Test Message Blubba Dubba\",\n" +
+                "  \"user\" : {\n" +
+                "   \"id\" : 2\n" +
+                "   },\n" +
+                "  \"board\" : {\n" +
+                "   \"id\" : 90\n" +
+                "   },\n" +
+                "  \"displayTime\" : 120,\n" +
+                "  \"endDate\" : \"2024-03-01 15:03:17\",\n" +
+                "  \"active\" : true,\n" +
+                "  \"bgColor\" : null \n" +
+                "}";
+        this.mockMvc.perform(post("/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isNotFound());
     }
 
@@ -169,8 +198,22 @@ public class MessageRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR" )
     public void testAddMessageUserNotFound() throws Exception {
-        this.mockMvc.perform(post("/messages/").param("active","true").param("boardId","1")
-                .param("userId","99").param("content", "Test Message Blubba Dubba").param("displayTime","120").param("endDate", "2024-03-01 16:03:17"))
+        String requestJson = "{\n" +
+                "\"id\" : 90,\n" +
+                "  \"content\" : \"Test Message Blubba Dubba\",\n" +
+                "  \"user\" : {\n" +
+                "   \"id\" : 90\n" +
+                "   },\n" +
+                "  \"board\" : {\n" +
+                "   \"id\" : 1\n" +
+                "   },\n" +
+                "  \"displayTime\" : 120,\n" +
+                "  \"endDate\" : \"2024-03-01 15:03:17\",\n" +
+                "  \"active\" : true,\n" +
+                "  \"bgColor\" : null \n" +
+                "}";
+
+        this.mockMvc.perform(post("/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isNotFound());
     }
 
@@ -181,8 +224,22 @@ public class MessageRestControllerTest {
      */
     @Test
     public void testAddMessageWithoutRole() throws Exception {
-        this.mockMvc.perform(post("/messages/").param("active","true").param("boardId","1")
-                .param("userId","2").param("content", "Test Message Blubba Dubba").param("displayTime","120").param("endDate", "2024-03-01 16:03:17"))
+        String requestJson = "{\n" +
+                "\"id\" : 90,\n" +
+                "  \"content\" : \"Test Message Blubba Dubba\",\n" +
+                "  \"user\" : {\n" +
+                "   \"id\" : 2\n" +
+                "   },\n" +
+                "  \"board\" : {\n" +
+                "   \"id\" : 1\n" +
+                "   },\n" +
+                "  \"displayTime\" : 120,\n" +
+                "  \"endDate\" : \"2024-03-01 15:03:17\",\n" +
+                "  \"active\" : true,\n" +
+                "  \"bgColor\" : null \n" +
+                "}";
+
+        this.mockMvc.perform(post("/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isUnauthorized());
     }
 
@@ -194,8 +251,22 @@ public class MessageRestControllerTest {
     @Test
     @WithMockUser(roles="USER" )
     public void testAddMessageWithoutPermission() throws Exception {
-        this.mockMvc.perform(post("/messages/").param("active","true").param("boardId","1")
-                .param("userId","2").param("content", "Test Message Blubba Dubba").param("displayTime","120").param("endDate", "2024-03-01 16:03:17"))
+        String requestJson = "{\n" +
+                "\"id\" : 90,\n" +
+                "  \"content\" : \"Test Message Blubba Dubba\",\n" +
+                "  \"user\" : {\n" +
+                "   \"id\" : 2\n" +
+                "   },\n" +
+                "  \"board\" : {\n" +
+                "   \"id\" : 1\n" +
+                "   },\n" +
+                "  \"displayTime\" : 120,\n" +
+                "  \"endDate\" : \"2024-03-01 15:03:17\",\n" +
+                "  \"active\" : true,\n" +
+                "  \"bgColor\" : null \n" +
+                "}";
+
+        this.mockMvc.perform(post("/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isForbidden());
     }
 

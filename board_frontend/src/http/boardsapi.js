@@ -2,6 +2,7 @@ import axios from "axios";
 import { ENV } from '@/environment';
 import { sprintf }   from 'sprintf-js';
 import {store} from '@/main';
+const auth = store.getters.authHeader.Authorization;
 
 
 export default {
@@ -9,10 +10,11 @@ export default {
     getBoard,
     getUserGroups,
     addBoard,
-    deleteBoard
+    deleteBoard,
+    updateBoard
 }
 
-export async function getBoards(){
+export function getBoards(){
     return axios.get(ENV.baseUrl + ENV.endpoints.boards ).then( response => {
         if (response) {
             return response.data
@@ -20,7 +22,7 @@ export async function getBoards(){
     })
 }
 
-export async function getBoard(boardId){
+export function getBoard(boardId){
     return axios.get(baseUrl+"/boards/"+boardId).then( response => {
         if (response) {
             return response.data
@@ -28,7 +30,7 @@ export async function getBoard(boardId){
     })
 }
 
-export async function getUserGroups(userId){
+export function getUserGroups(userId){
     return axios.get(ENV.baseUrl + sprintf(ENV.endpoints.usergroups, userId), {headers: store.getters.authHeader}).then( response => {
         if (response) {
             return response.data
@@ -37,18 +39,43 @@ export async function getUserGroups(userId){
 }
 
 
-export async function addBoard(board){
-    return (await axios.post("/boards"),board).then(response => {
-        if (response) {
-            return response.data
+export function addBoard(board){
+    console.log(board)
+    return axios.post(ENV.baseUrl + ENV.endpoints.boards, board, {
+        headers : {
+            'Content-type' : 'application/json',
+            'Authorization': auth
         }
-    })
+    }).then(response => {
+        if (response) {
+            return response
+        }
+    });
 }
 
-export async function deleteBoard(boardId){
-    return (await axios.delete("/boards/"+boardId)).then(response => {
+export function updateBoard(board, id){
+    console.log(board)
+    return axios.post(ENV.baseUrl + ENV.endpoints.boards + id , board, {
+        headers : {
+            'Content-type' : 'application/json',
+            'Authorization': auth
+        }
+    }).then(response => {
         if (response) {
-            return response.data
+            return response
+        }
+    });
+}
+
+
+export function deleteBoard(boardId){
+        return axios.delete(ENV.baseUrl + ENV.endpoints.boards +boardId,{
+        headers : {
+            'Authorization': auth
+        }
+    }).then(response => {
+        if (response) {
+            return response;
         }
     })
 }
