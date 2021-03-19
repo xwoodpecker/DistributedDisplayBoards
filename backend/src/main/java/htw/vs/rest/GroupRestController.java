@@ -280,7 +280,7 @@ public class GroupRestController {
         List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
         Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
         if(groups.size() < 2) {
-            oldCoordinator.getRoles().removeIf(r -> r.getName() == Const.COORDINATOR_ROLE);
+            oldCoordinator.getRoles().removeIf(r -> r.getName().equals(Const.COORDINATOR_ROLE));
             coordinatorRole.getUsers().removeIf(u -> u.getId() == oldCoordinator.getId());
         }
         newCoordinator.getRoles().add(coordinatorRole);
