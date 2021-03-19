@@ -270,7 +270,6 @@ public class GroupRestController {
         group.get().setUsers(null);
         group.get().setBoard(null);
 
-
         groupRepository.deleteById(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
@@ -280,8 +279,8 @@ public class GroupRestController {
         List<Group> groups = groupRepository.getCoordinatedGroups(oldCoordinator);
         Role coordinatorRole = roleRepository.findByName(Const.COORDINATOR_ROLE);
         if(groups.size() < 2) {
-            oldCoordinator.getRoles().removeIf(r -> r.getName() == Const.COORDINATOR_ROLE);
-            coordinatorRole.getUsers().removeIf(u -> u.getId() == oldCoordinator.getId());
+            oldCoordinator.getRoles().removeIf(r -> r.getName().equals(Const.COORDINATOR_ROLE));
+            coordinatorRole.getUsers().removeIf(u -> u.getId().longValue() == oldCoordinator.getId());
         }
         newCoordinator.getRoles().add(coordinatorRole);
         coordinatorRole.getUsers().add(newCoordinator);
