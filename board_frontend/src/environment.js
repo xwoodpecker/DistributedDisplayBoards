@@ -7,6 +7,8 @@ export const ENV = {
         'boards': 'boards/',
         'usergroups' : 'users/%s/groups',
         'userboards' : 'users/%s/boards',
-        'users' : 'users/'
+        'users' : 'users/',
+        'boardmessages' : 'messages/board/%s',
+        'message': 'messages/%s',
     }
 }

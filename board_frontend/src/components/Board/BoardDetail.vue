@@ -20,7 +20,7 @@
           <md-button @click='$router.push({ name: "dashboard" })' class="md-icon-button">
             <md-icon>home</md-icon>
           </md-button>
-          <md-button class="md-icon-button" :class="{'md-raised md-primary' : this.messageActive}"
+          <md-button class="md-icon-button" :class="{'md-raised md-primary' : this.messageActive || this.messageEditActive}"
                     @click="setActiveTab('message')">
             <md-icon>edit</md-icon>
           </md-button>
@@ -32,7 +32,7 @@
                     @click="setActiveTab('messageManagement')">
             <md-icon>menu</md-icon>
           </md-button>
-          <div class="board-form" v-if="this.messageActive">
+          <div class="board-form" v-if="this.messageActive || this.messageEditActive">
             <md-steppers md-vertical>
               <md-step id="first" md-label="Nachricht verfassen">
                 <vue-editor class="editor" v-model="content"></vue-editor>
@@ -76,7 +76,7 @@
             </md-steppers>
           </div>
           <UserManagement v-if="this.usersActive"></UserManagement>
-          <MessageManagement v-if="this.messageManagementActive"></MessageManagement>
+          <MessageManagement v-if="this.messageManagementActive" v-bind:boardId="parseInt(this.boardId)" @editClicked="editMessage($event)"></MessageManagement>
         </div>
         <div class="board-preview md-layout-item" @click="showOverlay = !showOverlay">
           <BoardDisplay v-if="this.boardId" v-bind:boardId="parseInt(this.boardId)"></BoardDisplay>
@@ -100,7 +100,8 @@ import Chrome from "vue-color/src/components/Chrome"
 import Datepicker from 'vuejs-datepicker';
 import UserManagement from "@/components/Board/UserManagement";
 import MessageManagement from "@/components/Board/MessageManagement";
-import boardservice from "@/services/boardService";
+import boardsapi from "@/http/boardsapi";
+import messageapi from "@/http/messageapi";
 import BoardDisplay from "@/components/Board/BoardDisplay";
 
 
@@ -125,16 +126,19 @@ export default {
   data() {
     return {
       boardId: null,
+      groupId: null,
       board: null,
+      messageId: null,
       menuVisible: false,
       usersActive: false,
       showOverlay: false,
       sending: false,
       messageActive: true,
       messageManagementActive: false,
+      messageEditActive: false,
       content: "",
       colors: {},
-      date: new Date(),
+      date: new Date().setDate(new Date().getDate() + 14),
       active: true,
       displayTime: 10,
     };
@@ -145,26 +149,66 @@ export default {
         this.messageActive = true;
         this.usersActive = false;
         this.messageManagementActive = false;
+        this.messageEditActive = false;
       } else if (tab === 'users') {
         this.messageActive = false;
         this.usersActive = true;
         this.messageManagementActive = false;
+        this.messageEditActive = false;
+      } else if (tab === 'editmessage') {
+        this.messageManagementActive = false;
+        this.messageActive = false;
+        this.usersActive = false;
+        this.messageEditActive = true;
       } else {
         this.messageManagementActive = true;
         this.messageActive = false;
         this.usersActive = false;
+        this.messageEditActive = false;
       }
     },
     sendMessage(){
       this.sending = true;
-      this.$boardService.addMessage(this.content, this.boardId, this.displayTime, this.date, this.colors.hex, this.active)
+
+      if(this.messageEditActive){
+        this.$boardService.updateMessage(this.messageId, this.content, this.boardId, this.displayTime, this.date, this.colors.hex, this.active);
+      } else {
+        this.$boardService.addMessage(this.content, this.boardId, this.displayTime, this.date, this.colors.hex, this.active);
+      }
+      setTimeout(() => {
+        this.clearMessage();
+        this.sending = false;
+      }, 250);
+      
+    },
+    editMessage(messageId) {
+      this.setActiveTab('editmessage');
+      messageapi.getMessage(messageId).then(message => {
+        this.content = message.content;
+        this.displayTime = message.displayTime;
+        this.messageId = message.id;
+        console.log(message.endDate);
+        this.date = new Date(message.endDate);
+        console.log(this.date);
+        //this.colors = message.color;
+        this.active = message.active;
+      })
+    },
+    clearMessage(){
+      this.messageId = null;
+      this.content = null;
+      this.displayTime = 10;
+      this.date = new Date().setDate(new Date().getDate() + 14);
+      this.colors = {};
+      this.active = true;
     }
   },
   computed: {},
   created() {
-    this.boardId = this.$route.params.id;
+    this.boardId = parseInt(this.$route.params.id);
   },
   mounted() {
+    
   },
 };
 </script>

@@ -81,7 +81,7 @@ export default class BoardService {
     //content = JSON.stringify(content);
     endDate = this._formatDate(endDate);
 
-    const msg = {messageId, content, userId, board: {id: boardId}, displayTime, endDate, active, bgColor}
+    const msg = {id: messageId, content, user: {id: userId}, board: {id: boardId}, displayTime, endDate, active, bgColor}
     this._send("message", msg);
   }
 
