@@ -58,6 +58,7 @@ import BoardDisplay from "@/components/Board/BoardDisplay";
 import SingleBoard from "@/components/Forms/SingleBoard";
 import BoardCreation from "@/components/Forms/BoardCreation";
 import boardsapi from "@/http/boardsapi";
+import userapi from "@/http/userapi";
 
 
 let SizeStyle = Quill.import('attributors/style/size');
@@ -83,6 +84,8 @@ export default {
       menuVisible: false,
       currentBoard: null,
       groups: [],
+      users: [],
+      coordinator: null,
     };
   },
   methods: {
@@ -90,16 +93,16 @@ export default {
       boardsapi.deleteBoard(board.id).then(res => {
         if (res) {
           this.refreshBoards();
-          this.$toastr.success(board.boardName + " erfolgreich gelöscht")
+          this.$toastr.success(board.groupName + " erfolgreich gelöscht")
         }
       });
     },
     boardUpdated(board){
-      this.$toastr.success(board.boardName + " erfolgreich aktualisiert")
+      this.$toastr.success(board.groupName + " erfolgreich aktualisiert")
       this.refreshBoards();
     },
     boardCreated(board){
-      this.$toastr.success(board.boardName + " erfolgreich erstellt")
+      this.$toastr.success(board.groupName + " erfolgreich erstellt")
       this.refreshBoards();
     },
     refreshBoards() {
@@ -108,16 +111,34 @@ export default {
           this.groups = res;
         }
       });
+    },
+    setCoordinator(group){
+      console.log(coordinator);
+      console.log(group);
+      group.coordinator = this.coordinator.id,
+      console.log(group);
+      //boardsapi.updateBoard(group, group.id)
     }
   },
   computed: {
   },
   created() {
-    boardsapi.getBoards().then(res => {
-      if (res) {
-        this.groups = res;
-      }
-    });
+    if (this.$store.getters.hasRoleCoordinator){
+      //user is coordinator
+      this.groups = this.$store.getters.getCoordinatorBoards();
+    } else {
+      //user is supervisor
+      boardsapi.getBoards().then(res => {
+        if (res) {
+          this.groups = res;
+        }
+      });
+      userapi.getUsers().then(res => {
+        if (res){
+          this.users = res;
+        }
+      })
+    }
   },
   mounted() {
   },
@@ -143,118 +164,16 @@ export default {
   &-preview {
     margin: 60px 0px 0px 0px;
   }
-
-  &-form {
-    margin-top: 15px;
-
-    .controls {
-      margin-top: 15px;
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-
-      .colorpicker {
-        z-index: 187;
-        max-width: 50vw;
-
-        .picker {
-        }
-      }
-
-      .settings {
-        margin-left: 15px;
-
-        .datepicker {
-        }
-      }
-    }
-
-    .editor {
-      max-height: 300px;
-      overflow-y: scroll;
-      margin-right: 15px;
-    }
-  }
-
 }
 
-.sendbutton {
-  margin-top: 15px;
-}
-
-.blob {
-  box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
-  transform: scale(1);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
-  }
-
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
-  }
-
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
-  }
-}
-
-#overlay {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  z-index: 888;
-  cursor: pointer;
-
-  &-inner {
-    width: 100vw;
-    height: 100%;
-  }
-}
-
-.active {
-  display: block;
-}
-
-.inactive {
-  display: none;
-}
-
-.third {
-  min-height: 300px;
-}
-
-.pot {
-  bottom: 15%;
-  position: absolute;
-  -webkit-animation: linear infinite alternate;
-  -webkit-animation-name: run;
-  -webkit-animation-duration: 5s;
-}
-
-@-webkit-keyframes run {
-  0% {
-    left: 0;
-  }
-  100% {
-    left: 100%;
-  }
+.controls {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .singleBoard {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   margin: 25px 0 25px 0;
   background-color: #ebebeb;
   border-radius: 5px;

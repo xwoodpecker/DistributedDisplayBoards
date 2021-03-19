@@ -91,7 +91,9 @@ export default {
   },
   methods: {
     deleteUser(user) {
-      userapi.deleteUser(user.id).then(res => {
+      userapi.deleteUser(user.id).catch( error => {
+        this.$toastr.error("Fehler beim Löschen des Benutzers");
+      }).then(res => {
         if (res) {
           console.log(res);
           this.refreshUsers();
