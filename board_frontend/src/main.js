@@ -100,6 +100,10 @@ export const store = new Vuex.Store({
         },
         getUsers: state => {
             return state.users
+        },
+        isSupervisor: state => {
+            let isSupervisor = false;
+            return state.user.roles.find( role => role.name === 'SUPERVISOR')
         }
     }
 });
