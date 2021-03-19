@@ -196,7 +196,7 @@ public class UserRestController {
      * @param id the id
      * @return the response entity
      */
-    @CrossOrigin(origins = "http://localhost")
+    @CrossOrigin(origins = "*")
     @Operation(summary = "Delete a user")
     @Secured("ROLE_SUPERVISOR")
     @DeleteMapping("/{id}")

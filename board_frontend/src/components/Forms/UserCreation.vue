@@ -147,14 +147,20 @@ export default {
       if (this.action === 'create'){
         userapi.addUser(userToCreate).then( res => {
           if (res) {
-            this.$emit('user-updated',userToCreate)
+            this.$emit('user-created',userToCreate)
             this.sending = false
             this.clearForm()
           }
         })
       }//update user
       else {
-
+        userapi.updateUser(userToCreate, this.$props.user.id).then( res => {
+          if (res) {
+            this.$emit('user-updated',userToCreate)
+            this.sending = false
+            this.clearForm()
+          }
+        })
       }
     },
     validateUser () {

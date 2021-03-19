@@ -107,4 +107,23 @@ public class BoardRestController {
         return new ResponseEntity(b, HttpStatus.OK);
     }
 
+       /**
+        * Delete board response entity.
+        *
+        * @param id the id
+        * @return the response entity
+        */
+       @CrossOrigin(origins = "*")
+       @Operation(summary = "Delete a board")
+       @Secured("ROLE_SUPERVISOR")
+       @DeleteMapping("/{id}")
+       public ResponseEntity deleteBoard(@PathVariable Long id) {
+           Optional<Board> board = boardRepository.findById(id);
+           if(board.isPresent()) {
+               boardRepository.deleteById(id);
+           }
+           return new ResponseEntity<>(null, HttpStatus.OK);
+       }
+
+
 }
