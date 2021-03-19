@@ -105,6 +105,7 @@ export const store = new Vuex.Store({
 });
 
 Vue.prototype.$boardService = new BoardService();
+Vue.prototype.$toastr = Toastr;
 
 new Vue({
     render: h => h(App),

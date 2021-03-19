@@ -30,7 +30,6 @@ export function getUser(userId){
 
 export function addUser(user){
     const auth = store.getters.authHeader.Authorization;
-    console.log("auth ist", auth);
     return axios.post(ENV.baseUrl + "users/",{
             'userName' : user.userName,
             'password' : user.password,
@@ -62,8 +61,14 @@ export function deleteUser(userId){
     })
 }
 
-export function updateUser(user){
-    return (axios.put("/users/"+user.id),user).then(response => {
+export function updateUser(user, id){
+    const auth = store.getters.authHeader.Authorization;
+    return axios.post(ENV.baseUrl + "users/" + id,user, {
+        headers : {
+            'Content-type' : 'application/json',
+            'Authorization': auth
+        }
+    }).then(response => {
         if (response) {
             return response.data
         }
