@@ -4,9 +4,8 @@ export const ENV = {
     baseUrl: "http://localhost:8000/",
     endpoints: {
         'login' : 'users/login',
-        'boards': 'boards/',
+        'boards': 'groups/',
         'usergroups' : 'users/%s/groups',
-        'userboards' : 'users/%s/boards',
         'users' : 'users/'
     }
 }
