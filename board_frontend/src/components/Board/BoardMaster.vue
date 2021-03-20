@@ -1,6 +1,6 @@
 <template>
   <div class="md-layout md-gutter md-alignment-center card-container">
-   <md-card>
+    <md-card>
       <md-card-header>
         <md-avatar>
           <md-icon>desktop_windows</md-icon>
@@ -11,7 +11,10 @@
       </md-card-header>
 
       <md-card-media class="media-container">
-        <BoardDisplay v-if="this.id" v-bind:boardId="parseInt(this.id)"></BoardDisplay>
+        <BoardDisplay
+          v-if="this.id"
+          v-bind:boardId="parseInt(this.id)"
+        ></BoardDisplay>
       </md-card-media>
 
       <md-card-content v-if="messages">
@@ -28,31 +31,33 @@
 
 <script>
 import BoardDisplay from "@/components/Board/BoardDisplay";
+import screenfull from "screenfull";
 
 export default {
   name: "BoardMaster",
   components: {
-    BoardDisplay
+    BoardDisplay,
   },
   props: {
     title: String,
     location: String,
     messages: Array,
     id: Number,
-    status: String //todo: make enum
+    status: String,
   },
-    data() {
-    return {
-
-    };
+  data() {
+    return {};
   },
   methods: {
-    openBoard(boardId){
-      this.$router.push({ name: 'board', params: { id: boardId }})
+    openBoard(boardId) {
+      this.$router.push({ name: "board", params: { id: boardId } });
     },
-    displayBoard(boardId){
-      this.$router.push({ name: 'screen', params: { id: boardId }})
-    }
+    displayBoard(boardId) {
+      if (screenfull.isEnabled) {
+        screenfull.request(undefined, {navigationUI: 'hide'});
+      }
+      this.$router.push({ name: "screen", params: { id: boardId } });
+    },
   },
   computed: {},
   created() {},

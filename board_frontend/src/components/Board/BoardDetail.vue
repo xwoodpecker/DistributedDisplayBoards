@@ -75,7 +75,7 @@
               </md-step>
             </md-steppers>
           </div>
-          <UserManagement v-if="this.usersActive"></UserManagement>
+          <UserManagement v-if="this.usersActive" v-bind:boardId="parseInt(this.boardId)"></UserManagement>
           <MessageManagement v-if="this.messageManagementActive" v-bind:boardId="parseInt(this.boardId)" @editClicked="editMessage($event)"></MessageManagement>
         </div>
         <div class="board-preview md-layout-item" @click="showOverlay = !showOverlay">

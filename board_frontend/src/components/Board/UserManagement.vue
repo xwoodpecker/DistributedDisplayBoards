@@ -86,31 +86,28 @@ export default {
     Chrome,
     Datepicker
   },
-  props: {},
+  props: {
+    boardId: {
+      type: Number,
+    },
+  },
   data() {
     return {
         adduser: false,
+        groups: this.$store.getters.getGroups,
+        group: groups.find(group => group.board.id == this.board)
     };
   },
   methods: {
-    setActiveTab(tab) {
-      if (tab === 'message') {
-        this.messageActive = true;
-        this.usersActive = false;
-      } else {
-        this.messageActive = false;
-        this.usersActive = true;
-      }
-    }
+    
   },
   computed: {},
   created() {
     this.boardId = this.$route.params.id;
-
-    //hier das passende Board anhand ID aus dem store holen und socket aufbauen für master
-    console.log("Board Id is" + this.boardId)
   },
   mounted() {
+    console.log(this.groups)
+    console.log(this.group)
   },
 };
 </script>
