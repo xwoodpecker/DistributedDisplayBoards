@@ -19,7 +19,7 @@ import java.util.Optional;
  */
 @Api(tags = {SpringFoxConfig.BOARD})
 @RestController
-@RequestMapping(path = "/boards")
+@RequestMapping(path = "/api/boards")
 public class BoardRestController {
     private BoardRepository boardRepository;
 

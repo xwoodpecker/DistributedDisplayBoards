@@ -23,7 +23,7 @@ export function getBoards(){
 }
 
 export function getBoard(boardId){
-    return axios.get(baseUrl+"/boards/"+boardId).then( response => {
+    return axios.get(ENV.baseUrl+"boards/"+boardId).then( response => {
         if (response) {
             return response.data
         }

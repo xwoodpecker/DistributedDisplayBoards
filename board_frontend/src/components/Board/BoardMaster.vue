@@ -19,6 +19,7 @@
       </md-card-content>
 
       <md-card-actions>
+        <md-button @click="displayBoard($props.id)">Display</md-button>
         <md-button @click="openBoard($props.id)">Manage</md-button>
       </md-card-actions>
     </md-card>
@@ -48,6 +49,9 @@ export default {
   methods: {
     openBoard(boardId){
       this.$router.push({ name: 'board', params: { id: boardId }})
+    },
+    displayBoard(boardId){
+      this.$router.push({ name: 'screen', params: { id: boardId }})
     }
   },
   computed: {},
