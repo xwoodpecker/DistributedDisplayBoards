@@ -15,6 +15,11 @@ export const routes = [
         component: () => import('./components/Login.vue')
     },
     {
+        path: '/boardLogin',
+        name: 'boardLogin',
+        component: () => import('./components/BoardLogin.vue')
+    },
+    {
         path: '/board/:id',
         name: 'board',
         component: () => import('./components/Board/BoardDetail.vue'),

@@ -1,7 +1,7 @@
 export const ENV = {
     developerMode: false,
     environment: "development",
-    baseUrl: "http://localhost:8000/",
+    baseUrl: "/",
     endpoints: {
         'login' : 'users/login',
         'boards': 'groups/',
