@@ -21,8 +21,6 @@ services:
     # DB Administration
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
-        links:
-            - db:mysql
         ports:
             - 8181:80
         environment:
