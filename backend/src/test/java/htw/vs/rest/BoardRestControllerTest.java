@@ -47,7 +47,7 @@ public class BoardRestControllerTest {
     @Test
     @Order(1)
     public void testGetBoards() throws Exception {
-        this.mockMvc.perform(get("/boards/")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/boards/")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"testboard1\",\"location\":\"location1\"}," +
                         "{\"id\":2,\"boardName\":\"testboard2\",\"location\":\"location2\"}," +
                         "{\"id\":3,\"boardName\":\"testboard3\",\"location\":\"location3\"}," +
@@ -65,7 +65,7 @@ public class BoardRestControllerTest {
      */
     @Test
     public void testGetBoard() throws Exception {
-        this.mockMvc.perform(get("/boards/1")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/boards/1")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"testboard1\",\"location\":\"location1\"}")));
     }
 
@@ -87,7 +87,7 @@ public class BoardRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(board);
 
-        this.mockMvc.perform(post("/boards/").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(post("/api/boards/").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk())
         .andExpect(content().string(containsString("{\"id\":7,\"boardName\":\"addedBoardTest\",\"location\":\"newlocation\"}")));
     }
 
@@ -107,7 +107,7 @@ public class BoardRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(board);
 
-        this.mockMvc.perform(post("/boards/").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isUnauthorized());
+        this.mockMvc.perform(post("/api/boards/").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isUnauthorized());
     }
 
     /**
@@ -127,7 +127,7 @@ public class BoardRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(board);
 
-        this.mockMvc.perform(post("/boards/").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isForbidden());
+        this.mockMvc.perform(post("/api/boards/").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isForbidden());
     }
 
     /**
@@ -147,7 +147,7 @@ public class BoardRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(board);
 
-        this.mockMvc.perform(post("/boards/1").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(post("/api/boards/1").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":1,\"boardName\":\"replacedBoardName1\",\"location\":\"newlocation\"}")));
     }
 
@@ -168,7 +168,7 @@ public class BoardRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(board);
 
-        this.mockMvc.perform(post("/boards/90").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(post("/api/boards/90").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":8,\"boardName\":\"newBoardName\",\"location\":\"newLocation\"}")));
     }
 
@@ -188,7 +188,7 @@ public class BoardRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(board);
 
-        this.mockMvc.perform(post("/boards/1").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isUnauthorized());
+        this.mockMvc.perform(post("/api/boards/1").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isUnauthorized());
     }
 
     /**
@@ -208,7 +208,7 @@ public class BoardRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(board);
 
-        this.mockMvc.perform(post("/boards/1").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isForbidden());
+        this.mockMvc.perform(post("/api/boards/1").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isForbidden());
     }
 
     /**
@@ -228,6 +228,6 @@ public class BoardRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(board);
 
-        this.mockMvc.perform(post("/boards/1").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isInternalServerError());
+        this.mockMvc.perform(post("/api/boards/1").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isInternalServerError());
     }
 }
