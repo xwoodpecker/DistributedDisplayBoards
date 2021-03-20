@@ -34,6 +34,7 @@ services:
             - spring-cloud-network
 
     rabbitmq:
+        image: 127.0.0.1:5000/vs-rmq
         build:
             context: ./
             dockerfile: docker/rabbitmq/Dockerfile
@@ -47,17 +48,17 @@ services:
             - spring-cloud-network
 
     distributed-boards:
+        image: 127.0.0.1:5000/springboot-backend
         build:
             context: ./
             dockerfile: docker/distributed-boards/Dockerfile
-        image: springboot-backend
         container_name: distributed-boards
         restart: unless-stopped
         depends_on:
             - db
             - rabbitmq
         ports:
-            - 80:80
+            - 80:420
         networks:
             - spring-cloud-network
         environment:
