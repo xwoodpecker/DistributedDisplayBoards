@@ -123,9 +123,9 @@ export default {
   computed: {
   },
   created() {
-    if (this.$store.getters.hasRoleCoordinator){
+    if (this.$store.getters.hasRoleCoordinator && !this.$store.getters.isSupervisor){
       //user is coordinator
-      this.groups = this.$store.getters.getCoordinatorBoards();
+      //this.groups = this.$store.getters.getCoordinatorBoards();
     } else {
       //user is supervisor
       boardsapi.getBoards().then(res => {
