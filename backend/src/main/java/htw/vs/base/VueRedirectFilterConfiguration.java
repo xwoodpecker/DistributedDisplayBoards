@@ -37,7 +37,7 @@ public class VueRedirectFilterConfiguration {
             @Override
             protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
                 if (pattern.matcher(req.getRequestURI()).matches() && !req.getRequestURI().equals("/")) {
-                    LOGGER.info("URL {} entered directly into the Browser, redirecting...", req.getRequestURI());
+                    LOGGER.debug("URL {} entered directly into the Browser, redirecting...", req.getRequestURI());
                     RequestDispatcher rd = req.getRequestDispatcher("/");
                     rd.forward(req, res);
                 } else {

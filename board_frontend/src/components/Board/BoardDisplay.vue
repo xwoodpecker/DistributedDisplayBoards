@@ -58,7 +58,8 @@ export default {
   },
   methods: {
     start() {
-      if (this.messages) {
+      //todo test
+      if (this.messages && this.messages.length > 1) {
         this.startAnimation(
           this.messages[this.$refs.carousel.currentSlide].displayTime
         );
