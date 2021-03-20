@@ -3,6 +3,7 @@ INSERT INTO boards(id, boardname, location) VALUES (1, 'testboard1', 'location1'
 INSERT INTO boards(id, boardname, location) VALUES (2, 'testboard2', 'location2');
 INSERT INTO boards(id, boardname, location) VALUES (3, 'testboard3', 'location3');
 INSERT INTO boards(id, boardname, location) VALUES (4, 'testboard4', 'location4');
+INSERT INTO boards(id, boardname, location) VALUES (5, 'testboard5', 'location5');
 
 -- users
 INSERT INTO users(id, email, enabled, password, username) VALUES (1, 'User1@mail', 1, '123456', 'User1');

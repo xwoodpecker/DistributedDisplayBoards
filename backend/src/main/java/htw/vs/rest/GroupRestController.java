@@ -219,8 +219,12 @@ public class GroupRestController {
 
             if(board.isPresent()) {
                     Board b = board.get();
+                    if(newGroup.getBoard().getBoardName() != null){
                     b.setBoardName(newGroup.getBoard().getBoardName());
-                    b.setLocation(newGroup.getBoard().getLocation());
+                    }
+                    if(newGroup.getBoard().getLocation() != null) {
+                        b.setLocation(newGroup.getBoard().getLocation());
+                    }
                     b.setGroup(temp);
                     boardRepository.save(b);
                     temp.setBoard(b);
