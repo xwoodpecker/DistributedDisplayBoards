@@ -225,6 +225,37 @@ public class GroupRestControllerTest {
     }
 
     /**
+     * Test replace group.
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    @Order(4)
+    @WithMockUser(roles="SUPERVISOR")
+    public void testReplaceGroupNewGroup() throws Exception {
+
+        String requestJson = "{\n" +
+                "  \"id\" : 90,\n" +
+                "  \"groupName\" : \"newGroup\",\n" +
+                "  \"users\" : [ ],\n" +
+                "  \"board\" : {\n" +
+                "    \"id\" : 4,\n" +
+                "    \"boardName\" : null,\n" +
+                "    \"location\" : null\n" +
+                "  },\n" +
+                "  \"coordinator\" : {\n" +
+                "  \"id\" : 5 \n"+
+                "  }\n"+
+                "}";
+
+        this.mockMvc.perform(post("/groups/90").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk()).andExpect(content()
+                .string(containsString("{\"id\":5,\"groupName\":\"newGroup\",")));
+        MvcResult result = this.mockMvc.perform(get("/users/5")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult = result.getResponse().getContentAsString();
+        assert(stringResult.contains("\"COORDINATOR\""));
+    }
+
+    /**
      * Test replace group without role.
      *
      * @throws Exception the exception
@@ -388,6 +419,37 @@ public class GroupRestControllerTest {
         this.mockMvc.perform(post("/groups/3").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk()).andExpect(content()
                 .string(containsString("\"board\":{\"id\":4,\"boardName\":\"testboard4\",\"location\":\"location4\"},\"coordinator\":8}")));
     }
+
+    /**
+     * Test replace group change board.
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    @WithMockUser(roles="SUPERVISOR")
+    public void testReplaceGroupChangeBoardName() throws Exception {
+        String requestJson = "{\n" +
+                "  \"id\" : 3,\n" +
+                "  \"groupName\" : \"boardChange\",\n" +
+                "  \"users\" : [ ],\n" +
+                "  \"board\" : {\n" +
+                "    \"id\" : 4,\n" +
+                "    \"boardName\" : \"changedBoardName2\",\n" +
+                "    \"location\" : null\n" +
+                "  },\n" +
+                "  \"coordinator\" : {\n" +
+                "  \"id\" : 8 \n"+
+                "  }\n"+
+                "}";
+
+        this.mockMvc.perform(post("/groups/3").contentType(APPLICATION_JSON).content(requestJson)).andDo(print()).andExpect(status().isOk()).andExpect(content()
+                .string(containsString("\"board\":{\"id\":4,\"boardName\":\"testboard4\",\"location\":\"location4\"},\"coordinator\":8}")));
+        MvcResult result2 = this.mockMvc.perform(get("/boards/4")).andDo(print()).andExpect(status().isOk()).andReturn();
+        String stringResult2 = result2.getResponse().getContentAsString();
+        assert(stringResult2.contains("\"changedBoardName2\""));
+    }
+
+
 
     /**
      * Test replace group name not unique.
