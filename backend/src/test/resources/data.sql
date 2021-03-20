@@ -31,13 +31,13 @@ INSERT INTO groups_users(groups_id, users_id) VALUES (3, 7);
 INSERT INTO groups_users(groups_id, users_id) VALUES (3, 8);
 
 -- messages
-INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (1, 1, 'content of message 1', '2024-03-01 17:03:17.000000', 1, 1, 120, 'white');
-INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (2, 1, 'content of message 2', '2024-03-01 17:03:17.000000', 1, 1, 80, 'white');
-INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (3, 1, 'content of message 3', '2021-03-01 17:03:17.000000', 1, 2, 120, 'white');
-INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (4, 1, 'content of message 4', '2024-03-01 17:03:17.000000', 2, 3, 60, 'white');
-INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (5, 0, 'content of message 5', '2024-03-01 17:03:17.000000', 2, 5, 120, 'white');
-INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (6, 0, 'content of message 6', '2021-03-01 17:03:17.000000', 2, 6, 40, 'white');
-INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (7, 0, 'content of message 7', '2021-03-01 17:03:17.000000', 3, 7, 40, 'white');
+INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (1, 1, 0x636f6e74656e74206f66206d6573736167652031, '2024-03-01 17:03:17.000000', 1, 1, 120, 'white');
+INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (2, 1, 0x636f6e74656e74206f66206d6573736167652032, '2024-03-01 17:03:17.000000', 1, 1, 80, 'white');
+INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (3, 1, 0x636f6e74656e74206f66206d6573736167652033, '2021-03-01 17:03:17.000000', 1, 2, 120, 'white');
+INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (4, 1, 0x636f6e74656e74206f66206d6573736167652034, '2024-03-01 17:03:17.000000', 2, 3, 60, 'white');
+INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (5, 0, 0x636f6e74656e74206f66206d6573736167652035, '2024-03-01 17:03:17.000000', 2, 5, 120, 'white');
+INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (6, 0, 0x636f6e74656e74206f66206d6573736167652036, '2021-03-01 17:03:17.000000', 2, 6, 40, 'white');
+INSERT INTO messages(id, active, content, end_date, board_id, user_id, display_time, bg_color) VALUES (7, 0, 0x636f6e74656e74206f66206d6573736167652037, '2021-03-01 17:03:17.000000', 3, 7, 40, 'white');
 
 -- roles
 INSERT INTO roles(id, name) VALUES (1, 'SUPERVISOR');
