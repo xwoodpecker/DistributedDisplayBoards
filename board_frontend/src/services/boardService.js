@@ -2,8 +2,10 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import {store} from '@/main';
 import moment from 'moment';
+import { ENV } from '@/environment';
 
-const backendEndpoint = '/backend';
+
+const backendEndpoint = ENV.stompBaseUrl;
 
 export default class BoardService {
   socket;

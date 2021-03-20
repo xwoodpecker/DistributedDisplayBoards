@@ -74,40 +74,10 @@ export default {
             boards.push(group.board);
           }
         }
-        console.log("GROUPS")
-        console.log(groups)
         this.$store.commit('setGroups', groups);
         this.$store.commit('addBoards', boards)
       }
     });
-    //get boards for user
-    //todo dont do this here
-    /*this.$store.commit("addBoards", [
-      {
-        id: 1,
-        title: "Board 1",
-        location: "Mensa",
-        messages: [],
-      },
-      {
-        id: 2,
-        title: "Board 2",
-        location: "Meetingraum 1. Stock",
-        messages: [],
-      },
-      {
-        id: 3,
-        title: "Board 3",
-        location: "Foyer",
-        messages: [],
-      },
-      {
-        id: 4,
-        title: "Board 4",
-        location: "Meetingraum 2. Stock",
-        messages: [],
-      },
-    ]);*/
   },
 };
 </script>

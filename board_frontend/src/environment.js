@@ -1,7 +1,10 @@
+const isProd = process.env.NODE_ENV === 'production';
+
 export const ENV = {
-    developerMode: false,
+    developerMode: !isProd,
     environment: "development",
-    baseUrl: "/",
+    baseUrl: isProd? "/" : "http://localhost:8000/",
+    stompBaseUrl: isProd? "/backend" : "http://localhost:8000/backend",
     endpoints: {
         'login' : 'users/login',
         'boards': 'groups/',

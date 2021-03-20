@@ -15,9 +15,12 @@ export const routes = [
         component: () => import('./components/Login.vue')
     },
     {
-        path: '/boardLogin',
-        name: 'boardLogin',
-        component: () => import('./components/BoardLogin.vue')
+        path: '/screen/:id',
+        name: 'screen',
+        component: () => import('./components/Board/BoardScreen.vue'),
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/board/:id',
