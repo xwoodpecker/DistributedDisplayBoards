@@ -52,7 +52,7 @@ services:
         container_name: distributed-boards
         restart: unless-stopped
         depends_on:
-            - db
+            - db_mysql
             - rabbitmq
         ports:
             - 420:8000
