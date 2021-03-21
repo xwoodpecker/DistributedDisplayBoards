@@ -186,13 +186,14 @@ export default {
     editMessage(messageId) {
       this.setActiveTab('editmessage');
       messageapi.getMessage(messageId).then(message => {
+        console.log("bgColor is: "+message.bgColor)
         this.content = message.content;
         this.displayTime = message.displayTime;
         this.messageId = message.id;
         console.log(message.endDate);
         this.date = new Date(message.endDate);
         console.log(this.date);
-        this.colors.h = message.bgColor;
+        this.colors = {hex: message.bgColor};
         this.active = message.active;
       })
     },

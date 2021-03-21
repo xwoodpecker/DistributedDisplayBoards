@@ -53,7 +53,6 @@ export const store = new Vuex.Store({
     mutations: {
         login(state, user) {
             state.user = user;
-            console.log("user", state.user)
         },
         logout(state) {
             state.user = null;

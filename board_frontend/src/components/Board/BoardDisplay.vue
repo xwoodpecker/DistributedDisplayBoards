@@ -120,7 +120,12 @@ export default {
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === "setMessages") {
         if(this.animation) this.animation.kill();
-        this.messages = this.$store.getters.messages(this.boardId);
+        let board = state.boards.find(board => board.id == this.boardId);
+        if(board.messages){
+          this.messages = board.messages
+        }
+        
+        
         this.currentSlide = 0;
         this.start();
       }
