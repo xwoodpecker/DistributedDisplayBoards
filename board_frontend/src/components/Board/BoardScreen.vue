@@ -14,6 +14,7 @@
 
 <script>
 import BoardDisplay from "@/components/Board/BoardDisplay";
+import screenfull from "screenfull";
 export default {
   name: "BoardScreen",
   components: {
@@ -28,6 +29,7 @@ export default {
   computed: {},
   methods: {
     openDashboard(){
+      if (screenfull.isEnabled) screenfull.exit();
       this.$router.push("/")
     }
   },

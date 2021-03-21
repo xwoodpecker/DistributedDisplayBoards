@@ -89,9 +89,6 @@ export default {
   width: 100%;
   border: 1px solid rgba(#000, 0.12);
 
-  .md-app-toolbar {
-    background-color: #34495e;
-  }
 }
 
 .md-drawer {
