@@ -150,11 +150,10 @@ gegen Datenbank-Constraints werden im Frontend abgefangen und direkt verarbeitet
 User Experience sichergestellt.
 
 
-###### FrontEnd
-Die eingehenden Nachrichten werden von den Frontends empfangen. Neue Nachrichten können versendet werden, indem mit dem 
-Backend kommuniziert wird.
+###### Frontend
+Das Frontend ist eine VueJS-basierte Single Page Application, welche sowohl zur administrativen Verwaltung der Anzeigetafeln und Gruppen genutzt wird, als auch die Kernfunktionalität für Anzeigetafeln bereitzustellen.
+Es Frontend fordert den Nutzer zunächst auf, sich einzuloggen. Sobald der Nutzer erfolgreich authentifiziert ist, wird automatisch ein Websocket zum Backend aufgebaut sowie die aktuellen Nachrichten der Boards, denen der Nutzer angehört, abgefragt. Ab dann wird das Frontend automatisch benachrichtigt, sobald sich die Nachricht der Boards ändern und die Ansicht im Frontend automatisch aktualisiert. Falls sich die Boards auf die der User Zugriff hat ändern (etwa weil ein neues Board hinzugefügt oder ein Board entfernt wurde) wird der Websocket geschlossen und neu aufgebaut. Somit ist sichergestellt, dass das Frontend jederzeit über den aktuellsten Stand informiert ist, ohne selbst "aktiv" werden zu müssen.
 
-Das Frontend fordert den Nutzer zunächst auf, sich einzuloggen. Sobald der Nutzer erfolgreich authentifiziert ist, wird automatisch ein Websocket zum Backend aufgebaut sowie die aktuellen Nachrichten der Boards, denen der Nutzer angehört, abgefragt. Ab dann wird das Frontend automatisch benachrichtigt, sobald sich die Nachricht der Boards ändern und die Ansicht im Frontend automatisch aktualisiert. Falls sich die Boards auf die der User Zugriff hat ändern (etwa weil ein neues Board hinzugefügt oder ein Board entfernt wurde) wird der Websocket geschlossen und neu aufgebaut. Somit ist sichergestellt, dass das Frontend jederzeit über den aktuellsten Stand informiert ist, ohne selbst "aktiv" werden zu müssen.
 
 #### Statisches Modell
 ##### ERM-Modell
@@ -174,11 +173,6 @@ für einen Nutzer abgebildet werden.
 ##### Klassendiagramm
 ###### Backend
 ![](markdown-images/KDB.png)
-
-###### Frontend
-//todo
-![](markdown-images/KDF.png)
-
 
 
 ##### API
@@ -210,35 +204,49 @@ Die Abläufe dieser Prozesse wird im nachfolgenden Sequenzdiagramm abgebildet.
 
 
 ## Getting Started
-//todo  
-Um dieses Projekt lokal aufzusetzen, muss zuerst dieses Git-Repository geklont werden:
 ````
 git clone https://github.com/htw-saar/PIB-VS_WS2020_Gruppe1.git
 ````
-Anschließend kann das Projekt in einer beliebigen IDE bearbeitet werden.
+Der Build-Prozess ist vollständig in Form von Dockerfiles realisiert und somit nahtlos mit dem Deployment verbunden. Die [docker-compose.yml](/docker-compose.yml) definiert die für die Ausführung der Anwendung benötigten Services:
+- MySQL Datenbank
+- RabbitMQ Broker (mit aktiviertem STOMP-Plugin)
+- Spring Boot Backend & Frontend
 
-Der Build-Prozess ist mit Maven realisiert. Wichtige Phasen:
-- `mvn package`: Kompiliert das Projekt, erstellt eine ausführbare `.jar` mit allen benötigten Dependencies
-- `mvn install`: Erstellt ein Docker-Image, welches eine JRE sowie die ausführbare `.jar` als Entry-Point enthält. 
-Wird im lokalen Docker Repository abgelegt. 
-Ein Docker-Agent muss lokal verfügbar sein, um diese Phase auszuführen.
-- `mvn deploy`: Das generierte Docker-Image wird zu der in der `pom.xml` definierten Docker-Registry gepusht.
+### Deployment via Docker Compose
+Die gesamte Anwendung kann sehr schnell aus dem Quellcode erzeugt werden und mit allen benötigten Diensten via Docker Compose deployed werden. Die [docker-compose.yml](/docker-compose.yml)-Datei enthält die entsprechende Konfiguration, einige Einstellungen sind unter Rücksicht auf die Benutzerfreundlichkeit gewählt und sollten vor einem Deployment in einer Produktionsumgebung sorgfältig angepasst werden.
 
-#### Voraussetzungen
-//todo
-Es müssen folgende Abhängigkeiten auf dem Rechner installiert sein:
-- [JDK 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
-- [Maven](https://maven.apache.org/download.cgi)
-- [Docker](https://www.docker.com/get-started) (für Maven Phasen `install`, `deploy`)
+Sobald dieses Repository mittels
+````
+git clone https://github.com/htw-saar/PIB-VS_WS2020_Gruppe1.git
+````
+geklont wurde und Docker sowie Docker Compose auf dem System installiert sind, kann der Build- und Deployment-Prozess mittels
+````
+docker-compose up -d --build
+````
+angestoßen werden.
 
-#### Installation und Deployment
-//todo
-Das Docker-Image kann mit `docker run {registry}/htw.smartcity/aggregator:1.0-SNAPSHOT` ausgeführt werden, wobei `{registry}`
-durch die entsprechende Registry ersetzt werden muss.
+Die Services `db_mysql` sowie `phpmyadmin` sind nur Definitionen von Services, welche bestehnde Docker Images von dockerhub nutzen. `phpmyadmin` ist dabei ein optionaler Service, welcher ein Webinterface zur Datenbankadministration bereitstellt.
+Der Service `rabbitmq` ist mittels [Dockerfile](/docker/rabbitmq/Dockerfile) definiert, das Image besteht aus dem Standard `rabbitmq`-Image, in welchem das Stomp-Plugin aktiviert ist.
+Der Service `distributed-boards` wird durch eine eigene [Dockerfile](/docker/distributed-boards/Dockerfile) definiert, der Build läuft folgendermaßen ab:
+- In einem temporären node-Container wird die VueJS Frontend-Anwendung mit der Flag `--mode production` gebaut.
+- Der erzeugte Code wird in einen anderen temporären Container kopiert, welcher den Quellcode für das Backend beinhaltet
+- Im zweiten temporären Container wird mittels `mvn package` das Backend kompiliert
+- In einem dritten temporären Container wird das das kompilierte Backend als .jar-Datei verpackt. Das Frontend ist zu diesem Zeitpunkt darin enthalten und das Backend dient neben seiner Kernfunktionalität auch als statischer Host für den Code der Frontend-Anwendung. Dies dient ausschließlich der Einfachheit, das Frontend könnte auch von unabhängigen Servern gehostet oder lokal ausgeführt werden.
 
-Um die MySQL-Datenbank ebenfalls als Container auf demselben Host bereitzustellen ist es erforderlich, via `docker network create --driver bridge {name}` ein Docker-Netzwerk anzulegen und 
-beide Container mit diesem Network zu verbinden. Dazu muss der `docker run`-Befehl um `--net={name}` erweitert werden.
-Es empfiehlt sich, dem Datenbank-Container explizit einen Namen zu geben, denn dadurch kann der Aggregator-Service die IP auflösen (siehe "Konfiguration").
+#### Variante: Deployment auf Docker Swarm
+Docker Swarm kann als eine erweiterte Version von Docker Compose gesehen werden. Es handelt sich dabei um ein relatives neues Docker-feature, welches eine simple Containerorchestrierung bietet, die über die Standardfunktionalität von Docker hinausgehen. Dieses Projekt kann ebenfalls in einem Docker Swarm deployed werden. In der vorliegenden [docker-compose.yml](/docker-compose.yml) sind die Images `rabbitmq` und `distributed-boards` jeweils mit dem Präfix `127.0.0.1` versehen. Wenn eine lokale Docker-Registry (z.B. mittels [registry](https://hub.docker.com/_/registry)) zur Verfügung steht, können die im `docker-compose up -d --build` erzeugten Docker Images mittels `docker-compose push` in diese lokale Registry aufgenommen werden. In einem Docker Swarm kann die [docker-compose](docker-compose.yml) nun mit
+````
+docker stack deploy --compose-file docker-compose.yml <name>
+````
+deployed werden (name durch gewünschten Stacknamen ersetzen).
+
+
+### Lokale Installation / Entwicklung
+`mysql` und `rabbitmq` mit aktivierter STOMP-Erweiterung sind unbedingt notwendige Abhängigkeiten der Anwendung und müssen daher auch beim Entwickeln und Testen zur Verfügung stehen. Lokal kann dies entweder durch Installation dieser Anwendungen geschehen, oder alternativ über das Verwenden der [docker-compose-local-env.yml](/docker-compose-local-env.yml) geschehen:
+````
+docker-compose up -d -f ./docker-compose-local-env.yml
+````
+Die Standartwerte in der Konfiguration des Backends entsprechen dieser Installationsmethode.
 
 ###### Konfiguration
 Sämtliche Konfigurationseigenschaften können entweder in `src/main/resources/application.properties` eingetragen oder beim Erstellen des Containers als Umgebungsvariablen übergeben werden. 

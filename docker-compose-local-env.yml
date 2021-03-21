@@ -1,12 +1,14 @@
 version: "3.7"
 services:
 
-    # todo use docker volumes for persistence rather than local file system
-    # todo only enable needed ports (only 80? maybe 61613), comment others
+    # volumes sind überall auskommentiert, falls das Filesystem oder Docker
+    # Volumes zur Persistenz verwendet werden sollen entsprechend einkommentieren
 
     # MySQL Container
     db_mysql:
         image: mysql:5.7
+        ports:
+            - 3306:3306
         restart: always
         environment:
             MYSQL_DATABASE: testapp
@@ -18,11 +20,11 @@ services:
         networks:
             - spring-cloud-network
 
-    # DB Administration
+    # DB Administration (optional)
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         ports:
-            - 8181:80
+            - 8181:8181
         environment:
             PMA_HOST: db_mysql
             MYSQL_USERNAME: user
@@ -38,8 +40,6 @@ services:
             context: ./
             dockerfile: docker/rabbitmq/Dockerfile
         ports:
-            - 5672:5672
-            - 15672:15672
             - 61613:61613           
         #volumes:
             #- ./docker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins

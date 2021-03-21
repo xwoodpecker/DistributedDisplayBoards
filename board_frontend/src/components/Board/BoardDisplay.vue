@@ -17,7 +17,6 @@
         >
           <div class="message-content" v-html="message.content"></div>
         </div>
-        <!-- todo (low prio) make sure currently not displayed progress-bars are not constantly being updated -->
         <md-progress-bar
           md-mode="determinate"
           :md-value="amount"
@@ -115,8 +114,6 @@ export default {
     if (this.animation) this.animation.kill();
   },
   mounted() {
-    //make sure to fill available height. necessary due to limitations with vue-agile
-    //todo add event listener to displayContainer, execute resize of this.height as its size changes
     this.height = this.$refs.displayContainer.clientHeight - 5 + "px";
     this.$watch("$refs.displayContainer.clientHeight", (new_value) => {
       this.height = new_value - 5 + "px";

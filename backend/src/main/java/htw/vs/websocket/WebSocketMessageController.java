@@ -73,7 +73,6 @@ public class WebSocketMessageController {
     @MessageMapping("/getActiveMessages")
     public boolean getActiveMessages(Authentication authentication, @Payload Board board) {
 
-        //todo: check if findbyId works as well
         board = this.boardRepository.findBoardByIdEagerGroup(board.getId());
         User user = this.userRepository.findUserByUserName(authentication.getName());
 
@@ -99,7 +98,6 @@ public class WebSocketMessageController {
     @MessageMapping("/message")
     public boolean message(Authentication authentication,  @Payload Message message) {
 
-        //todo: check if findbyId works as well
         message.setBoard(this.boardRepository.findBoardByIdEagerGroup(message.getBoard().getId()));
 
         User user = userRepository.findById(message.getUser().getId())
@@ -148,7 +146,6 @@ public class WebSocketMessageController {
 
 
 
-    //todo : test
     private void verifyCoordinator(Authentication authentication, User coordinator) {
         if(coordinator == null)
             throw new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION);
@@ -161,7 +158,6 @@ public class WebSocketMessageController {
             throw new AccessDeniedException(Const.VERIFY_USER_EXCEPTION);
     }
 
-    //todo : test
     private void verifyUserBoard(Authentication authentication, User user, Board board) {
         if(user == null)
             throw new AccessDeniedException(Const.USER_NOT_FOUND_EXCEPTION);
@@ -211,7 +207,6 @@ public class WebSocketMessageController {
 
 
     /**
-     * todo: test
      * Add or replace list.
      *
      * @param msg the msg
@@ -258,7 +253,6 @@ public class WebSocketMessageController {
             }
         }
 
-        //todo: test
         private void clean() {
             for(Map.Entry entry : boardMessages.entrySet()){
                 List<Message> messages = (List<Message>) entry.getValue();

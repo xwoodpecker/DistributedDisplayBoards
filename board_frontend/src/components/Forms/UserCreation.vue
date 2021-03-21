@@ -193,7 +193,6 @@ export default {
     },
     validateUser() {
       console.log(this.$v.form)
-      //TODO Formvalidierung checken
       if (this.changePw) {
       }
       this.$v.$touch();

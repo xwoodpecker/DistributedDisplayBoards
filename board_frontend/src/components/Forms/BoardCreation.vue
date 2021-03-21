@@ -207,7 +207,6 @@ export default {
     },
     validateUser() {
       this.saveBoard()
-      //TODO Formvalidierung checken
       /*this.$v.$touch()
       if (!this.$v.$invalid) {
         this.saveUser()
