@@ -9,7 +9,7 @@ FROM maven as backend-build-stage
 WORKDIR /backend
 COPY ./backend /backend
 COPY --from=frontend-build-stage /frontend/dist /backend/src/main/resources/public
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 # container build
 FROM adoptopenjdk/openjdk11:jre-11.0.10_9 as production-stage
