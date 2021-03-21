@@ -13,5 +13,7 @@ export const ENV = {
         'users' : 'users/',
         'boardmessages' : 'messages/board/%s',
         'message': 'messages/%s',
+        'groupUsers': 'groups/%s/users',
+        'groupUser': 'groups/user/%s',
     }
 }

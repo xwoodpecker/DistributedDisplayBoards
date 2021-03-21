@@ -8,7 +8,7 @@ export default {
     getUser,
     addUser,
     deleteUser,
-    updateUser
+    updateUser,
 }
 
 export function getUsers(){

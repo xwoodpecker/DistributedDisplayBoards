@@ -73,5 +73,4 @@ public class MessageRepositoryTest {
         List<Message> messages = messageRepository.findActiveMessagesByBoard(boardRepository.findById(2l).get());
         assert messages.size() == 1;
     }
-
 }
