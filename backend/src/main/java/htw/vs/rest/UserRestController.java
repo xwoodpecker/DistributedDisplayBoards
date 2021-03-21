@@ -166,13 +166,13 @@ public class UserRestController {
         User u;
         if(user.isPresent()){
             User temp = user.get();
-            if(userRequest.userName != null && userRequest.userName.isEmpty()){
+            if(userRequest.userName != null && !userRequest.userName.isEmpty()){
                 temp.setUserName(userRequest.userName);
             }
-            if( userRequest.password != null && userRequest.password.isEmpty()){
+            if( userRequest.password != null && !userRequest.password.isEmpty()){
                 temp.setPassword(passwordEncoder.encode(userRequest.password));
             }
-            if( userRequest.email != null && userRequest.email.isEmpty()){
+            if( userRequest.email != null && !userRequest.email.isEmpty()){
                 temp.setEmail(userRequest.email);
             }
             Role superVisorRole = roleRepository.findByName(Const.SUPERVISOR_ROLE);
