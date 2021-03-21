@@ -24,10 +24,7 @@ export default class BoardService {
       if(mutation.type === "addBoards" || mutation.type === "clearBoards"){
         if(state.boards){
           this.boards = state.boards;
-          console.log("checking");
           if(this._hasBoardStateChanged(state.boards)){
-            console.log("state changed");
-            console.log(state.boards)
             this._reconnect();
           }
         } else {
@@ -134,8 +131,6 @@ export default class BoardService {
   }
 
   _handleIncomingMessages(board){
-    console.log(board);
     store.commit("setMessages", board);
-    console.log(store.getters.boards);
   }
 }

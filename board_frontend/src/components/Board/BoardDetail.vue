@@ -75,7 +75,7 @@
               </md-step>
             </md-steppers>
           </div>
-          <UserManagement v-if="this.usersActive"></UserManagement>
+          <UserManagement v-if="this.usersActive" v-bind:boardId="parseInt(this.boardId)"></UserManagement>
           <MessageManagement v-if="this.messageManagementActive" v-bind:boardId="parseInt(this.boardId)" @editClicked="editMessage($event)"></MessageManagement>
         </div>
         <div class="board-preview md-layout-item" @click="showOverlay = !showOverlay">
@@ -186,13 +186,14 @@ export default {
     editMessage(messageId) {
       this.setActiveTab('editmessage');
       messageapi.getMessage(messageId).then(message => {
+        console.log("bgColor is: "+message.bgColor)
         this.content = message.content;
         this.displayTime = message.displayTime;
         this.messageId = message.id;
         console.log(message.endDate);
         this.date = new Date(message.endDate);
         console.log(this.date);
-        this.colors.h = message.bgColor;
+        this.colors = {hex: message.bgColor};
         this.active = message.active;
       })
     },

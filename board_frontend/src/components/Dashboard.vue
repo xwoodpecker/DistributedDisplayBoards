@@ -75,7 +75,7 @@ export default {
           }
         }
         this.$store.commit('setGroups', groups);
-        this.$store.commit('addBoards', boards)
+        this.$store.commit('addBoards', boards);
       }
     });
   },

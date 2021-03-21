@@ -75,6 +75,31 @@ public class GroupRestController {
     }
 
     /**
+     * Gets group users.
+     *
+     * @param id the group id
+     * @return the group users
+     */
+    @CrossOrigin(origins = "http://localhost")
+    @Operation(summary = "Get group by given id")
+    @GetMapping("/{id}/users")
+    public ResponseEntity getGroupUsers(@PathVariable Long id) {
+        ResponseEntity response;
+        Optional<Group> group = groupRepository.findById(id);
+        List<User> users;
+
+        if(group.isPresent()){
+            users = userRepository.findByGroupsContaining(group.get());
+            response = new ResponseEntity(users, HttpStatus.OK);
+        }
+
+        else
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(Const.NO_GROUP_MSG);
+
+        return response;
+    }
+
+    /**
      * Add user to group response entity.
      *
      * @param userId the user id

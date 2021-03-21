@@ -53,7 +53,6 @@ export const store = new Vuex.Store({
     mutations: {
         login(state, user) {
             state.user = user;
-            console.log("user", state.user)
         },
         logout(state) {
             state.user = null;
@@ -108,6 +107,9 @@ export const store = new Vuex.Store({
         },
         getUsers: state => {
             return state.users
+        },
+        getGroups: state => {
+            return state.groups
         },
         isSupervisor: state => {
             return state.user.roles.find( role => role.name === 'SUPERVISOR')
