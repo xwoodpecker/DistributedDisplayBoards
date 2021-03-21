@@ -313,7 +313,7 @@ public class UserRestControllerTest {
         MvcResult result = this.mockMvc.perform(get("/api/users/3")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         assert(stringResult.contains("\"id\":3,\"userName\":\"User90\""));
-        assert(stringResult.contains("\"enabled\":false,\"email\":\"User90@mail\",\"roles\":[{\"id\":3,\"name\":\"USER\"}]"));
+        assert(stringResult.contains("\"enabled\":true,\"email\":\"User90@mail\",\"roles\":[{\"id\":3,\"name\":\"USER\"}]"));
     }
 
     /**
@@ -338,7 +338,7 @@ public class UserRestControllerTest {
         MvcResult result = this.mockMvc.perform(get("/api/users/3")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         assert(stringResult.contains("\"id\":3,\"userName\":\"User77\""));
-        assert(stringResult.contains("\"enabled\":false,\"email\":\"User90@mail\",\"roles\":[{\"id\":3,\"name\":\"USER\"}]"));
+        assert(stringResult.contains("\"enabled\":true,\"email\":\"User90@mail\",\"roles\":[{\"id\":3,\"name\":\"USER\"}]"));
     }
 
     /**
