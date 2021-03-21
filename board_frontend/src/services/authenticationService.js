@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { store } from "@/main";
 
 var getUrl = window.location;
 var baseUrl = getUrl.protocol + "//" + getUrl.host;
@@ -22,5 +23,6 @@ export function login(user) {
 }
 
 export function logout() {
+    store.commit('clearBoards');
     sessionStorage.clear();
 }
