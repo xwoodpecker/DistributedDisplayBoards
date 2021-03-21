@@ -46,24 +46,6 @@ services:
         networks:
             - spring-cloud-network
 
-    distributed-boards:
-        image: 127.0.0.1:5000/springboot-backend
-        build:
-            context: ./
-            dockerfile: docker/distributed-boards/Dockerfile
-        restart: unless-stopped
-        depends_on:
-            - db_mysql
-            - rabbitmq
-        ports:
-            - 420:8000
-        networks:
-            - spring-cloud-network
-        environment:
-            SPRING_DATASOURCE_URL: jdbc:mysql://db_mysql:3306/testapp
-            SPRING_DATASOURCE_USERNAME: user
-            SPRING_DATASOURCE_PASSWORD: password
-            BROKER_HOST: rabbitmq
 networks:
     spring-cloud-network:
         driver: overlay
