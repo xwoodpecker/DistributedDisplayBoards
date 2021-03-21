@@ -60,7 +60,7 @@ export const store = new Vuex.Store({
         },
         addBoards(state, boards) {
             for(let board of boards){
-                if(!state.boards.find(oldBoard => board.id == oldBoard.id)){
+                if(!state.boards || !state.boards.find(oldBoard => board.id == oldBoard.id)){
                     state.boards.push(board);
                 }
             }
