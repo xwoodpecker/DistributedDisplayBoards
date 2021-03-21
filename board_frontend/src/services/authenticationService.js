@@ -23,6 +23,6 @@ export async function login(credentials) {
 }
 
 export function logout() {
-    store.commit('clearBoards');
+    store.commit('logout');
     sessionStorage.clear();
 }
