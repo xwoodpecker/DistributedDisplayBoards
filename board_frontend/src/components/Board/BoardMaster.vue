@@ -30,7 +30,6 @@
 
 <script>
 import BoardDisplay from "@/components/Board/BoardDisplay";
-import screenfull from "screenfull";
 
 export default {
   name: "BoardMaster",
@@ -52,9 +51,6 @@ export default {
       this.$router.push({ name: "board", params: { id: boardId } });
     },
     displayBoard(boardId) {
-      if (screenfull.isEnabled) {
-        screenfull.request(undefined, {navigationUI: 'hide'});
-      }
       this.$router.push({ name: "screen", params: { id: boardId } });
     },
   },

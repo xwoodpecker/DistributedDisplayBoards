@@ -34,6 +34,9 @@ export default {
     }
   },
   created() {
+    if (screenfull.isEnabled) {
+        screenfull.request(undefined, {navigationUI: 'hide'});
+      }
     this.boardId = parseInt(this.$route.params.id);
   },
 };

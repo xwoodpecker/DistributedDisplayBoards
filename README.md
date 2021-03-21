@@ -152,12 +152,9 @@ User Experience sichergestellt.
 
 ###### FrontEnd
 Die eingehenden Nachrichten werden von den Frontends empfangen. Neue Nachrichten können versendet werden, indem mit dem 
-Backend kommuniziert wird. 
-//todo: add some FrontEnd gebrabbel
+Backend kommuniziert wird.
 
-
-
-
+Das Frontend fordert den Nutzer zunächst auf, sich einzuloggen. Sobald der Nutzer erfolgreich authentifiziert ist, wird automatisch ein Websocket zum Backend aufgebaut sowie die aktuellen Nachrichten der Boards, denen der Nutzer angehört, abgefragt. Ab dann wird das Frontend automatisch benachrichtigt, sobald sich die Nachricht der Boards ändern und die Ansicht im Frontend automatisch aktualisiert. Falls sich die Boards auf die der User Zugriff hat ändern (etwa weil ein neues Board hinzugefügt oder ein Board entfernt wurde) wird der Websocket geschlossen und neu aufgebaut. Somit ist sichergestellt, dass das Frontend jederzeit über den aktuellsten Stand informiert ist, ohne selbst "aktiv" werden zu müssen.
 
 #### Statisches Modell
 ##### ERM-Modell
@@ -216,7 +213,7 @@ Die Abläufe dieser Prozesse wird im nachfolgenden Sequenzdiagramm abgebildet.
 //todo  
 Um dieses Projekt lokal aufzusetzen, muss zuerst dieses Git-Repository geklont werden:
 ````
-git clone https://github.com/htw-saar/SmartCityAggregatorService.git
+git clone https://github.com/htw-saar/PIB-VS_WS2020_Gruppe1.git
 ````
 Anschließend kann das Projekt in einer beliebigen IDE bearbeitet werden.
 
