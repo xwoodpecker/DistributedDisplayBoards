@@ -18,14 +18,16 @@ public class UserRequest {
     public boolean isSupervisor;
     public String userName;
     public String password;
+    public boolean isEnabled;
     /**
      * Instantiates a new User.
      */
-    public UserRequest(String email, boolean isSupervisor, String userName, String password) {
+    public UserRequest(String email, boolean isSupervisor, String userName, String password, boolean isEnabled) {
             this.email = email;
             this.isSupervisor = isSupervisor;
             this.userName = userName;
             this.password = password;
+            this.isEnabled = isEnabled;
     }
 
 }

@@ -152,37 +152,50 @@ public class UserRestController {
     /**
      * Replace user response entity.
      *
-     * @param newUser the new user
-     * @param id      the id
+     * @param authentication the authentication
+     * @param userRequest    the user request
+     * @param id             the id
      * @return the response entity
      */
     @CrossOrigin(origins = "http://localhost")
     @Operation(summary = "Replace a user with a new user")
     @PostAuthorize("@securityService.hasPermissionUser(authentication, #id)")
     @PostMapping("/{id}")
-    public ResponseEntity replaceUser(Authentication authentication, @RequestBody User newUser, @PathVariable Long id) {
+    public ResponseEntity replaceUser(Authentication authentication, @RequestBody UserRequest userRequest, @PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
         User u;
         if(user.isPresent()){
             User temp = user.get();
-            if(newUser.getUserName() != null){
-                temp.setUserName(newUser.getUserName());
+            if(userRequest.userName != null){
+                temp.setUserName(userRequest.userName);
             }
-            if( newUser.getPassword() != null){
-                temp.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            if( userRequest.password != null){
+                temp.setPassword(passwordEncoder.encode(userRequest.password));
             }
-            if( newUser.getEmail() != null){
-                temp.setEmail(newUser.getEmail());
+            if( userRequest.email != null){
+                temp.setEmail(userRequest.email);
             }
-            if( !newUser.getRoles().isEmpty()){
-                temp.setRoles(newUser.getRoles());
+            if( userRequest.isSupervisor){
+                Role superVisorRole = roleRepository.findByName(Const.SUPERVISOR_ROLE);
+                temp.getRoles().add(superVisorRole);
+                superVisorRole.getUsers().add(temp);
             }
 
-            temp.setEnabled(newUser.isEnabled());
+            if(userRequest.isEnabled != temp.isEnabled())
+            {
+                temp.setEnabled(userRequest.isEnabled);
+            }
 
             u = userRepository.save(temp);
         }else{
-            newUser.setId(id);
+            User newUser = new User();
+            newUser.setUserName(userRequest.userName);
+            newUser.setPassword(passwordEncoder.encode(userRequest.password));
+            newUser.setEnabled(true);
+            newUser.setEmail(userRequest.email);
+            Role userRole = roleRepository.findByName(Const.USER_ROLE);
+            newUser.getRoles().add(userRole);
+            userRole.getUsers().add(newUser);
             u = userRepository.save(newUser);
         }
         return new ResponseEntity<>(u, HttpStatus.OK);
@@ -211,7 +224,7 @@ public class UserRestController {
     /**
      * Get groups of user response entity.
      *
-     * @param id             the id
+     * @param id the id
      * @return the response entity
      */
     @CrossOrigin(origins = "http://localhost")
