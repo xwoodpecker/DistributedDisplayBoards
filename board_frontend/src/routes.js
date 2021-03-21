@@ -2,8 +2,6 @@ export const routes = [
     {
         path: '/',
         name: 'dashboard',
-        //todo change back to Dashboard
-        //component: () => import('./components/Board/BoardDisplay.vue'),
         component: () => import('./components/Dashboard.vue'),
         meta: {
             requiresAuth: true

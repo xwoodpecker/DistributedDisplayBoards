@@ -56,7 +56,9 @@ export const store = new Vuex.Store({
         },
         logout(state) {
             state.user = null;
+            state.users = [];
             state.authHeader = null;
+            state.boards = [];
         },
         addBoards(state, boards) {
             for(let board of boards){
@@ -76,6 +78,13 @@ export const store = new Vuex.Store({
         },
         clearBoards(state) {
             state.boards = []
+        },
+        clearUser(state) {
+            state.user = null
+            state.authHeader = null
+        },
+        clearUsers(state) {
+            state.users = []
         },
         setAuthHeader(state, auth) {
             state.authHeader = {'Authorization': 'Basic ' + window.btoa(auth.username + ':' + auth.password)};

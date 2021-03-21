@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { ENV } from './environment'
+import {store} from "@/main";
 
 export default {
     login, logout
@@ -18,5 +19,6 @@ export async function login(credentials) {
 }
 
 export function logout() {
+    store.commit('logout');
     sessionStorage.clear();
 }
