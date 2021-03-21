@@ -41,7 +41,7 @@ public class MessageRestControllerTest {
     @Order(1)
     @WithMockUser(roles="SUPERVISOR" )
     public void testGetMessages() throws Exception {
-        this.mockMvc.perform(get("/messages/")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/messages/")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":1,")))
                 .andExpect(content().string(containsString("\"user\":1,\"board\":1,\"displayTime\":120,\"endDate\":\"2024-03-01 16:03:17\",\"active\":true,\"bgColor\":\"white\"},")))
                 .andExpect(content().string(containsString( "{\"id\":2,")))
@@ -66,7 +66,7 @@ public class MessageRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR" )
     public void testGetMessage() throws Exception {
-        this.mockMvc.perform(get("/messages/1")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/messages/1")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":1,")))
                 .andExpect(content().string(containsString("\"user\":1,\"board\":1,\"displayTime\":120,\"endDate\":\"2024-03-01 16:03:17\",\"active\":true,\"bgColor\":\"white\"}")));
     }
@@ -79,7 +79,7 @@ public class MessageRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR", username = "Coordinator1")
     public void testGetMessagesOfGroup() throws Exception {
-        this.mockMvc.perform(get("/messages/group/1")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/messages/group/1")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":1,")))
                 .andExpect(content().string(containsString("\"user\":1,\"board\":1,\"displayTime\":120,\"endDate\":\"2024-03-01 16:03:17\",\"active\":true,\"bgColor\":\"white\"}")))
                 .andExpect(content().string(containsString( "{\"id\":2,")))
@@ -96,7 +96,7 @@ public class MessageRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR", username = "Coordinator1")
     public void testGetMessagesOfBoard() throws Exception {
-        this.mockMvc.perform(get("/messages/board/1")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/messages/board/1")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":1,")))
                 .andExpect(content().string(containsString("\"user\":1,\"board\":1,\"displayTime\":120,\"endDate\":\"2024-03-01 16:03:17\",\"active\":true,\"bgColor\":\"white\"}")))
                 .andExpect(content().string(containsString( "{\"id\":2,")))
@@ -113,7 +113,7 @@ public class MessageRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR" )
     public void testGetMessagesOfUser() throws Exception {
-        this.mockMvc.perform(get("/messages/user/1")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/messages/user/1")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":1,")))
                 .andExpect(content().string(containsString("\"user\":1,\"board\":1,\"displayTime\":120,\"endDate\":\"2024-03-01 16:03:17\",\"active\":true,\"bgColor\":\"white\"}")))
                 .andExpect(content().string(containsString( "{\"id\":2,")))
@@ -128,7 +128,7 @@ public class MessageRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR", username = "Coordinator2")
     public void testGetActiveMessagesOfGroup() throws Exception {
-        this.mockMvc.perform(get("/messages/active/group/2")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/messages/active/group/2")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":4,")))
                 .andExpect(content().string(containsString("\"user\":3,\"board\":2,\"displayTime\":60,\"endDate\":\"2024-03-01 16:03:17\",\"active\":true,\"bgColor\":\"white\"}")));
     }
@@ -141,7 +141,7 @@ public class MessageRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR", username = "Coordinator1" )
     public void testGetActiveMessagesOfBoard() throws Exception {
-        this.mockMvc.perform(get("/messages/active/board/1")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/messages/active/board/1")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":1,")))
                 .andExpect(content().string(containsString("\"user\":1,\"board\":1,\"displayTime\":120,\"endDate\":\"2024-03-01 16:03:17\",\"active\":true,\"bgColor\":\"white\"}")))
                 .andExpect(content().string(containsString( "{\"id\":2,")))
@@ -156,13 +156,13 @@ public class MessageRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR" )
     public void testGetActiveMessagesOfUser() throws Exception {
-        this.mockMvc.perform(get("/messages/active/user/1")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/messages/active/user/1")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("{\"id\":1,")))
                 .andExpect(content().string(containsString("\"user\":1,\"board\":1,\"displayTime\":120,\"endDate\":\"2024-03-01 16:03:17\",\"active\":true,\"bgColor\":\"white\"}")))
                 .andExpect(content().string(containsString( "{\"id\":2,")))
                 .andExpect(content().string(containsString("\"user\":1,\"board\":1,\"displayTime\":80,\"endDate\":\"2024-03-01 16:03:17\",\"active\":true,\"bgColor\":\"white\"}")));
 
-        MvcResult result = this.mockMvc.perform(get("/messages/active/user/5")).andDo(print()).andExpect(status().isOk()).andReturn();
+        MvcResult result = this.mockMvc.perform(get("/api/messages/active/user/5")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         assert(!stringResult.contains("{\"id\":5,\"content\":\"content of message 5\",\"user\":5,\"board\":2,\"displayTime\":120,\"endDate\":\"2024-03-01 16:03:17\",\"active\":false,\"bgColor\":\"white\"}"));
     }
@@ -192,9 +192,9 @@ public class MessageRestControllerTest {
                 "}";
 
 
-        this.mockMvc.perform(post("/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        this.mockMvc.perform(post("/api/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("\"content\":\"Test Message Blubba Dubba\",\"user\":2,\"board\":1,\"displayTime\":120,\"endDate\":\"2024-03-01 15:03:17\",\"active\":true,")));
-        MvcResult result = this.mockMvc.perform(get("/messages/user/2")).andDo(print()).andExpect(status().isOk()).andReturn();
+        MvcResult result = this.mockMvc.perform(get("/api/messages/user/2")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         assert(stringResult.contains("\"id\":8,\"content\":\"Test Message Blubba Dubba\",\"user\":2,\"board\":1,\"displayTime\":120,\"endDate\":\"2024-03-01 15:03:17\",\"active\":true,"));
     }
@@ -221,7 +221,7 @@ public class MessageRestControllerTest {
                 "  \"active\" : true,\n" +
                 "  \"bgColor\" : null \n" +
                 "}";
-        this.mockMvc.perform(post("/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        this.mockMvc.perform(post("/api/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isNotFound());
     }
 
@@ -248,7 +248,7 @@ public class MessageRestControllerTest {
                 "  \"bgColor\" : null \n" +
                 "}";
 
-        this.mockMvc.perform(post("/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        this.mockMvc.perform(post("/api/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isNotFound());
     }
 
@@ -274,7 +274,7 @@ public class MessageRestControllerTest {
                 "  \"bgColor\" : null \n" +
                 "}";
 
-        this.mockMvc.perform(post("/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        this.mockMvc.perform(post("/api/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isUnauthorized());
     }
 
@@ -301,7 +301,7 @@ public class MessageRestControllerTest {
                 "  \"bgColor\" : null \n" +
                 "}";
 
-        this.mockMvc.perform(post("/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        this.mockMvc.perform(post("/api/messages/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isForbidden());
     }
 
@@ -314,8 +314,8 @@ public class MessageRestControllerTest {
     @Order(2)
     @WithMockUser(roles="SUPERVISOR" )
     public void testDeleteMessage() throws Exception {
-        this.mockMvc.perform(delete("/messages/7")).andDo(print()).andExpect(status().isOk());
-        MvcResult result = this.mockMvc.perform(get("/messages/")).andDo(print()).andExpect(status().isOk()).andReturn();
+        this.mockMvc.perform(delete("/api/messages/7")).andDo(print()).andExpect(status().isOk());
+        MvcResult result = this.mockMvc.perform(get("/api/messages/")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         assert(stringResult.contains("{\"id\":1,"));
         assert(stringResult.contains("\"user\":1,\"board\":1,\"displayTime\":120,\"endDate\":\"2024-03-01 16:03:17\",\"active\":true,\"bgColor\":\"white\"}"));

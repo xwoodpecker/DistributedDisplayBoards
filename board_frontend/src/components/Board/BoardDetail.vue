@@ -7,7 +7,7 @@
             <md-icon>menu</md-icon>
           </md-button>
 
-          <span class="md-title">Board {{ boardId }}</span>
+          <span class="md-title">{{ this.board.boardName }}</span>
         </div>
       </md-app-toolbar>
 
@@ -209,6 +209,13 @@ export default {
   computed: {},
   created() {
     this.boardId = parseInt(this.$route.params.id);
+    boardsapi.getBoard(this.boardId).catch( error => {
+      this.$toastr.error("Fehler beim Laden des Boards");
+    }).then((res) => {
+      if (res) {
+        this.board = res;
+      }
+    })
   },
   mounted() {
     
