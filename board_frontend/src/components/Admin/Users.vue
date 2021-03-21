@@ -31,7 +31,7 @@
                   <md-button @click="currentUser = user" class="md-icon-button md-list-action">
                     <md-icon class="md-primary">edit</md-icon>
                   </md-button>
-                  <md-button @click="deleteUser(user)" class="md-icon-button md-list-action">
+                  <md-button @click="deleteUser(user)" v-if="$store.getters.isSupervisor" class="md-icon-button md-list-action">
                     <md-icon class="md-primary">delete</md-icon>
                   </md-button>
                 </div>
@@ -132,7 +132,7 @@ export default {
     } else {
       userapi.getUser(this.$store.getters.getUser.id).then(res => {
         if (res) {
-          this.$store.commit('setUsers', res)
+          this.$store.commit('setUsers', [res])
         }
       });
     }
