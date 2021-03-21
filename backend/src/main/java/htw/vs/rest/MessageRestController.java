@@ -19,7 +19,7 @@ import java.util.Optional;
  */
 @Api(tags = {SpringFoxConfig.MESSAGES})
 @RestController
-@RequestMapping(path = "/messages")
+@RequestMapping(path = "/api/messages")
 public class MessageRestController {
     private UserRepository userRepository;
     private MessageRepository messageRepository;

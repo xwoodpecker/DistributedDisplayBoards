@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 @Api(tags = {SpringFoxConfig.GROUP})
 @RestController
-@RequestMapping(path = "/groups")
+@RequestMapping(path = "/api/groups")
 public class GroupRestController {
     private GroupRepository groupRepository;
     private UserRepository userRepository;
@@ -73,7 +73,6 @@ public class GroupRestController {
 
         return response;
     }
-
 
     /**
      * Add user to group response entity.
@@ -219,8 +218,12 @@ public class GroupRestController {
 
             if(board.isPresent()) {
                     Board b = board.get();
+                    if(newGroup.getBoard().getBoardName() != null){
                     b.setBoardName(newGroup.getBoard().getBoardName());
-                    b.setLocation(newGroup.getBoard().getLocation());
+                    }
+                    if(newGroup.getBoard().getLocation() != null) {
+                        b.setLocation(newGroup.getBoard().getLocation());
+                    }
                     b.setGroup(temp);
                     boardRepository.save(b);
                     temp.setBoard(b);

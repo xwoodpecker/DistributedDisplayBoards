@@ -2,8 +2,10 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import {store} from '@/main';
 import moment from 'moment';
+import { ENV } from '@/environment';
 
-const backendEndpoint = 'http://localhost:8000/backend';
+
+const backendEndpoint = ENV.stompBaseUrl;
 
 export default class BoardService {
   socket;
@@ -81,7 +83,7 @@ export default class BoardService {
     //content = JSON.stringify(content);
     endDate = this._formatDate(endDate);
 
-    const msg = {messageId, content, userId, board: {id: boardId}, displayTime, endDate, active, bgColor}
+    const msg = {id: messageId, content, user: {id: userId}, board: {id: boardId}, displayTime, endDate, active, bgColor}
     this._send("message", msg);
   }
 

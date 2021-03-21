@@ -60,7 +60,7 @@ public class UserRestControllerTest {
     @Test
     @Order(1)
     public void testGetUsers() throws Exception {
-        this.mockMvc.perform(get("/users/")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/users/")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(stringContainsInOrder(
                           "\"id\":1,\"userName\":\"User1\",\"password\":\"123456\",\"enabled\":true,\"email\":\"User1@mail\"",
                                     "\"id\":2,\"userName\":\"User2\",\"password\":\"123456\",\"enabled\":true,\"email\":\"User2@mail\"",
@@ -79,7 +79,7 @@ public class UserRestControllerTest {
     @Test
     @Order(2)
     public void testGetUser() throws Exception {
-        this.mockMvc.perform(get("/users/1")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/users/1")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString(
                         "\"id\":1,\"userName\":\"User1\",\"password\":\"123456\",\"enabled\":true,\"email\":\"User1@mail\"")));
     }
@@ -93,7 +93,7 @@ public class UserRestControllerTest {
     @Order(3)
     @WithMockUser(username = "User1", password = "123456", roles="USER")
     public void testGetUserByLoginCredentials() throws Exception {
-        this.mockMvc.perform(get("/users/login")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/users/login")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString(
                         "\"id\":1,\"userName\":\"User1\",\"password\":\"123456\",\"enabled\":true,\"email\":\"User1@mail\"")));
     }
@@ -117,7 +117,7 @@ public class UserRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(user);
 
-        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        this.mockMvc.perform(post("/api/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"id\":10,\"userName\":\"User10\"")));
     }
@@ -139,7 +139,7 @@ public class UserRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(user);
 
-        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        this.mockMvc.perform(post("/api/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isUnauthorized());
     }
 
@@ -161,7 +161,7 @@ public class UserRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(user);
 
-        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))                .andDo(print()).andExpect(status().isForbidden());
+        this.mockMvc.perform(post("/api/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))                .andDo(print()).andExpect(status().isForbidden());
     }
 
     /**
@@ -182,7 +182,7 @@ public class UserRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(user);
 
-        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        this.mockMvc.perform(post("/api/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isInternalServerError());
     }
 
@@ -204,7 +204,7 @@ public class UserRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(user);
 
-        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        this.mockMvc.perform(post("/api/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isInternalServerError());
     }
 
@@ -225,9 +225,9 @@ public class UserRestControllerTest {
                 "  \"isSupervisor\" : true\n" +
                 "}";
 
-        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        this.mockMvc.perform(post("/api/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("\"id\":11,\"userName\":\"User11\"")));
-        MvcResult result = this.mockMvc.perform(get("/users/11")).andDo(print()).andExpect(status().isOk()).andReturn();
+        MvcResult result = this.mockMvc.perform(get("/api/users/11")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         assert(stringResult.contains("\"SUPERVISOR\""));
 
@@ -257,7 +257,7 @@ public class UserRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(user);
 
-        this.mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        this.mockMvc.perform(post("/api/users/").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andDo(print()).andExpect(status().isInternalServerError());
     }
 
@@ -272,9 +272,9 @@ public class UserRestControllerTest {
     public void testChangeOwnPassword() throws Exception {
         String request = "qwerasdf";
 
-        this.mockMvc.perform(post("/users/password/own").contentType(MediaType.APPLICATION_JSON).content(request)).andDo(print()).andExpect(status().isOk());
+        this.mockMvc.perform(post("/api/users/password/own").contentType(MediaType.APPLICATION_JSON).content(request)).andDo(print()).andExpect(status().isOk());
 
-        MvcResult result = this.mockMvc.perform(get("/users/1")).andDo(print()).andExpect(status().isOk()).andReturn();
+        MvcResult result = this.mockMvc.perform(get("/api/users/1")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = mapper.readTree(stringResult);
@@ -308,9 +308,9 @@ public class UserRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(user);
 
-        this.mockMvc.perform(post("/users/3").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
+        this.mockMvc.perform(post("/api/users/3").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
                 .andExpect(status().isOk()).andExpect(content().string(containsString("")));
-        MvcResult result = this.mockMvc.perform(get("/users/3")).andDo(print()).andExpect(status().isOk()).andReturn();
+        MvcResult result = this.mockMvc.perform(get("/api/users/3")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         assert(stringResult.contains("\"id\":3,\"userName\":\"User90\""));
         assert(stringResult.contains("\"enabled\":false,\"email\":\"User90@mail\",\"roles\":[{\"id\":3,\"name\":\"USER\"}]"));
@@ -333,9 +333,9 @@ public class UserRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(user);
 
-        this.mockMvc.perform(post("/users/3").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
+        this.mockMvc.perform(post("/api/users/3").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
                 .andExpect(status().isOk()).andExpect(content().string(containsString("")));
-        MvcResult result = this.mockMvc.perform(get("/users/3")).andDo(print()).andExpect(status().isOk()).andReturn();
+        MvcResult result = this.mockMvc.perform(get("/api/users/3")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         assert(stringResult.contains("\"id\":3,\"userName\":\"User77\""));
         assert(stringResult.contains("\"enabled\":false,\"email\":\"User90@mail\",\"roles\":[{\"id\":3,\"name\":\"USER\"}]"));
@@ -357,7 +357,7 @@ public class UserRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson = ow.writeValueAsString(user);
 
-        this.mockMvc.perform(post("/users/3").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
+        this.mockMvc.perform(post("/api/users/3").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
                 .andExpect(status().isUnauthorized());
     }
 
@@ -378,7 +378,7 @@ public class UserRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson = ow.writeValueAsString(user);
 
-        this.mockMvc.perform(post("/users/3").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
+        this.mockMvc.perform(post("/api/users/3").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
                 .andExpect(status().isForbidden());
     }
 
@@ -408,9 +408,9 @@ public class UserRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(user);
 
-        this.mockMvc.perform(post("/users/80").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
+        this.mockMvc.perform(post("/api/users/80").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
                 .andExpect(status().isOk()).andExpect(content().string(containsString("")));
-        MvcResult result = this.mockMvc.perform(get("/users/12")).andDo(print()).andExpect(status().isOk()).andReturn();
+        MvcResult result = this.mockMvc.perform(get("/api/users/12")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         assert(stringResult.contains("\"id\":12,\"userName\":\"User80\""));
         assert(stringResult.contains("\"enabled\":true,\"email\":\"User80@mail\",\"roles\":[{\"id\":3,\"name\":\"USER\"}]"));
@@ -428,9 +428,9 @@ public class UserRestControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(user);
 
-        this.mockMvc.perform(post("/users/3").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
+        this.mockMvc.perform(post("/api/users/3").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andDo(print())
                 .andExpect(status().isOk()).andExpect(content().string(containsString("")));
-        MvcResult result = this.mockMvc.perform(get("/users/3")).andDo(print()).andExpect(status().isOk()).andReturn();
+        MvcResult result = this.mockMvc.perform(get("/api/users/3")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         JsonNode rootNode = mapper.readTree(stringResult);
         JsonNode passwordNode = rootNode.get("password");
@@ -447,8 +447,8 @@ public class UserRestControllerTest {
     @Order(3)
     @WithMockUser(roles="SUPERVISOR")
     public void testDeleteUser() throws Exception {
-        this.mockMvc.perform(delete("/users/7").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isOk());
-        MvcResult result = this.mockMvc.perform(get("/users/")).andDo(print()).andExpect(status().isOk()).andReturn();
+        this.mockMvc.perform(delete("/api/users/7").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isOk());
+        MvcResult result = this.mockMvc.perform(get("/api/users/")).andDo(print()).andExpect(status().isOk()).andReturn();
         String stringResult = result.getResponse().getContentAsString();
         assert(!stringResult.contains("\"id\":7,\"userName\":\"User4\",\"password\":\"123456\",\"enabled\":true,\"email\":\"User4@mail\""));
     }
@@ -463,7 +463,7 @@ public class UserRestControllerTest {
     @Order(4)
     @WithMockUser(roles="SUPERVISOR")
     public void testDeleteUserCoordinator() throws Exception {
-        this.mockMvc.perform(delete("/users/8").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isInternalServerError());
+        this.mockMvc.perform(delete("/api/users/8").principal(SecurityContextHolder.getContext().getAuthentication())).andDo(print()).andExpect(status().isInternalServerError());
     }
 
     /**
@@ -473,7 +473,7 @@ public class UserRestControllerTest {
      */
     @Test
     public void testGetGroupsOfUser() throws Exception {
-        this.mockMvc.perform(get("/users/1/groups")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/users/1/groups")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString(
                         "\"id\":1,\"groupName\":\"testgroup1\"")));
 
@@ -487,7 +487,7 @@ public class UserRestControllerTest {
     @Test
     @WithMockUser(roles="SUPERVISOR", username = "Admin")
     public void testGetGroupsOfUserAsSupervisor() throws Exception {
-        this.mockMvc.perform(get("/users/6/groups")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/users/6/groups")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("")));
 
     }

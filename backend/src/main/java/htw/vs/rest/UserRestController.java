@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 @Api(tags = {SpringFoxConfig.USER})
 @RestController
-@RequestMapping(path = "/users")
+@RequestMapping(path = "/api/users")
 public class UserRestController {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;

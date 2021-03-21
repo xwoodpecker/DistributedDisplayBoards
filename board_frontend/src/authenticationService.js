@@ -1,11 +1,6 @@
 import axios from 'axios'
 import { ENV } from './environment'
 
-
-//var baseUrl = getUrl.protocol + "//" + getUrl.host;
-
-const url = "http://localhost:8000/users/login"
-
 export default {
     login, logout
 }
