@@ -120,7 +120,7 @@ public class SecurityService {
             return false;
 
 
-        return authenticatedUser.getUserName().equals(user.get().getUserName());
+        return authenticatedUser.getId().equals(userId);
 
     }
 }
