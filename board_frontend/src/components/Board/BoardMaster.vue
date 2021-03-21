@@ -1,6 +1,6 @@
 <template>
-  <div class="md-layout md-gutter md-alignment-center card-container">
-   <md-card>
+  <div class="md-layout md-gutter md-alignment-center card-container" @click="displayBoard($props.id)">
+   <md-card class="singleBoard">
       <md-card-header>
         <md-avatar>
           <md-icon>desktop_windows</md-icon>
@@ -19,8 +19,7 @@
       </md-card-content>
 
       <md-card-actions>
-        <md-button @click="displayBoard($props.id)">Display</md-button>
-        <md-button @click="openBoard($props.id)">Manage</md-button>
+        <md-button @click.stop="openBoard($props.id)">Bearbeiten</md-button>
       </md-card-actions>
     </md-card>
   </div>
@@ -61,7 +60,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
 .media-container {
   max-width: 100%;
   height: 10vh;
@@ -69,5 +68,12 @@ export default {
 .card-container {
   width: fit-content;
   display: inline;
+}
+
+.singleBoard {
+  &:hover {
+     box-shadow: 0 0 11px rgba(33,33,33,.2);
+     cursor: pointer;
+   }
 }
 </style>

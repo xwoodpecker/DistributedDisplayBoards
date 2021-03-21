@@ -7,7 +7,7 @@
             <md-icon>menu</md-icon>
           </md-button>
 
-          <span class="md-title">Dashboard</span>
+          <span class="md-title">Dashboard von {{$store.getters.getUser.userName}}</span>
         </div>
       </md-app-toolbar>
 
@@ -98,4 +98,6 @@ export default {
   width: 230px;
   max-width: calc(100vw - 125px);
 }
+
+
 </style>

@@ -25,13 +25,13 @@
           </md-button>
           <template v-if="groups.length">
             <md-list>
-              <div class="singleBoard" v-for="board in groups">
+              <div class="singleBoard" v-for="board in groups" @click="openBoard(board)">
                 <SingleBoard :group="board"></SingleBoard>
                 <div class="controls">
-                  <md-button @click="currentBoard = board" class="md-icon-button md-list-action">
+                  <md-button @click.stop="currentBoard = board" class="md-icon-button md-list-action">
                     <md-icon class="md-primary">edit</md-icon>
                   </md-button>
-                  <md-button @click="deleteBoard(board)" class="md-icon-button md-list-action">
+                  <md-button @click.stop="deleteBoard(board)" class="md-icon-button md-list-action">
                     <md-icon class="md-primary">delete</md-icon>
                   </md-button>
                 </div>
@@ -118,6 +118,9 @@ export default {
       group.coordinator = this.coordinator.id,
       console.log(group);
       //boardsapi.updateBoard(group, group.id)
+    },
+    openBoard(group){
+      this.$router.push('board/' + group.board.id);
     }
   },
   computed: {
@@ -178,6 +181,10 @@ export default {
   background-color: #ebebeb;
   border-radius: 5px;
   padding: 5px;
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 0 11px rgba(33,33,33,.2);
+  }
 }
 
 
