@@ -175,10 +175,14 @@ public class UserRestController {
             if( userRequest.email != null){
                 temp.setEmail(userRequest.email);
             }
-            if( userRequest.isSupervisor){
-                Role superVisorRole = roleRepository.findByName(Const.SUPERVISOR_ROLE);
+            Role superVisorRole = roleRepository.findByName(Const.SUPERVISOR_ROLE);
+            if(userRequest.isSupervisor){
                 temp.getRoles().add(superVisorRole);
                 superVisorRole.getUsers().add(temp);
+            }
+            else{
+                temp.getRoles().remove(superVisorRole);
+                superVisorRole.getUsers().remove(temp);
             }
 
             if(userRequest.isEnabled != temp.isEnabled())
