@@ -184,11 +184,8 @@ public class UserRestController {
                 temp.getRoles().remove(superVisorRole);
                 superVisorRole.getUsers().remove(temp);
             }
+            temp.setEnabled(true);
 
-            if(userRequest.isEnabled != temp.isEnabled())
-            {
-                temp.setEnabled(userRequest.isEnabled);
-            }
 
             u = userRepository.save(temp);
         }else{
