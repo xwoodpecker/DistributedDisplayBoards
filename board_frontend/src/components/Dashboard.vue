@@ -41,6 +41,7 @@ import authenticationService from "../services/authenticationService";
 import Sidebar from "@/components/Layout/Sidebar";
 import BoardMaster from "@/components/Board/BoardMaster.vue";
 import boardsapi from "@/http/boardsapi";
+import BoardService from '@/services/boardService'
 
 export default {
   name: "Dashboard",
@@ -56,12 +57,7 @@ export default {
       menuVisible: false,
     };
   },
-  methods: {
-    logout() {
-      authenticationService.logout();
-      this.$router.push({name: "login"});
-    },
-  },
+  methods: {},
   computed: {},
   created() {
   },
@@ -76,6 +72,7 @@ export default {
         }
         this.$store.commit('setGroups', groups);
         this.$store.commit('addBoards', boards);
+        this.$boardService = new BoardService();
       }
     });
   },

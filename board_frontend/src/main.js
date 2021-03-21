@@ -60,7 +60,7 @@ export const store = new Vuex.Store({
         },
         addBoards(state, boards) {
             for(let board of boards){
-                if(!state.boards || !state.boards.find(oldBoard => board.id == oldBoard.id)){
+                if(!state.boards.find(oldBoard => board.id == oldBoard.id)){
                     state.boards.push(board);
                 }
             }
@@ -75,7 +75,7 @@ export const store = new Vuex.Store({
             state.userToEdit = user;
         },
         clearBoards(state) {
-            state.boards = {}
+            state.boards = []
         },
         setAuthHeader(state, auth) {
             state.authHeader = {'Authorization': 'Basic ' + window.btoa(auth.username + ':' + auth.password)};

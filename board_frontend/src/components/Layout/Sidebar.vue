@@ -35,6 +35,7 @@ export default {
   methods: {
     logout() {
       authenticationService.logout();
+      this.$boardService._disconnect();
       this.$router.push({name: 'login'});
     }
   },

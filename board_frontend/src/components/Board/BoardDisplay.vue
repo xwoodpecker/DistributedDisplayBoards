@@ -58,11 +58,16 @@ export default {
   },
   methods: {
     start() {
-      //todo test
       if (this.messages && this.messages.length > 1) {
-        this.startAnimation(
-          this.messages[this.$refs.carousel.currentSlide].displayTime
-        );
+        if (this.$refs.carousel && this.$refs.carousel.currentSlide) {
+          this.startAnimation(
+            this.messages[this.$refs.carousel.currentSlide].displayTime
+          );
+        } else {
+          this.startAnimation(
+            this.messages[0].displayTime
+          )
+        }
       }
     },
     play() {
@@ -74,7 +79,9 @@ export default {
     },
     goto() {},
     next() {
-      this.$refs.carousel.goToNext();
+      if(this.$refs.carousel) try {
+        this.$refs.carousel.goToNext();
+      } catch(e){}
     },
     startAnimation(displayTime) {
       if (this.animation) this.animation.kill();
@@ -93,11 +100,10 @@ export default {
         this.next();
       });
     },
-    handleNextSlide(slide){
-      console.log(slide);
+    handleNextSlide(slide) {
       this.currentSlide = slide;
       this.startAnimation(this.messages[slide].displayTime);
-    }
+    },
   },
   computed: {
     animatedAmount: function () {
@@ -117,17 +123,17 @@ export default {
     });
 
     //force update if state changes
+    let self = this;
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === "setMessages") {
-        if(this.animation) this.animation.kill();
-        let board = state.boards.find(board => board.id == this.boardId);
-        if(board.messages){
-          this.messages = board.messages
+        if (this.animation) this.animation.kill();
+        let board = state.boards.find((board) => board.id == this.boardId);
+        if (board.messages) {
+          this.messages = board.messages;
         }
-        
-        
-        this.currentSlide = 0;
-        this.start();
+
+        self.currentSlide = 0;
+        self.start();
       }
     });
     if (this.autoStart) this.start();
